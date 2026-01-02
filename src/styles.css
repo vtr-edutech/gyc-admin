@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
+@import "primeicons/primeicons.css";
 
 body {
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }

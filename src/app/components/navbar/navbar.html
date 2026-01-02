@@ -1,1 +1,13 @@
-<p>navbar works!</p>
+<div class="pr-8">
+    <img src="/logo_new.png" alt="GYC logo" class="w-[90%] mx-auto h-auto">
+</div>
+
+<div class="flex flex-col pt-4 pr-0">
+    @for (link of NAV_LINKS; track $index) {
+    <a [routerLink]="link.path" routerLinkActive="bg-gray-100 text-zinc-600 tracking-wide" pRipple
+        class="flex uppercase font-medium text-gray-500 items-center gap-2 p-4">
+        <i [class]="link.icon"></i>
+        <span>{{ link.label }}</span>
+    </a>
+    }
+</div>
