@@ -1,1 +1,15 @@
-<p>sign-in works!</p>
+<p-card class="min-w-96" header="Sign In to Your Account">
+    <form class="flex flex-col gap-4">
+        <p-floatlabel [variant]="'on'">
+            <label for="username">Username</label>
+            <input id="username" fluid="true" type="text" pInputText />
+        </p-floatlabel>
+        <p-floatlabel [variant]="'on'">
+            <label for="password">Password</label>
+            <input fluid="true" id="password" type="password" pInputText />
+        </p-floatlabel>
+    </form>
+    <ng-template #footer>
+        <p-button type="submit" [size]="'small'">Sign In</p-button>
+    </ng-template>
+</p-card>
