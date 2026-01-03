@@ -1,0 +1,57 @@
+<h1 class="text-3xl font-semibold">Users</h1>
+<p>View all users of Get Your College</p>
+
+<div class="flex flex-col gap-3">
+    <p-table [size]="'large'" [value]="usersData" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template #header>
+            <tr>
+                <th class="w-[80px]">
+                    S.No.
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Mobile
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    District
+                </th>
+                <th>
+                    Created At
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-rowData>
+            <tr>
+                <td>
+                    {{ rowData.index }}
+                </td>
+                <td>
+                    {{ rowData.firstName }} {{ rowData.lastName }}
+                </td>
+                <td>
+                    {{ rowData.mobile }}
+                </td>
+                <td>
+                    {{ rowData.email }}
+                </td>
+                <td>
+                    {{ rowData.district }}
+                </td>
+                <td>
+                    {{ rowData.createdAt}}
+                </td>
+                <td>
+                    <p-button icon="pi pi-eye" [size]="'small'" [variant]="'outlined'" rounded="true"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

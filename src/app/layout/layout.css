@@ -3,10 +3,3 @@
   grid-template-columns: 300px auto;
   min-height: 100vh;
 }
-
-main {
-  padding: 1rem;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-}

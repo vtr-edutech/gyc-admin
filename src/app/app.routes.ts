@@ -16,6 +16,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/home/home').then((m) => m.Home),
         title: 'Home - GYC Admin',
       },
+      {
+        path: 'users',
+        loadComponent: () => import('./pages/users/users').then((m) => m.Users),
+        title: 'Users - GYC Admin',
+      },
     ],
   },
   {
