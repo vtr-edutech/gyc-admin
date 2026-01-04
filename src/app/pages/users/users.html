@@ -2,7 +2,8 @@
 <p>View all users of Get Your College</p>
 
 <div class="flex flex-col gap-3">
-    <p-table [size]="'large'" [value]="usersData" [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="25" [value]="usersData()"
+        [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template #header>
             <tr>
                 <th class="w-[80px]">
@@ -13,9 +14,6 @@
                 </th>
                 <th>
                     Mobile
-                </th>
-                <th>
-                    Email
                 </th>
                 <th>
                     District
@@ -38,9 +36,6 @@
                 </td>
                 <td>
                     {{ rowData.mobile }}
-                </td>
-                <td>
-                    {{ rowData.email }}
                 </td>
                 <td>
                     {{ rowData.district }}

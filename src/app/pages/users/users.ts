@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { Button } from "primeng/button";
 import { TableModule } from 'primeng/table';
 import { formatDates } from '../../lib/utils';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-users',
@@ -9,24 +10,20 @@ import { formatDates } from '../../lib/utils';
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
-export class Users {
+export class Users implements OnInit {
+  usersService = inject(UserService);
 
+  usersData = computed(() => {
+    const rawData = this.usersService.users().data?.data || [];
+    return rawData.map((user, i) => ({
+      ...user,
+      index: i + 1,
+      createdAt: formatDates(user.createdAt),
+      updatedAt: formatDates(user.updatedAt)
+    }));
+  });
 
-  usersResponse = {
-    "data": [{
-      "_id": "677611124242424242424242",
-      "firstName": "John",
-      "lastName": "Doe",
-      "email": "john.doe@example.com",
-      "mobile": "1234567890",
-      "district": "District 1",
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2024-01-01T00:00:00.000Z"
-    }],
-    "page": 1,
-    "totalPages": 538,
-    "totalDocs": 13436
+  ngOnInit(): void {
+    console.log(this.usersService.users());
   }
-
-  usersData = this.usersResponse.data.map((user, i) => ({ ...user, index: i + 1, createdAt: formatDates(user.createdAt), updatedAt: formatDates(user.updatedAt) }));
 }
