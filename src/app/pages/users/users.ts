@@ -1,29 +1,25 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Button } from "primeng/button";
 import { TableModule } from 'primeng/table';
-import { formatDates } from '../../lib/utils';
 import { UserService } from '../../services/user.service';
+import { Skeleton } from 'primeng/skeleton';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-users',
-  imports: [TableModule, Button],
+  imports: [TableModule, Button, Skeleton, ToastModule],
   templateUrl: './users.html',
   styleUrl: './users.css',
+  providers: [MessageService]
 })
 export class Users implements OnInit {
   usersService = inject(UserService);
-
-  usersData = computed(() => {
-    const rawData = this.usersService.users().data?.data || [];
-    return rawData.map((user, i) => ({
-      ...user,
-      index: i + 1,
-      createdAt: formatDates(user.createdAt),
-      updatedAt: formatDates(user.updatedAt)
-    }));
-  });
+  messageService = inject(MessageService);
 
   ngOnInit(): void {
-    console.log(this.usersService.users());
+    this.usersService.fetchUsers((error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+    });
   }
 }

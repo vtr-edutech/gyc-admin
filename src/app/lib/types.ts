@@ -14,6 +14,19 @@ export interface FetchState<T> {
     data: GenericResponse<T> | null;
 }
 
+export interface LoginPayload {
+    userName: string;
+    password: string;
+}
+
+export interface LoginResponse {
+    token: string;
+    userName: string;
+    name: string;
+    role: string;
+    id: string;
+}
+
 interface Timestamps {
     createdAt: string;
     updatedAt: string;

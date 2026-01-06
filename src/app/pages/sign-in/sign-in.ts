@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Button } from 'primeng/button';
@@ -15,6 +16,7 @@ import { InputText } from 'primeng/inputtext';
 export class SignIn {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  authService = inject(AuthService);
 
   signInForm: FormGroup = this.fb.group({
     username: ['', Validators.required],
@@ -23,8 +25,8 @@ export class SignIn {
 
   onSubmit() {
     if (this.signInForm.valid) {
-      console.log('Form Submitted', this.signInForm.value);
-      this.router.navigate(['/home']);
+      const { username, password } = this.signInForm.value;
+      this.authService.login({ userName: username, password });
     } else {
       this.signInForm.markAllAsTouched();
     }

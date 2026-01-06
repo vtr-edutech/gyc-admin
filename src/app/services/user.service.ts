@@ -3,15 +3,14 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { of } from 'rxjs';
 import { catchError, tap, } from 'rxjs/operators';
 import { FetchState, GenericResponse, User } from '../lib/types';
-import { API_URL } from '../lib/constants';
+import { API } from '../lib/constants';
 import { Router } from '@angular/router';
+import { formatDates, getErrorMessage } from '../lib/utils';
 
 @Injectable({
     providedIn: 'root',
 })
 export class UserService {
-    private apiUrl = API_URL + '/admin/users';
-
     users: WritableSignal<FetchState<User[]>> = signal<FetchState<User[]>>({
         isLoading: true,
         error: null,
@@ -20,33 +19,38 @@ export class UserService {
     private router = inject(Router);
     private http = inject(HttpClient);
 
-    constructor() {
-        this.fetchUsers();
-    }
-
-    fetchUsers(): void {
+    fetchUsers(onError?: (error: string) => void): void {
         // if !error && !data, then fetch
         this.users.update((state) => ({ ...state, isLoading: true, error: null }));
 
-        this.http.post<GenericResponse<User[]>>(this.apiUrl, {}).pipe(
+        this.http.post<GenericResponse<User[]>>(API.USERS, {}).pipe(
             tap((response) => {
                 this.users.set({
                     isLoading: false,
                     error: null,
-                    data: response,
+                    data: {
+                        ...response, data: response.data?.map((user, i) => ({
+                            ...user,
+                            index: i + 1,
+                            createdAt: formatDates(user.createdAt),
+                            updatedAt: formatDates(user.updatedAt)
+                        })) || []
+                    }
                 });
             }),
             catchError((error: HttpErrorResponse) => {
                 if (error.status === 401) {
                     localStorage.removeItem('token');
                     this.router.navigate(['']);
+                    onError?.('Please sign in again');
                     return of(null);
                 }
                 this.users.set({
                     isLoading: false,
-                    error: error.error || error.message || 'An error occurred',
+                    error: getErrorMessage(error),
                     data: null,
                 });
+                onError?.(getErrorMessage(error));
                 return of(null);
             })
         ).subscribe();

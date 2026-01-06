@@ -1,1 +1,9 @@
+@if (this.authService.authState().isLoading) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-white/50">
+    <p-progress-spinner></p-progress-spinner>
+</div>
+}
+@else {
 <router-outlet></router-outlet>
+}
+<p-toast></p-toast>
