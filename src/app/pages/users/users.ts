@@ -17,6 +17,8 @@ export class Users implements OnInit {
   usersService = inject(UserService);
   messageService = inject(MessageService);
 
+  DUMMY_ROWS = Array.from({ length: 25 }).fill(null);
+
   ngOnInit(): void {
     this.usersService.fetchUsers((error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });

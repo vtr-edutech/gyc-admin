@@ -36,7 +36,6 @@ export class AuthService {
                 if (response.data && response.data.token) {
                     localStorage.setItem('token', response.data.token);
                     this.router.navigate(['/home']);
-                    return;
                 }
                 this.loginState.set({
                     isLoading: false,
@@ -65,7 +64,6 @@ export class AuthService {
 
                 if (this.router.url === '/') {
                     this.router.navigate(['/home'], { replaceUrl: true });
-                    return;
                 }
                 this.authState.set({
                     isLoading: false,

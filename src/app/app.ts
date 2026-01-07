@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -13,8 +13,22 @@ import { AuthService } from './services/auth.service';
   providers: [MessageService]
 })
 export class App {
-  protected readonly title = signal('gyc-admin');
+  isPageLoading = signal(false);
   authService = inject(AuthService);
+
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.isPageLoading.set(true);
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        this.isPageLoading.set(false);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.authService.fetchAuth();
