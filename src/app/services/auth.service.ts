@@ -90,4 +90,9 @@ export class AuthService {
             })
         ).subscribe();
     }
+
+    logout() {
+        localStorage.removeItem('token');
+        this.router.navigate(['']);
+    }
 }
