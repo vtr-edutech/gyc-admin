@@ -8,3 +8,7 @@ export function formatDates(date: string | Date) {
 export function getErrorMessage(error: HttpErrorResponse) {
     return error.error?.error || error.message || 'An error occurred';
 }
+
+export function generateNumbers(count: number) {
+    return Array.from({ length: count }).map((_, index) => index + 1);
+}

@@ -3,7 +3,7 @@
 
 <div class="flex flex-col gap-3">
     <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="25"
-        [value]="this.usersService.users().data?.data || DUMMY_ROWS" [tableStyle]="{ 'min-width': '50rem' }">
+        [value]="this.usersService.users().data?.data || []" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template #header>
             <tr>
                 <th class="w-[80px]">
@@ -27,8 +27,7 @@
             </tr>
         </ng-template>
         @if (this.usersService.users().isLoading) {
-        <ng-template #body let-DUMMY_ROWS>
-            @for (row of DUMMY_ROWS; track $index) {
+        <ng-template #body let-rowData>
             <tr>
                 <td><p-skeleton /></td>
                 <td><p-skeleton /></td>
@@ -37,7 +36,6 @@
                 <td><p-skeleton /></td>
                 <td><p-skeleton /></td>
             </tr>
-            }
         </ng-template>
         }
         @else {

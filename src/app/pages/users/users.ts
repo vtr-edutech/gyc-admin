@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { Skeleton } from 'primeng/skeleton';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { generateNumbers } from '../../lib/utils';
 
 @Component({
   selector: 'app-users',
@@ -17,7 +18,7 @@ export class Users implements OnInit {
   usersService = inject(UserService);
   messageService = inject(MessageService);
 
-  DUMMY_ROWS = Array.from({ length: 25 }).fill(null);
+  dummyRows = generateNumbers(25);
 
   ngOnInit(): void {
     this.usersService.fetchUsers((error) => {

@@ -14,6 +14,10 @@ export interface FetchState<T> {
     data: GenericResponse<T> | null;
 }
 
+export interface ErrorFnCallback {
+    (error: string): void;
+}
+
 export interface LoginPayload {
     userName: string;
     password: string;
