@@ -31,8 +31,6 @@ export class AuthService {
 
         this.http.post<GenericResponse<LoginResponse>>(API.SIGN_IN, payload).pipe(
             tap((response) => {
-                console.log(response);
-
                 if (response.data && response.data.token) {
                     localStorage.setItem('token', response.data.token);
                     this.router.navigate(['/home']);

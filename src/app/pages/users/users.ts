@@ -18,8 +18,6 @@ export class Users {
   usersService = inject(UserService);
   messageService = inject(MessageService);
 
-  dummyRows = generateNumbers(25);
-
   loadUsers(event: any): void {
     const page = (event.first || 0) / (event.rows || 10) + 1;
     const limit = event.rows || 10;
