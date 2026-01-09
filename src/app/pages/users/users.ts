@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Button } from "primeng/button";
 import { TableModule } from 'primeng/table';
 import { UserService } from '../../services/user.service';
@@ -14,14 +14,17 @@ import { generateNumbers } from '../../lib/utils';
   styleUrl: './users.css',
   providers: [MessageService]
 })
-export class Users implements OnInit {
+export class Users {
   usersService = inject(UserService);
   messageService = inject(MessageService);
 
   dummyRows = generateNumbers(25);
 
-  ngOnInit(): void {
-    this.usersService.fetchUsers((error) => {
+  loadUsers(event: any): void {
+    const page = (event.first || 0) / (event.rows || 10) + 1;
+    const limit = event.rows || 10;
+
+    this.usersService.fetchUsers(page, limit, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
     });
   }

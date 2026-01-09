@@ -14,14 +14,17 @@ export class UserService {
         error: null,
         data: null,
     });
-    private router = inject(Router);
     private http = inject(HttpClient);
 
-    fetchUsers(onError?: ErrorFnCallback): void {
-        // if !error && !data, then fetch
-        this.users.set({ isLoading: true, error: null, data: { data: generateNumbers(25) as unknown as User[] } });
+    fetchUsers(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
+        this.users.set({ isLoading: true, error: null, data: { data: generateNumbers(limit) as unknown as User[] } });
 
-        this.http.post<GenericResponse<User[]>>(API.USERS, {}).subscribe({
+        this.http.post<GenericResponse<User[]>>(API.USERS, {}, {
+            params: {
+                page: page.toString(),
+                limit: limit.toString()
+            }
+        }).subscribe({
             next: (response) => {
                 this.users.set({
                     isLoading: false,
@@ -29,7 +32,7 @@ export class UserService {
                     data: {
                         ...response, data: response!.data?.map((user, i) => ({
                             ...user,
-                            index: i + 1,
+                            index: (page - 1) * limit + i + 1,
                             createdAt: formatDates(user.createdAt),
                             updatedAt: formatDates(user.updatedAt)
                         })) || []

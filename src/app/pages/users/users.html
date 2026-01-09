@@ -2,7 +2,8 @@
 <p>View all users of Get Your College</p>
 
 <div class="flex flex-col gap-3">
-    <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="25"
+    <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+        [lazy]="true" (onLazyLoad)="loadUsers($event)" [totalRecords]="this.usersService.users().data?.totalDocs || 0"
         [value]="this.usersService.users().data?.data || []" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template #header>
             <tr>
@@ -29,12 +30,12 @@
         @if (this.usersService.users().isLoading) {
         <ng-template #body let-rowData>
             <tr>
-                <td><p-skeleton /></td>
-                <td><p-skeleton /></td>
-                <td><p-skeleton /></td>
-                <td><p-skeleton /></td>
-                <td><p-skeleton /></td>
-                <td><p-skeleton /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
             </tr>
         </ng-template>
         }
