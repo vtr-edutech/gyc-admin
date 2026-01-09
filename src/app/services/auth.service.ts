@@ -31,15 +31,15 @@ export class AuthService {
 
         this.http.post<GenericResponse<LoginResponse>>(API.SIGN_IN, payload).pipe(
             tap((response) => {
-                if (response.data && response.data.token) {
-                    localStorage.setItem('token', response.data.token);
-                    this.router.navigate(['/home']);
-                }
                 this.loginState.set({
                     isLoading: false,
                     error: null,
                     data: response,
                 });
+                if (response.data && response.data.token) {
+                    localStorage.setItem('token', response.data.token);
+                    this.router.navigate(['/home']);
+                }
             }),
             catchError((error: HttpErrorResponse) => {
                 this.loginState.set({
@@ -58,8 +58,6 @@ export class AuthService {
 
         this.http.post<GenericResponse<LoginResponse>>(API.AUTH, {}).pipe(
             tap((response) => {
-                console.log(response);
-
                 if (this.router.url === '/') {
                     this.router.navigate(['/home'], { replaceUrl: true });
                 }
