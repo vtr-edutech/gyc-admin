@@ -29,28 +29,30 @@ export class AuthService {
     login(payload: LoginPayload, onError?: (err: string) => void): void {
         this.loginState.update((state) => ({ ...state, isLoading: true, error: null }));
 
-        this.http.post<GenericResponse<LoginResponse>>(API.SIGN_IN, payload).pipe(
-            tap((response) => {
-                this.loginState.set({
-                    isLoading: false,
-                    error: null,
-                    data: response,
-                });
-                if (response.data && response.data.token) {
-                    localStorage.setItem('token', response.data.token);
-                    this.router.navigate(['/home']);
-                }
-            }),
-            catchError((error: HttpErrorResponse) => {
-                this.loginState.set({
-                    isLoading: false,
-                    error: getErrorMessage(error),
-                    data: null,
-                });
-                onError?.(getErrorMessage(error));
-                return of(null);
-            })
-        ).subscribe();
+        this.http.post<GenericResponse<LoginResponse>>(API.SIGN_IN, payload).subscribe(
+            {
+                next: ((response) => {
+                    this.loginState.set({
+                        isLoading: false,
+                        error: null,
+                        data: response,
+                    });
+                    if (response.data && response.data.token) {
+                        localStorage.setItem('token', response.data.token);
+                        this.router.navigate(['/home']);
+                    }
+                }),
+                error: ((error: HttpErrorResponse) => {
+                    this.loginState.set({
+                        isLoading: false,
+                        error: getErrorMessage(error),
+                        data: null,
+                    });
+                    onError?.(getErrorMessage(error));
+                    return of(null);
+                })
+            }
+        )
     }
 
     fetchAuth(onError?: (err: string) => void) {

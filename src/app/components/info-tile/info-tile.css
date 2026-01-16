@@ -1,0 +1,5 @@
+@reference "tailwindcss";
+
+.info-tile {
+    @apply flex flex-col gap-1;
+}

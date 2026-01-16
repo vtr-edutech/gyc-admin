@@ -1,6 +1,9 @@
 <h1 class="text-3xl font-semibold">Users</h1>
 <p>View all users of Get Your College</p>
-
+<div class="grid py-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+    <app-info-tile title="Total Users" [isLoading]="this.usersService.users().isLoading"
+        [value]="this.usersService.users().data?.totalDocs"></app-info-tile>
+</div>
 <div class="flex flex-col gap-3">
     <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
         [lazy]="true" (onLazyLoad)="loadUsers($event)" [totalRecords]="this.usersService.users().data?.totalDocs || 0"
@@ -65,4 +68,5 @@
         }
     </p-table>
 </div>
+
 <p-toast></p-toast>
