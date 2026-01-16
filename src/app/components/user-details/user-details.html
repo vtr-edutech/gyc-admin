@@ -1,1 +1,29 @@
-<p>user-details works!</p>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile title="Name" [value]="user?.firstName"></app-info-tile>
+    <app-info-tile title="Name" [value]="user?.lastName"></app-info-tile>
+    <app-info-tile title="Mobile" [value]="user?.mobile"></app-info-tile>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile title="District" [value]="user?.district"></app-info-tile>
+    <app-info-tile title="Register No" [value]="user?.registerNo"></app-info-tile>
+    <app-info-tile title="TNEA Application No" [value]="user?.TNEAApplicationNo"></app-info-tile>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile title="Gender" [value]="user?.gender"></app-info-tile>
+    <app-info-tile title="Email" [value]="user?.email"></app-info-tile>
+    <app-info-tile title="AIR" [value]="user?.AIR"></app-info-tile>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile title="Category" [value]="user?.category"></app-info-tile>
+    <app-info-tile title="Group" [value]="user?.group"></app-info-tile>
+    <app-info-tile title="Board of Study" [value]="user?.boardOfStudy"></app-info-tile>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile title="Pincode" [value]="user?.pincode"></app-info-tile>
+    <app-info-tile title="DOB" [value]="user?.dob ? formatDate(user?.dob!): undefined"></app-info-tile>
+    <app-info-tile title="User Plan" [value]="user?.userPlan"></app-info-tile>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile title="Email" [value]="user?.email"></app-info-tile>
+    <app-info-tile title="Created At" [value]="formatDate(user?.createdAt!)"></app-info-tile>
+</div>
