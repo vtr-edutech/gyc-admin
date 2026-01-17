@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Button } from "primeng/button";
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { UserService } from '../../services/user.service';
 import { Skeleton } from 'primeng/skeleton';
 import { ToastModule } from 'primeng/toast';
@@ -22,7 +22,7 @@ export class Users {
   usersService = inject(UserService);
   messageService = inject(MessageService);
 
-  loadUsers(event: any): void {
+  loadUsers(event: TableLazyLoadEvent): void {
     const page = (event.first || 0) / (event.rows || 10) + 1;
     const limit = event.rows || 10;
 

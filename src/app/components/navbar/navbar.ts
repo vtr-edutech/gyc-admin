@@ -34,5 +34,10 @@ export class Navbar {
       path: '/users',
       icon: "pi pi-users"
     },
+    {
+      label: 'Announcements',
+      path: '/announcements',
+      icon: "pi pi-bell"
+    },
   ]
 }

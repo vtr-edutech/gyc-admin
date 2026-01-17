@@ -73,3 +73,13 @@ export interface User extends Timestamps {
     ],
     userPlan: "default" | "basic-mentorship" | "premium",
 }
+
+export interface Announcement extends Timestamps {
+    title: string,
+    description: string,
+    image: string,
+    link: string,
+    type: "engg" | "medical" | "josaa",
+    startDate: string,
+    endDate: string,
+}

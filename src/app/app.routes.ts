@@ -21,6 +21,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/users/users').then((m) => m.Users),
         title: 'Users - GYC Admin',
       },
+      {
+        path: 'announcements',
+        loadComponent: () => import('./pages/notifications/notifications').then((m) => m.Notifications),
+        title: 'Announcements - GYC Admin',
+      },
     ],
   },
   {

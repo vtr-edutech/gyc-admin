@@ -19,7 +19,7 @@ export class UserService {
     fetchUsers(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
         this.users.set({ isLoading: true, error: null, data: { data: generateNumbers(limit) as unknown as User[] } });
 
-        this.http.post<GenericResponse<User[]>>(API.USERS, {}, {
+        this.http.post<GenericResponse<User[]>>(API.GET_USERS, {}, {
             params: {
                 page: page.toString(),
                 limit: limit.toString()
