@@ -1,6 +1,12 @@
-<h1 class="text-3xl font-semibold">Announcements</h1>
-<p>View and manage all Announcements</p>
 <div class="flex flex-col gap-3">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-semibold">Announcements</h1>
+            <p>View and manage all Announcements</p>
+        </div>
+        <p-button [icon]="'pi pi-plus'" class="my-5" [size]="'small'" label="Create New Announcement"
+            (onClick)="isCreateAnnouncementModalOpen = true" />
+    </div>
     <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
         [lazy]="true" (onLazyLoad)="loadAnnouncements($event)"
         [totalRecords]="this.announcementsService.announcements().data?.totalDocs || 0"
@@ -74,3 +80,66 @@
         </ng-template>
     </p-table>
 </div>
+
+<p-dialog [(visible)]="isCreateAnnouncementModalOpen" [modal]="true" header="Create New Announcement">
+    <form #createAnnouncementForm="ngForm" class="flex flex-col gap-3">
+        <div class="flex flex-col gap-2">
+            <label for="title" class="font-semibold">Title</label>
+            <input id="title" type="text" name="title" ngModel required #title="ngModel"
+                placeholder="Provide a short title..." pInputText class="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': title.invalid && (title.dirty || title.touched)}" />
+            @if (title.invalid && (title.dirty || title.touched)) {
+            <small class="text-red-500">Title is required.</small>
+            }
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="description" class="font-semibold">Description</label>
+            <textarea id="description" name="description" ngModel #description="ngModel" pTextarea
+                placeholder="Provide useful information..." class="w-full" rows="3"></textarea>
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="type" class="font-semibold">Type</label>
+            <p-select id="type" name="type" ngModel required #type="ngModel" [options]="announcementTypes"
+                optionLabel="label" optionValue="value" placeholder="Choose..." class="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': type.invalid && (type.dirty || type.touched)}" />
+            @if (type.invalid && (type.dirty || type.touched)) {
+            <small class="text-red-500">Type is required.</small>
+            }
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="flex flex-col gap-1">
+                <label for="startDate" class="font-semibold">Start Date</label>
+                <p-datepicker id="startDate" name="startDate" [baseZIndex]="1500" ngModel required #startDate="ngModel"
+                    placeholder="Select start date" class="w-full" [showIcon]="true" />
+            </div>
+            <div class="flex flex-col gap-1">
+                <label for="endDate" class="font-semibold">End Date</label>
+                <p-datepicker id="endDate" name="endDate" [baseZIndex]="1500" ngModel required #endDate="ngModel"
+                    placeholder="Select end date" class="w-full" [showIcon]="true"
+                    [ngClass]="{'ng-invalid ng-dirty': endDate.invalid && (endDate.dirty || endDate.touched)}" />
+                @if (endDate.invalid && (endDate.dirty || endDate.touched)) {
+                <small class="text-red-500">End Date is required.</small>
+                }
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="link" class="font-semibold">Link</label>
+            <input id="link" name="link" ngModel required #link="ngModel" pattern="https://.+" type="url"
+                placeholder="https://..." pInputText class="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': link.invalid && (link.dirty || link.touched)}" />
+            @if (link.invalid && (link.dirty || link.touched)) {
+            <small class="text-red-500">Link is required.</small>
+            }
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+            <p-button [label]="'Cancel'" size="small"
+                [disabled]="announcementsService.createAnnouncementMeta().isLoading" [outlined]="true"
+                (onClick)="isCreateAnnouncementModalOpen = false" />
+            <p-button [label]="'Create'" size="small"
+                [disabled]="createAnnouncementForm.invalid || announcementsService.createAnnouncementMeta().isLoading"
+                (onClick)="createAnnouncement(createAnnouncementForm)" />
+        </div>
+    </form>
+</p-dialog>
+
+<p-toast />
