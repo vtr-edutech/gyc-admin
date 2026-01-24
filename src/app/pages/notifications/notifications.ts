@@ -39,6 +39,45 @@ export class Notifications {
   ];
 
   isCreateAnnouncementModalOpen = false;
+  isEdit = false;
+
+  openEditAnnouncement(announcementId: string, form: NgForm) {
+    this.isCreateAnnouncementModalOpen = true;
+    this.isEdit = true;
+    const currentAnnouncement = this.announcementsService.announcements().data?.data?.find((announcement) => announcement._id === announcementId);
+    console.log(currentAnnouncement);
+
+    if (currentAnnouncement) {
+      form.setValue({
+        title: currentAnnouncement.title,
+        description: currentAnnouncement.description,
+        type: currentAnnouncement.type,
+        startDate: currentAnnouncement.startDate,
+        endDate: currentAnnouncement.endDate,
+        link: currentAnnouncement.link
+      });
+    }
+  }
+
+  updateAnnouncement(form: NgForm) {
+    if (form.invalid) return;
+
+    const { startDate, endDate, ...rest } = form.value;
+
+    const payload = {
+      ...rest,
+      startDate: startDate ? new Date(startDate).toISOString() : undefined,
+      endDate: endDate ? new Date(endDate).toISOString() : undefined
+    };
+
+    this.announcementsService.updateAnnouncement(payload, () => {
+      this.isCreateAnnouncementModalOpen = false;
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement updated successfully' });
+      form.reset();
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+    });
+  }
 
   createAnnouncement(form: NgForm): void {
     if (form.invalid) return;

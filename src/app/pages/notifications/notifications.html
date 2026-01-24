@@ -31,11 +31,15 @@
                 <th>
                     Created At
                 </th>
+                <th>
+                    Actions
+                </th>
             </tr>
         </ng-template>
         @if (this.announcementsService.announcements().isLoading) {
         <ng-template #body let-rowData>
             <tr>
+                <td><p-skeleton height="1.5rem" /></td>
                 <td><p-skeleton height="1.5rem" /></td>
                 <td><p-skeleton height="1.5rem" /></td>
                 <td><p-skeleton height="1.5rem" /></td>
@@ -66,6 +70,10 @@
                 <td>
                     {{ rowData.createdAt}}
                 </td>
+                <td>
+                    <p-button [label]="'Edit'" size="small" [outlined]="true"
+                        (onClick)="openEditAnnouncement(rowData._id, createAnnouncementForm)" />
+                </td>
             </tr>
         </ng-template>
         }
@@ -81,7 +89,8 @@
     </p-table>
 </div>
 
-<p-dialog [(visible)]="isCreateAnnouncementModalOpen" [modal]="true" header="Create New Announcement">
+<p-dialog [(visible)]="isCreateAnnouncementModalOpen" [modal]="true"
+    [header]="isEdit ? 'Edit Announcement' : 'Create New Announcement'">
     <form #createAnnouncementForm="ngForm" class="flex flex-col gap-3">
         <div class="flex flex-col gap-2">
             <label for="title" class="font-semibold">Title</label>
@@ -134,10 +143,10 @@
         <div class="flex justify-end gap-2 mt-4">
             <p-button [label]="'Cancel'" size="small"
                 [disabled]="announcementsService.createAnnouncementMeta().isLoading" [outlined]="true"
-                (onClick)="isCreateAnnouncementModalOpen = false" />
-            <p-button [label]="'Create'" size="small"
+                (onClick)="isCreateAnnouncementModalOpen = false; isEdit = false" />
+            <p-button [label]="isEdit ? 'Update' : 'Create'" size="small"
                 [disabled]="createAnnouncementForm.invalid || announcementsService.createAnnouncementMeta().isLoading"
-                (onClick)="createAnnouncement(createAnnouncementForm)" />
+                (onClick)="isEdit ? updateAnnouncement(createAnnouncementForm) : createAnnouncement(createAnnouncementForm)" />
         </div>
     </form>
 </p-dialog>

@@ -70,4 +70,19 @@ export class AnnouncementsService {
       }
     });
   }
+
+  updateAnnouncement(data: Announcement, onSuccess?: Function, onError?: ErrorFnCallback) {
+    this.createAnnouncementMeta.set({ isLoading: true, error: null, data: null });
+    this.http.post<GenericResponse<Announcement>>(API.UPDATE_ANNOUNCEMENT, data).subscribe({
+      next: (response) => {
+        this.createAnnouncementMeta.set({ isLoading: false, error: null, data: response });
+        this.fetchAnnouncements();
+        onSuccess?.();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.createAnnouncementMeta.set({ isLoading: false, error: getErrorMessage(error), data: null });
+        onError?.(getErrorMessage(error));
+      }
+    });
+  }
 }

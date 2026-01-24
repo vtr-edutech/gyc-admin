@@ -31,7 +31,11 @@ export interface LoginResponse {
     id: string;
 }
 
-interface Timestamps {
+interface MongooseSchema {
+    _id: string;
+}
+
+interface Timestamps extends MongooseSchema {
     createdAt: string;
     updatedAt: string;
 }
@@ -75,6 +79,7 @@ export interface User extends Timestamps {
 }
 
 export interface Announcement extends Timestamps {
+    _id: string,
     title: string,
     description: string,
     image: string,

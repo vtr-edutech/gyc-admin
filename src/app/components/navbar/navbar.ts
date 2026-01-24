@@ -15,8 +15,9 @@ export class Navbar {
   authService = inject(AuthService);
 
   userNameLabel = computed(() => {
-    const fullName = this.authService.authState().data?.data?.name
-    return fullName?.split(' ')[0]?.[0]?.toUpperCase() + "" + fullName?.split(' ')[1]?.[0]?.toUpperCase()
+    const fullName = this.authService.authState().data?.data?.name;
+    if (!fullName) return "";
+    return fullName.split(' ')[0]?.[0]?.toUpperCase() + "" + fullName.split(' ')[1]?.[0]?.toUpperCase();
   });
 
   logout() {
