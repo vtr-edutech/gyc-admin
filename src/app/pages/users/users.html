@@ -4,9 +4,22 @@
     <app-info-tile title="Total Users" [isLoading]="this.usersService.users().isLoading"
         [value]="this.usersService.users().data?.totalDocs"></app-info-tile>
 </div>
+
+<div class="flex gap-2 p-1">
+    <input type="search" name="name" [(ngModel)]="searchModel.name" id="name" pInputText placeholder="Name"
+        size="small" />
+    <input type="search" name="mobile" [(ngModel)]="searchModel.mobile" id="mobile" pInputText placeholder="Mobile"
+        size="small" />
+    <input type="search" name="email" [(ngModel)]="searchModel.email" id="email" pInputText placeholder="Email"
+        size="small" />
+    <p-datepicker placeholder="Date" [(ngModel)]="searchModel.date" [showIcon]="true" size="small" />
+    <p-button label="Search" (click)="search()" icon="pi pi-search" severity="primary" size="small" />
+</div>
+
 <div class="flex flex-col gap-3">
-    <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
-        [lazy]="true" (onLazyLoad)="loadUsers($event)" [totalRecords]="this.usersService.users().data?.totalDocs || 0"
+    <p-table #dt [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" [lazy]="true" (onLazyLoad)="loadUsers($event)"
+        [totalRecords]="this.isSearchActive() ? this.usersService.users().data?.totalDocsForFilter || 0 : this.usersService.users().data?.totalDocs || 0"
         [value]="this.usersService.users().data?.data || []" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template #header>
             <tr>

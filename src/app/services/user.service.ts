@@ -16,10 +16,10 @@ export class UserService {
     });
     private http = inject(HttpClient);
 
-    fetchUsers(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
+    fetchUsers(page: number = 1, limit: number = 10, filters: any = {}, onError?: ErrorFnCallback): void {
         this.users.set({ isLoading: true, error: null, data: { data: generateNumbers(limit) as unknown as User[] } });
 
-        this.http.post<GenericResponse<User[]>>(API.GET_USERS, {}, {
+        this.http.post<GenericResponse<User[]>>(API.GET_USERS, { ...filters }, {
             params: {
                 page: page.toString(),
                 limit: limit.toString()

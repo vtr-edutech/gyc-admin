@@ -6,6 +6,8 @@ export interface GenericResponse<T> {
     totalPages?: number;
     totalDocs?: number;
     error?: string;
+    totalPagesForFilter?: number;
+    totalDocsForFilter?: number;
 }
 
 export interface FetchState<T> {
