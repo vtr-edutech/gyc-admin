@@ -1,18 +1,27 @@
-<h1 class="text-3xl font-semibold">Users</h1>
-<p>View all users of Get Your College</p>
+<div class="flex justify-between">
+    <div class="flex flex-col gap-1">
+        <h1 class="text-3xl font-semibold">Users</h1>
+        <p>View all users of Get Your College</p>
+    </div>
+    <div class="flex gap-2 items-center">
+        <p-datepicker placeholder="Select start and end dates" [(ngModel)]="downloadModel" [showIcon]="true"
+            selectionMode="range" size="small" showClear="true" />
+        <p-button label="Download" icon="pi pi-download" severity="primary" size="small" (click)="download()" />
+    </div>
+</div>
 <div class="grid py-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
     <app-info-tile title="Total Users" [isLoading]="this.usersService.users().isLoading"
         [value]="this.usersService.users().data?.totalDocs"></app-info-tile>
 </div>
 
-<div class="flex gap-2 p-1">
+<div class="flex gap-2 p-1 items-center">
     <input type="search" name="name" [(ngModel)]="searchModel.name" id="name" pInputText placeholder="Name"
         size="small" />
     <input type="search" name="mobile" [(ngModel)]="searchModel.mobile" id="mobile" pInputText placeholder="Mobile"
         size="small" />
     <input type="search" name="email" [(ngModel)]="searchModel.email" id="email" pInputText placeholder="Email"
         size="small" />
-    <p-datepicker placeholder="Date" [(ngModel)]="searchModel.date" [showIcon]="true" size="small" />
+    <p-datepicker placeholder="Date" [(ngModel)]="searchModel.date" [showIcon]="true" showClear="true" />
     <p-button label="Search" (click)="search()" icon="pi pi-search" severity="primary" size="small" />
 </div>
 

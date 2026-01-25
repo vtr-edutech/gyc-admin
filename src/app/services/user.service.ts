@@ -49,4 +49,22 @@ export class UserService {
             }
         });
     }
+
+    downloadUsers(data: string[], onError?: ErrorFnCallback) {
+        this.http.post(API.DOWNLOAD_USERS, data, { responseType: 'blob' }).subscribe({
+            next: (response) => {
+                const url = window.URL.createObjectURL(response);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `GYC Users from ${new Date(data[0]).toLocaleDateString()}-${new Date(data[1]).toLocaleDateString()}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            },
+            error: (error) => {
+                onError?.(getErrorMessage(error));
+            }
+        });
+    }
 }

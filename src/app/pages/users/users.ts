@@ -34,6 +34,8 @@ export class Users {
     date: null
   };
 
+  downloadModel = [];
+
   loadUsers(event: TableLazyLoadEvent): void {
     const page = (event.first || 0) / (event.rows || 10) + 1;
     const limit = event.rows || 10;
@@ -49,6 +51,16 @@ export class Users {
 
   isSearchActive(): boolean {
     return this.usersService.users().data?.totalDocsForFilter !== this.usersService.users().data?.totalDocs;
+  }
+
+  download(): void {
+    if (this.downloadModel.length !== 2) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please select a date range' });
+      return;
+    }
+    this.usersService.downloadUsers(this.downloadModel, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+    });
   }
 
   isUserDetailsModalOpen = false;
