@@ -85,4 +85,19 @@ export class AnnouncementsService {
       }
     });
   }
+
+  deleteAnnouncement(announcementId: string, onSuccess?: Function, onError?: ErrorFnCallback) {
+    this.createAnnouncementMeta.set({ isLoading: true, error: null, data: null });
+    this.http.post<GenericResponse<Announcement>>(API.DELETE_ANNOUNCEMENT, { params: { _id: announcementId } }).subscribe({
+      next: (response) => {
+        this.createAnnouncementMeta.set({ isLoading: false, error: null, data: response });
+        this.fetchAnnouncements();
+        onSuccess?.();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.createAnnouncementMeta.set({ isLoading: false, error: getErrorMessage(error), data: null });
+        onError?.(getErrorMessage(error));
+      }
+    });
+  }
 }

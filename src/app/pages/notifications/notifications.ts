@@ -104,4 +104,15 @@ export class Notifications {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
     });
   }
+
+  deleteAnnouncement(announcementId: string): void {
+    const announcementName = this.announcementsService.announcements().data?.data?.find((announcement) => announcement._id === announcementId)?.title;
+    if (confirm("Do you want to delete this announcement: " + announcementName)) {
+      this.announcementsService.deleteAnnouncement(announcementId, () => {
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement deleted successfully' });
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+      });
+    }
+  }
 }

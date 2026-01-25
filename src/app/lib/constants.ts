@@ -9,5 +9,6 @@ export const API = {
     DOWNLOAD_USERS: API_URL + '/admin/users/download',
     GET_ANNOUNCEMENTS: API_URL + '/announcements',
     CREATE_ANNOUNCEMENT: API_URL + '/admin/announcements/new',
-    UPDATE_ANNOUNCEMENT: API_URL + '/admin/announcements/update'
+    UPDATE_ANNOUNCEMENT: API_URL + '/admin/announcements/update',
+    DELETE_ANNOUNCEMENT: API_URL + '/admin/announcements/delete'
 };
