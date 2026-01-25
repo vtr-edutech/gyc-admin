@@ -92,6 +92,7 @@
 <p-dialog [(visible)]="isCreateAnnouncementModalOpen" [modal]="true"
     [header]="isEdit ? 'Edit Announcement' : 'Create New Announcement'">
     <form #createAnnouncementForm="ngForm" class="flex flex-col gap-3">
+        <input type="hidden" name="_id" ngModel #id="ngModel">
         <div class="flex flex-col gap-2">
             <label for="title" class="font-semibold">Title</label>
             <input id="title" type="text" name="title" ngModel required #title="ngModel"
@@ -119,12 +120,12 @@
             <div class="flex flex-col gap-1">
                 <label for="startDate" class="font-semibold">Start Date</label>
                 <p-datepicker id="startDate" name="startDate" [baseZIndex]="1500" ngModel required #startDate="ngModel"
-                    placeholder="Select start date" class="w-full" [showIcon]="true" />
+                    appendTo="body" placeholder="Select start date" class="w-full" [showIcon]="true" />
             </div>
             <div class="flex flex-col gap-1">
                 <label for="endDate" class="font-semibold">End Date</label>
                 <p-datepicker id="endDate" name="endDate" [baseZIndex]="1500" ngModel required #endDate="ngModel"
-                    placeholder="Select end date" class="w-full" [showIcon]="true"
+                    appendTo="body" placeholder="Select end date" class="w-full" [showIcon]="true"
                     [ngClass]="{'ng-invalid ng-dirty': endDate.invalid && (endDate.dirty || endDate.touched)}" />
                 @if (endDate.invalid && (endDate.dirty || endDate.touched)) {
                 <small class="text-red-500">End Date is required.</small>

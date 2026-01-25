@@ -45,17 +45,21 @@ export class Notifications {
     this.isCreateAnnouncementModalOpen = true;
     this.isEdit = true;
     const currentAnnouncement = this.announcementsService.announcements().data?.data?.find((announcement) => announcement._id === announcementId);
-    console.log(currentAnnouncement);
-
     if (currentAnnouncement) {
-      form.setValue({
+      const startDate = new Date(currentAnnouncement.startDate);
+      const endDate = new Date(currentAnnouncement.endDate);
+
+      const formValues = {
         title: currentAnnouncement.title,
         description: currentAnnouncement.description,
         type: currentAnnouncement.type,
-        startDate: currentAnnouncement.startDate,
-        endDate: currentAnnouncement.endDate,
-        link: currentAnnouncement.link
-      });
+        startDate: startDate,
+        endDate: endDate,
+        link: currentAnnouncement.link,
+        _id: currentAnnouncement._id
+      }
+
+      form.setValue(formValues);
     }
   }
 
@@ -74,6 +78,7 @@ export class Notifications {
       this.isCreateAnnouncementModalOpen = false;
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement updated successfully' });
       form.reset();
+      form.resetForm();
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
     });
@@ -94,6 +99,7 @@ export class Notifications {
       this.isCreateAnnouncementModalOpen = false;
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement created successfully' });
       form.reset();
+      form.resetForm();
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
     });
