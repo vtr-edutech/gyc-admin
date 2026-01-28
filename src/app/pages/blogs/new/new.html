@@ -1,0 +1,29 @@
+<div class="flex gap-3 items-center">
+    <p-button label="Back" size="small" icon="pi pi-arrow-left" routerLink="/blogs" />
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-semibold">New Blog</h1>
+            <p>Create a new blog</p>
+        </div>
+    </div>
+
+</div>
+<div class="card">
+    <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-2">
+            <label for="title">Title</label>
+            <input type="text" placeholder="Enter blog title" id="title" pInputText class="w-full" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="content">Content</label>
+            <p-editor id="content" placeholder="Enter blog content" class="w-full"></p-editor>
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="image">Image</label>
+            <input type="file" id="image" pInputFile class="w-full" />
+        </div>
+        <div class="flex justify-end">
+            <p-button label="Publish blog" icon="pi pi-plus" />
+        </div>
+    </div>
+</div>

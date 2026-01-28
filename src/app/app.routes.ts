@@ -26,6 +26,16 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/notifications/notifications').then((m) => m.Notifications),
         title: 'Announcements - GYC Admin',
       },
+      {
+        path: 'blogs',
+        loadComponent: () => import('./pages/blogs/blogs').then((m) => m.Blogs),
+        title: 'Blogs - GYC Admin',
+      },
+      {
+        path: 'blogs/new',
+        loadComponent: () => import('./pages/blogs/new/new').then((m) => m.NewBlog),
+        title: 'New Blog - GYC Admin',
+      },
     ],
   },
   {
