@@ -8,22 +8,83 @@
     </div>
 
 </div>
-<div class="card">
-    <div class="flex flex-col gap-3">
-        <div class="flex flex-col gap-2">
-            <label for="title">Title</label>
-            <input type="text" placeholder="Enter blog title" id="title" pInputText class="w-full" />
-        </div>
-        <div class="flex flex-col gap-2">
-            <label for="content">Content</label>
-            <p-editor id="content" placeholder="Enter blog content" class="w-full"></p-editor>
-        </div>
-        <div class="flex flex-col gap-2">
-            <label for="image">Image</label>
-            <input type="file" id="image" pInputFile class="w-full" />
-        </div>
-        <div class="flex justify-end">
-            <p-button label="Publish blog" icon="pi pi-plus" />
-        </div>
+<form #blogForm="ngForm" (ngSubmit)="onSubmit(blogForm)"
+    class="flex p-8 bg-white shadow mt-8 rounded-lg flex-col gap-4">
+    <!-- Error Message Display -->
+    @if (blogService.mutateBlogsState().error) {
+    <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+        <i class="pi pi-exclamation-circle mr-2"></i>
+        {{ blogService.mutateBlogsState().error }}
     </div>
-</div>
+    }
+
+    <!-- Title Field -->
+    <div class="flex flex-col gap-1">
+        <label for="title">Title <span class="text-red-500">*</span></label>
+        <input type="text" placeholder="Enter blog title" [(ngModel)]="title" name="title" #titleInput="ngModel"
+            id="title" pInputText class="w-full" required minlength="5"
+            [class.ng-invalid]="titleInput.invalid && titleInput.touched" [class.ng-dirty]="titleInput.dirty" />
+        @if (titleInput.invalid && titleInput.touched) {
+        <small class="text-red-500">
+            @if (titleInput.errors?.['required']) {
+            <span>Title is required</span>
+            } @else if (titleInput.errors?.['minlength']) {
+            <span>Title must be at least 5 characters long</span>
+            } @else if (titleInput.errors?.['message']) {
+            <span>{{ titleInput.errors?.['message'] }}</span>
+            }
+        </small>
+        }
+    </div>
+
+    <!-- Content Field -->
+    <div class="flex flex-col gap-1">
+        <label for="content">Content <span class="text-red-500">*</span></label>
+        <p-editor id="content" placeholder="Enter blog content" [(ngModel)]="content" name="content"
+            #contentInput="ngModel" class="w-full" required
+            [class.ng-invalid]="contentInput.invalid && contentInput.touched"
+            [class.ng-dirty]="contentInput.dirty"></p-editor>
+        @if (contentInput.invalid && contentInput.touched) {
+        <small class="text-red-500">
+            @if (contentInput.errors?.['required']) {
+            <span>Content is required</span>
+            } @else if (contentInput.errors?.['message']) {
+            <span>{{ contentInput.errors?.['message'] }}</span>
+            }
+        </small>
+        }
+    </div>
+
+    <!-- Image Upload Field -->
+    <div class="flex flex-col gap-1">
+        <label for="image">Image <span class="text-red-500">*</span></label>
+        <label for="image">
+            <div [class.border-red-500]="imageInput.invalid && imageInput.touched"
+                class="border-2 border-dashed border-gray-300 rounded-lg p-10 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors">
+                <i class="pi pi-image text-4xl text-gray-400"></i>
+                <span class="text-gray-500 font-medium">
+                    {{ image?.name || 'Click to upload image' }}
+                </span>
+                <span class="text-xs text-gray-400">JPEG, PNG, or WebP (Max 5MB)</span>
+            </div>
+        </label>
+        <input type="file" id="image" name="image" ngModel #imageInput="ngModel" (change)="onFileChange($event)"
+            accept="image/jpeg,image/jpg,image/png,image/webp" class="hidden" required />
+        @if (imageInput.invalid && imageInput.touched) {
+        <small class="text-red-500">
+            @if (imageInput.errors?.['required']) {
+            <span>Image is required</span>
+            } @else if (imageInput.errors?.['message']) {
+            <span>{{ imageInput.errors?.['message'] }}</span>
+            }
+        </small>
+        }
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex justify-end">
+        <p-button label="{{ blogService.mutateBlogsState().isLoading ? 'Publishing...' : 'Publish blog' }}" size="small"
+            type="submit" [disabled]="blogService.mutateBlogsState().isLoading"
+            [loading]="blogService.mutateBlogsState().isLoading" />
+    </div>
+</form>

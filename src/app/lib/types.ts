@@ -90,3 +90,15 @@ export interface Announcement extends Timestamps {
     startDate: string,
     endDate: string,
 }
+
+export interface Blog extends Timestamps {
+    _id: string,
+    title: string,
+    content: string,
+    thumbnail: string,
+    createdBy: {
+        _id: string;
+        name: string;
+    }
+    slug: string,
+}
