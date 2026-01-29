@@ -11,8 +11,9 @@ export const API = {
     CREATE_ANNOUNCEMENT: API_URL + '/admin/announcements/new',
     UPDATE_ANNOUNCEMENT: API_URL + '/admin/announcements/update',
     DELETE_ANNOUNCEMENT: API_URL + '/admin/announcements/delete',
-    GET_BLOGS: API_URL + '/admin/blogs',
+    GET_BLOGS: API_URL + '/blogs',
     CREATE_BLOG: API_URL + '/admin/blogs/new',
-    UPDATE_BLOG: API_URL + '/admin/blogs/update',
-    DELETE_BLOG: API_URL + '/admin/blogs/delete'
+    GET_BLOG: (id: string) => API_URL + '/blogs/' + id,
+    UPDATE_BLOG: (id: string) => API_URL + '/admin/blogs/' + id + '/edit',
+    DELETE_BLOG: (id: string) => API_URL + '/admin/blogs/' + id + '/delete',
 };

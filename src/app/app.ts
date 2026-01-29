@@ -2,12 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { LoadingOverlay } from "./components/loading-overlay/loading-overlay";
 import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastModule, ProgressSpinnerModule],
+  imports: [RouterOutlet, ToastModule, LoadingOverlay],
   templateUrl: './app.html',
   styleUrl: './app.css',
   providers: [MessageService]

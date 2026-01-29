@@ -95,10 +95,11 @@ export interface Blog extends Timestamps {
     _id: string,
     title: string,
     content: string,
-    thumbnail: string,
+    thumbnailUrl: string,
     createdBy: {
         _id: string;
         name: string;
     }
     slug: string,
+    createdAt: string,
 }

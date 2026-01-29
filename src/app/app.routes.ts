@@ -36,6 +36,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/blogs/new/new').then((m) => m.NewBlog),
         title: 'New Blog - GYC Admin',
       },
+      {
+        path: 'blogs/:id',
+        loadComponent: () => import('./pages/blogs/edit/edit').then((m) => m.EditBlog),
+        title: 'Edit Blog - GYC Admin',
+      },
     ],
   },
   {
