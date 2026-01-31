@@ -21,6 +21,7 @@ export class NewBlog {
   title: string = '';
   content: string = '';
   image: File | null = null;
+  thumbnailUrl: string | null = null;
 
   public blogService = inject(BlogService);
   private router = inject(Router);
@@ -30,6 +31,7 @@ export class NewBlog {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.image = input.files[0];
+      this.thumbnailUrl = URL.createObjectURL(this.image);
     }
   }
 
@@ -61,22 +63,20 @@ export class NewBlog {
       return;
     }
 
-    if (!this.image) {
-      form.controls['image'].setErrors({ 'message': 'Image is required' });
-      return;
+    if (this.image) {
+      const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!validImageTypes.includes(this.image.type)) {
+        form.controls['image'].setErrors({ 'message': 'Please upload a valid image file (JPEG, PNG, or WebP)' });
+        return;
+      }
+
+      const maxSize = 5 * 1024 * 1024;
+      if (this.image.size > maxSize) {
+        form.controls['image'].setErrors({ 'message': 'Image size must be less than 5MB' });
+        return;
+      }
     }
 
-    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    if (!validImageTypes.includes(this.image.type)) {
-      form.controls['image'].setErrors({ 'message': 'Please upload a valid image file (JPEG, PNG, or WebP)' });
-      return;
-    }
-
-    const maxSize = 5 * 1024 * 1024;
-    if (this.image.size > maxSize) {
-      form.controls['image'].setErrors({ 'message': 'Image size must be less than 5MB' });
-      return;
-    }
 
     this.createBlog();
   }

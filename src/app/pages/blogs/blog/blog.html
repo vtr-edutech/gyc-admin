@@ -1,0 +1,17 @@
+<p-button label="Back" size="small" icon="pi pi-arrow-left" routerLink="/blogs" />
+<article class="flex p-8 bg-white shadow mt-8 rounded-lg flex-col gap-4">
+    <h2 class="text-2xl font-semibold text-center">{{blogService.blog().data?.data?.title}}</h2>
+    @if (blogService.blog().data?.data?.thumbnailUrl) {
+    <img [src]="blogService.blog().data?.data?.thumbnailUrl" alt="Image thumbnail" class="w-full object-cover" />
+    }
+    <div [innerHTML]="blogService.blog().data?.data?.content"></div>
+    <div class="flex flex-col gap-1">
+        <i class="text-gray-600">Written by</i>
+        <div class="flex gap-1 items-center">
+            <p-avatar icon="pi pi-user" class="mr-2" size="large" shape="circle"
+                [label]="this.authService.userNameLabel()" />
+            <span>{{this.authService.authState().data?.data?.name}}</span>
+        </div>
+        <p class="text-gray-500">on {{blogService.blog().data?.data?.createdAt}}</p>
+    </div>
+</article>

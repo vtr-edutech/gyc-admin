@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, computed, signal, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { API } from '../lib/constants';
@@ -23,6 +23,12 @@ export class AuthService {
         isLoading: false,
         error: null,
         data: null,
+    });
+
+    userNameLabel = computed(() => {
+        const fullName = this.authState().data?.data?.name;
+        if (!fullName) return "";
+        return fullName.split(' ')[0]?.[0]?.toUpperCase() + "" + fullName.split(' ')[1]?.[0]?.toUpperCase();
     });
 
     login(payload: LoginPayload, onError?: (err: string) => void): void {

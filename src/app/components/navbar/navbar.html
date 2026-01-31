@@ -13,7 +13,7 @@
 </div>
 
 <div class="mt-auto flex gap-1 items-center">
-    <p-avatar icon="pi pi-user" class="mr-2" size="normal" shape="circle" [label]="userNameLabel()" />
+    <p-avatar icon="pi pi-user" class="mr-2" size="normal" shape="circle" [label]="this.authService.userNameLabel()" />
     <p-button [severity]="'danger'" icon="pi pi-sign-out" [size]="'small'" [variant]="'outlined'" pRipple
         (click)="logout()" label="Logout"></p-button>
 </div>
