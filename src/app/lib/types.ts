@@ -81,7 +81,6 @@ export interface User extends Timestamps {
 }
 
 export interface Announcement extends Timestamps {
-    _id: string,
     title: string,
     description: string,
     image: string,
@@ -92,14 +91,21 @@ export interface Announcement extends Timestamps {
 }
 
 export interface Blog extends Timestamps {
-    _id: string,
     title: string,
     content: string,
     thumbnailUrl: string,
     createdBy: {
         _id: string;
         name: string;
-    }
+    } & MongooseSchema,
     slug: string,
     createdAt: string,
+}
+
+export interface HomeData extends Timestamps {
+    totalUsers: number,
+    totalAdmins: number,
+    totalAnnouncements: number,
+    totalAdmissions: number,
+    totalColleges: number
 }

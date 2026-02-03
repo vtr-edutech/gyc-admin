@@ -16,4 +16,5 @@ export const API = {
     GET_BLOG: (id: string) => API_URL + '/blogs/' + id,
     UPDATE_BLOG: (id: string) => API_URL + '/admin/blogs/' + id + '/edit',
     DELETE_BLOG: (id: string) => API_URL + '/admin/blogs/' + id + '/delete',
+    HOME: API_URL + '/admin/dashboard',
 };

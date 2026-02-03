@@ -1,3 +1,13 @@
-hi Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic culpa
-nulla pariatur modi? Numquam explicabo sapiente modi possimus tempora, adipisci illum eligendi dolore magni?
-Eveniet.
+<h1 class="text-2xl font-bold">Dashboard</h1>
+<div class="grid grid-cols-5 mt-4 gap-4">
+    <app-value-card title="Users" [isLoading]="isLoading()" [value]="homeService.homeData().data?.data?.totalUsers"
+        color="green"></app-value-card>
+    <app-value-card title="Admins" [isLoading]="isLoading()" [value]="homeService.homeData().data?.data?.totalAdmins"
+        color="blue"></app-value-card>
+    <app-value-card title="Announcements" [isLoading]="isLoading()"
+        [value]="homeService.homeData().data?.data?.totalAnnouncements" color="gray"></app-value-card>
+    <app-value-card title="Admission queries" [isLoading]="isLoading()"
+        [value]="homeService.homeData().data?.data?.totalAdmissions" color="yellow"></app-value-card>
+    <app-value-card title="Colleges" [isLoading]="isLoading()"
+        [value]="homeService.homeData().data?.data?.totalColleges" color="purple"></app-value-card>
+</div>

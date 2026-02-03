@@ -1,0 +1,9 @@
+<div
+    [class]="'p-2 rounded-md border flex flex-col items-center justify-center ' +  BG_FG_COLOR_MAP[color].bg + ' ' + BG_FG_COLOR_MAP[color].border">
+    <h1 class="text-lg font-bold {{ BG_FG_COLOR_MAP[color].fg }}">{{ title }}</h1>
+    @if (isLoading) {
+    <p-skeleton height="1.5rem"></p-skeleton>
+    } @else {
+    <h2 class="text-2xl font-bold {{ BG_FG_COLOR_MAP[color].fg }}">{{ value }}</h2>
+    }
+</div>
