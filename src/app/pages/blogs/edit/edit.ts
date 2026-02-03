@@ -2,7 +2,7 @@ import { Component, effect, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Button } from "primeng/button";
 import { BlogService } from '../../../services/blog.service';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { LoadingOverlay } from "../../../components/loading-overlay/loading-overlay";
 import { InputText } from "primeng/inputtext";
@@ -22,6 +22,7 @@ export class EditBlog {
 
   public blogService = inject(BlogService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private messageService = inject(MessageService)
 
   onFileChange(event: Event) {
@@ -42,13 +43,16 @@ export class EditBlog {
   }
 
   ngOnInit() {
-    const blogId = this.router.url.split('/').pop();
-    if (!blogId) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Blog ID is required' });
-      this.router.navigate(['/blogs']);
-    }
+    this.route.params.subscribe(params => {
+      const blogId = params['id'];
+      if (!blogId) {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Blog ID is required' });
+        this.router.navigate(['/blogs']);
+        return;
+      }
 
-    this.blogService.fetchBlog(blogId!);
+      this.blogService.fetchBlog(blogId!);
+    });
   }
 
   onSubmit(form: NgForm) {
