@@ -129,4 +129,26 @@ export class BlogService {
             }
         });
     }
+
+    deleteBlog(id: string, onSuccess?: Function, onError?: ErrorFnCallback) {
+        this.mutateBlogsState.set({ isLoading: true, error: null, data: null });
+        this.http.post<GenericResponse<string>>(API.DELETE_BLOG(id), {}).subscribe({
+            next: (response) => {
+                this.mutateBlogsState.set({
+                    isLoading: false,
+                    error: null,
+                    data: { message: response.message || '' }
+                });
+                onSuccess?.();
+            },
+            error: (error) => {
+                this.mutateBlogsState.set({
+                    isLoading: false,
+                    error: getErrorMessage(error),
+                    data: null,
+                });
+                onError?.(getErrorMessage(error));
+            }
+        });
+    }
 }

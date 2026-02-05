@@ -47,8 +47,10 @@
                     <div class="flex gap-2">
                         <p-button size="small" outlined="true" label="Edit" icon="pi pi-pencil"
                             [routerLink]="'/blogs/' + blog._id + '/edit'" />
-                        <p-button size="small" outlined="true" [severity]="'danger'" label="Delete"
-                            icon="pi pi-trash" />
+                        <p-button [disabled]="this.blogService.mutateBlogsState().isLoading" size="small"
+                            outlined="true" [severity]="'danger'" label="Delete" icon="pi pi-trash"
+                            (click)="confirmDelete($event, blog._id)" />
+                        <p-confirmpopup />
                     </div>
                 </td>
             </tr>

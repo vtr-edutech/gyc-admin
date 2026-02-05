@@ -3,18 +3,21 @@ import { RouterLink } from '@angular/router';
 import { Button } from "primeng/button";
 import { Table, TableLazyLoadEvent, TableModule } from "primeng/table";
 import { BlogService } from '../../services/blog.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Skeleton } from "primeng/skeleton";
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 @Component({
   selector: 'app-blogs',
-  imports: [Button, RouterLink, TableModule, Skeleton],
+  imports: [Button, RouterLink, TableModule, Skeleton, ConfirmPopupModule],
   templateUrl: './blogs.html',
   styleUrl: './blogs.css',
+  providers: [ConfirmationService]
 })
 export class Blogs {
   blogService = inject(BlogService);
   messageService = inject(MessageService);
+  confirmationService = inject(ConfirmationService);
 
   @ViewChild('dt') dt!: Table;
 
@@ -36,7 +39,38 @@ export class Blogs {
     this.dt.reset();
   }
 
+  deleteBlog(id: string): void {
+    this.blogService.deleteBlog(id, () => {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Blog deleted successfully' });
+      this.dt.reset();
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+    });
+  }
+
   isSearchActive(): boolean {
     return this.blogService.blogs().data?.totalDocsForFilter !== this.blogService.blogs().data?.totalDocs;
+  }
+
+  confirmDelete(event: Event, id: string): void {
+    this.confirmationService.confirm({
+      target: event.currentTarget as EventTarget,
+      message: 'Do you want to delete this blog? It cannot be restored.',
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true
+      },
+      acceptButtonProps: {
+        label: 'Delete blog',
+        severity: 'danger'
+      },
+      accept: () => {
+        this.deleteBlog(id);
+      },
+      reject: () => {
+      }
+    });
   }
 }
