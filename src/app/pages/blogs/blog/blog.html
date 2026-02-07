@@ -4,7 +4,9 @@
     @if (blogService.blog().data?.data?.thumbnailUrl) {
     <img [src]="blogService.blog().data?.data?.thumbnailUrl" alt="Image thumbnail" class="h-auto" />
     }
-    <div [innerHTML]="blogService.blog().data?.data?.content"></div>
+    <div class="ql-bubble">
+        <div class="ql-editor" [innerHTML]="blogService.blog().data?.data?.content"></div>
+    </div>
     <div class="flex flex-col gap-1">
         <i class="text-gray-600">Written by</i>
         <div class="flex gap-1 items-center">
