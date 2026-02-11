@@ -60,7 +60,7 @@ export class AuthService {
         )
     }
 
-    fetchAuth(onError?: (err: string) => void) {
+    fetchAuth(onSuccess?: Function, onError?: (err: string) => void) {
         this.authState.update((state) => ({ ...state, isLoading: true, error: null }));
 
         this.http.post<GenericResponse<LoginResponse>>(API.AUTH, {}).subscribe(
@@ -71,6 +71,7 @@ export class AuthService {
                         error: null,
                         data: response,
                     });
+                    onSuccess?.();
                 }),
                 error: ((error: HttpErrorResponse) => {
                     this.authState.set({

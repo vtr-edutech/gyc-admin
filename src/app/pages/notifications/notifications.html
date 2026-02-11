@@ -76,7 +76,8 @@
                             (onClick)="openEditAnnouncement(rowData._id, createAnnouncementForm)" />
                         <p-button [label]="'Delete'" icon="pi pi-trash" size="small" [severity]="'danger'"
                             [outlined]="true" [disabled]="announcementsService.createAnnouncementMeta().isLoading"
-                            (onClick)="deleteAnnouncement(rowData._id)" />
+                            (onClick)="confirmDelete($event, rowData._id)" />
+                        <p-confirmpopup />
                     </div>
                 </td>
             </tr>

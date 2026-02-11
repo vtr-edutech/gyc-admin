@@ -88,7 +88,7 @@ export class AnnouncementsService {
 
   deleteAnnouncement(announcementId: string, onSuccess?: Function, onError?: ErrorFnCallback) {
     this.createAnnouncementMeta.set({ isLoading: true, error: null, data: null });
-    this.http.post<GenericResponse<Announcement>>(API.DELETE_ANNOUNCEMENT, { params: { _id: announcementId } }).subscribe({
+    this.http.post<GenericResponse<Announcement>>(API.DELETE_ANNOUNCEMENT, { _id: announcementId }).subscribe({
       next: (response) => {
         this.createAnnouncementMeta.set({ isLoading: false, error: null, data: response });
         this.fetchAnnouncements();

@@ -31,6 +31,9 @@ export class App {
   }
 
   ngOnInit(): void {
-    this.authService.fetchAuth();
+    this.authService.fetchAuth(() => {
+      if (this.router.url === '/')
+        this.router.navigate(['/home']);
+    });
   }
 }

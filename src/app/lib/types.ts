@@ -107,5 +107,16 @@ export interface HomeData extends Timestamps {
     totalAdmins: number,
     totalAnnouncements: number,
     totalAdmissions: number,
-    totalColleges: number
+    totalColleges: number,
+    totalBlogs: number,
+    signUpTrend: {
+        labels: string[];
+        datasets: {
+            label: string;
+            data: any[];
+            fill: boolean;
+            borderColor: string;
+            tension: number;
+        }[];
+    }
 }

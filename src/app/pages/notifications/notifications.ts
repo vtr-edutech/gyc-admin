@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TableLazyLoadEvent, TableModule } from "primeng/table";
 import { Skeleton } from "primeng/skeleton";
 import { AnnouncementsService } from '../../services/announcements.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from "primeng/button";
 import { Toast } from "primeng/toast";
 import { Dialog } from "primeng/dialog";
@@ -12,16 +12,19 @@ import { InputText } from "primeng/inputtext";
 import { Textarea } from "primeng/textarea";
 import { DatePicker } from "primeng/datepicker";
 import { FormsModule, NgForm } from '@angular/forms';
+import { ConfirmPopup } from "primeng/confirmpopup";
 
 @Component({
   selector: 'app-notifications',
-  imports: [CommonModule, TableModule, Skeleton, Button, Toast, Dialog, Select, InputText, Textarea, DatePicker, FormsModule],
+  imports: [CommonModule, TableModule, Skeleton, Button, Toast, Dialog, Select, InputText, Textarea, DatePicker, FormsModule, ConfirmPopup],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',
+  providers: [ConfirmationService]
 })
 export class Notifications {
   announcementsService = inject(AnnouncementsService);
   messageService = inject(MessageService);
+  confirmationService = inject(ConfirmationService);
 
   loadAnnouncements(event: TableLazyLoadEvent): void {
     const page = (event.first || 0) / (event.rows || 10) + 1;
@@ -105,14 +108,33 @@ export class Notifications {
     });
   }
 
+  confirmDelete(event: Event, id: string) {
+    this.confirmationService.confirm({
+      target: event.currentTarget as EventTarget,
+      message: 'Do you want to delete this announcement? It cannot be restored.',
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true
+      },
+      acceptButtonProps: {
+        label: 'Delete announcement',
+        severity: 'danger'
+      },
+      accept: () => {
+        this.deleteAnnouncement(id);
+      },
+      reject: () => {
+      }
+    });
+  }
+
   deleteAnnouncement(announcementId: string): void {
-    const announcementName = this.announcementsService.announcements().data?.data?.find((announcement) => announcement._id === announcementId)?.title;
-    if (confirm("Do you want to delete this announcement: " + announcementName)) {
-      this.announcementsService.deleteAnnouncement(announcementId, () => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement deleted successfully' });
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
-      });
-    }
+    this.announcementsService.deleteAnnouncement(announcementId, () => {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement deleted successfully' });
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+    });
   }
 }
