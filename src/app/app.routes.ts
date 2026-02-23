@@ -46,6 +46,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/blogs/blog/blog').then((m) => m.Blog),
         title: 'Blog - GYC Admin',
       },
+      {
+        path: 'bookings',
+        loadComponent: () => import('./pages/bookings/bookings').then((m) => m.Bookings),
+        title: 'Bookings - GYC Admin',
+      },
     ],
   },
   {

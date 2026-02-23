@@ -120,3 +120,15 @@ export interface HomeData extends Timestamps {
         }[];
     }
 }
+
+export interface SlotBooking extends Timestamps {
+    name: string,
+    mobile: string,
+    message: string,
+    attendedBy: {
+        _id: string;
+        name: string;
+        attendedAt: string;
+    } & MongooseSchema | null,
+    attendedAt: string,
+}

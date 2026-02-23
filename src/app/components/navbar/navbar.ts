@@ -18,7 +18,7 @@ export class Navbar {
     this.authService.logout();
   }
 
-  NAV_LINKS = [
+  readonly NAV_LINKS = [
     {
       label: 'Home',
       path: '/home',
@@ -38,6 +38,11 @@ export class Navbar {
       label: 'Blogs',
       path: '/blogs',
       icon: "pi pi-book"
-    }
+    },
+    {
+      label: 'Bookings',
+      path: '/bookings',
+      icon: "pi pi-calendar"
+    },
   ]
 }
