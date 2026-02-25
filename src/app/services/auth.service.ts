@@ -42,6 +42,11 @@ export class AuthService {
                         error: null,
                         data: response,
                     });
+                    this.authState.set({
+                        isLoading: false,
+                        error: null,
+                        data: response,
+                    });
                     onSuccess?.(response);
                 }),
                 error: ((error: HttpErrorResponse) => {
