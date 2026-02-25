@@ -29,7 +29,7 @@ export interface LoginResponse {
     token: string;
     userName: string;
     name: string;
-    role: string;
+    role: "admin" | "superadmin" | "telecaller" | "editor";
     id: string;
 }
 

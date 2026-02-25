@@ -31,7 +31,7 @@ export class AuthService {
         return fullName.split(' ')[0]?.[0]?.toUpperCase() + "" + fullName.split(' ')[1]?.[0]?.toUpperCase();
     });
 
-    login(payload: LoginPayload, onError?: (err: string) => void): void {
+    login(payload: LoginPayload, onSuccess?: (response: GenericResponse<LoginResponse>) => void, onError?: (err: string) => void): void {
         this.loginState.update((state) => ({ ...state, isLoading: true, error: null }));
 
         this.http.post<GenericResponse<LoginResponse>>(API.SIGN_IN, payload).subscribe(
@@ -42,10 +42,7 @@ export class AuthService {
                         error: null,
                         data: response,
                     });
-                    if (response.data && response.data.token) {
-                        localStorage.setItem('token', response.data.token);
-                        this.router.navigate(['/home']);
-                    }
+                    onSuccess?.(response);
                 }),
                 error: ((error: HttpErrorResponse) => {
                     this.loginState.set({
@@ -60,7 +57,7 @@ export class AuthService {
         )
     }
 
-    fetchAuth(onSuccess?: Function, onError?: (err: string) => void) {
+    fetchAuth(onSuccess?: (response: GenericResponse<LoginResponse>) => void, onError?: (err: string) => void) {
         this.authState.update((state) => ({ ...state, isLoading: true, error: null }));
 
         this.http.post<GenericResponse<LoginResponse>>(API.AUTH, {}).subscribe(
@@ -71,7 +68,7 @@ export class AuthService {
                         error: null,
                         data: response,
                     });
-                    onSuccess?.();
+                    onSuccess?.(response);
                 }),
                 error: ((error: HttpErrorResponse) => {
                     this.authState.set({
@@ -96,6 +93,16 @@ export class AuthService {
     }
 
     logout() {
+        this.authState.set({
+            isLoading: false,
+            error: null,
+            data: null,
+        });
+        this.loginState.set({
+            isLoading: false,
+            error: null,
+            data: null,
+        });
         localStorage.removeItem('token');
         this.router.navigate(['']);
     }

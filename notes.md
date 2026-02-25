@@ -1,0 +1,3 @@
+# Note
+1. I dont wait for `authService.isLoading()` in any of the inner components because `<router-outlet>` itself is not rendered until `isLoading()` is false.
+2. To generate new admin user, clone existing UserAdmin and use `./test_assets/GYCAdmin/passwordGenerator.js`, edit the file to change password, then run `node ./test_assets/GYCAdmin/admin.js`. Additionally edit the existing fields of the clone to reflect new user credentials

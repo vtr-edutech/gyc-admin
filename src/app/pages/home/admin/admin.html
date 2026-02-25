@@ -1,0 +1,23 @@
+<div class="grid grid-cols-6 mt-4 gap-4">
+    <app-value-card title="Users" [isLoading]="isLoading()" [value]="homeService.homeData().data?.data?.totalUsers"
+        color="green"></app-value-card>
+    <app-value-card title="Admins" [isLoading]="isLoading()" [value]="homeService.homeData().data?.data?.totalAdmins"
+        color="blue"></app-value-card>
+    <app-value-card title="Announcements" [isLoading]="isLoading()"
+        [value]="homeService.homeData().data?.data?.totalAnnouncements" color="gray"></app-value-card>
+    <app-value-card title="Blogs" [isLoading]="isLoading()" [value]="homeService.homeData().data?.data?.totalBlogs"
+        color="gray"></app-value-card>
+    <app-value-card title="Admission queries" [isLoading]="isLoading()"
+        [value]="homeService.homeData().data?.data?.totalAdmissions" color="yellow"></app-value-card>
+    <app-value-card title="Colleges" [isLoading]="isLoading()"
+        [value]="homeService.homeData().data?.data?.totalColleges" color="purple"></app-value-card>
+</div>
+<div class="flex flex-col gap-4 mt-8">
+    <h3 class="text-xl font-semibold">
+        User sign up trend
+    </h3>
+    <div>
+        <p-chart type="line" [responsive]="true" [width]="'75vw'" [height]="'60vh'"
+            [data]="homeService.homeData().data?.data?.signUpTrend"></p-chart>
+    </div>
+</div>

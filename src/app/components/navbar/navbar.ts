@@ -22,27 +22,44 @@ export class Navbar {
     {
       label: 'Home',
       path: '/home',
-      icon: "pi pi-home"
+      icon: "pi pi-home",
+      accessRoles: ["admin", "superadmin", "telecaller"]
     },
     {
       label: 'Users',
       path: '/users',
-      icon: "pi pi-users"
+      icon: "pi pi-users",
+      accessRoles: ["admin", "superadmin"]
     },
     {
       label: 'Announcements',
       path: '/announcements',
-      icon: "pi pi-bell"
+      icon: "pi pi-bell",
+      accessRoles: ["admin", "superadmin"]
     },
     {
       label: 'Blogs',
       path: '/blogs',
-      icon: "pi pi-book"
+      icon: "pi pi-book",
+      accessRoles: ["admin", "superadmin"]
     },
     {
       label: 'Bookings',
       path: '/bookings',
-      icon: "pi pi-calendar"
+      icon: "pi pi-calendar",
+      accessRoles: ["admin", "superadmin", "telecaller"]
+    },
+    {
+      label: "Telecaller",
+      path: "/telecaller",
+      icon: "pi pi-user",
+      accessRoles: ["admin", "superadmin"]
     },
   ]
+
+  roleFilteredNavLinks = computed(() => {
+    const role = this.authService.authState().data?.data?.role;
+    if (!role) return [];
+    return this.NAV_LINKS.filter((link) => link.accessRoles.includes(role));
+  })
 }

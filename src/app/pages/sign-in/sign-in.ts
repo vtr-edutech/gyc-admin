@@ -26,7 +26,12 @@ export class SignIn {
   onSubmit() {
     if (this.signInForm.valid) {
       const { username, password } = this.signInForm.value;
-      this.authService.login({ userName: username, password });
+      this.authService.login({ userName: username, password }, response => {
+        if (response.data && response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          this.router.navigate(['/home']);
+        }
+      });
     } else {
       this.signInForm.markAllAsTouched();
     }
