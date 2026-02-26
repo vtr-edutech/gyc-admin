@@ -18,5 +18,5 @@ export const API = {
     DELETE_BLOG: (id: string) => API_URL + '/admin/blogs/' + id + '/delete',
     HOME: API_URL + '/admin/dashboard',
     GET_SLOT_BOOKINGS: API_URL + '/admin/slot-bookings',
-    UPDATE_SLOT_BOOKING: (id: string) => API_URL + '/admin/slot-bookings/' + id + '/edit',
+    MARK_ATTENDANCE_SLOT_BOOKING: (id: string) => API_URL + '/admin/slot-bookings/' + id + '/attendance',
 };

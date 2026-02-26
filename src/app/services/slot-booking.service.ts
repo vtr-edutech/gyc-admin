@@ -14,7 +14,7 @@ export class SlotBookingService {
     data: null,
   });
 
-  createSlotBookingMeta: WritableSignal<FetchState<SlotBooking>> = signal<FetchState<SlotBooking>>({
+  markAttendanceSlotBookingMeta: WritableSignal<FetchState<SlotBooking>> = signal<FetchState<SlotBooking>>({
     isLoading: false,
     error: null,
     data: null,
@@ -42,8 +42,8 @@ export class SlotBookingService {
               index: (page - 1) * limit + i + 1,
               attendedBy: booking.attendedBy ? {
                 ...booking.attendedBy,
-                updatedAt: formatDates(booking.attendedBy.attendedAt)
               } : null,
+              attendedAt: formatDates(booking.attendedAt),
               createdAt: formatDates(booking.createdAt, true),
               updatedAt: formatDates(booking.updatedAt, true)
             })) || []
@@ -62,16 +62,16 @@ export class SlotBookingService {
   }
 
 
-  updateSlotBooking(id: string, onSuccess?: Function, onError?: ErrorFnCallback) {
-    this.createSlotBookingMeta.set({ isLoading: true, error: null, data: null });
-    this.http.post<GenericResponse<SlotBooking>>(API.UPDATE_SLOT_BOOKING(id), {}).subscribe({
+  markAttendanceSlotBooking(id: string, onSuccess?: Function, onError?: ErrorFnCallback) {
+    this.markAttendanceSlotBookingMeta.set({ isLoading: true, error: null, data: null });
+    this.http.post<GenericResponse<SlotBooking>>(API.MARK_ATTENDANCE_SLOT_BOOKING(id), {}).subscribe({
       next: (response) => {
-        this.createSlotBookingMeta.set({ isLoading: false, error: null, data: response });
+        this.markAttendanceSlotBookingMeta.set({ isLoading: false, error: null, data: response });
         this.fetchSlotBookings();
         onSuccess?.();
       },
       error: (error: HttpErrorResponse) => {
-        this.createSlotBookingMeta.set({ isLoading: false, error: getErrorMessage(error), data: null });
+        this.markAttendanceSlotBookingMeta.set({ isLoading: false, error: getErrorMessage(error), data: null });
         onError?.(getErrorMessage(error));
       }
     });

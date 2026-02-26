@@ -49,7 +49,7 @@ export class AdminBookings {
   }
 
   markAsAttended(id: string) {
-    this.slotBookingService.updateSlotBooking(id, () => {
+    this.slotBookingService.markAttendanceSlotBooking(id, () => {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Booking marked as attended successfully' });
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });

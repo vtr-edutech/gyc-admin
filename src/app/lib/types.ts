@@ -128,7 +128,6 @@ export interface SlotBooking extends Timestamps {
     attendedBy: {
         _id: string;
         name: string;
-        attendedAt: string;
     } & MongooseSchema | null,
     attendedAt: string,
 }

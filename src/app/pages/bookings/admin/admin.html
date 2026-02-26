@@ -72,9 +72,15 @@
                     <div class="flex gap-2">
                         @if (!rowData.attendedBy) {
                         <p-button [label]="'Mark as attended'" icon="pi pi-check" size="small" [severity]="'success'"
-                            [outlined]="true" [disabled]="slotBookingService.createSlotBookingMeta().isLoading"
+                            [outlined]="true" [disabled]="slotBookingService.markAttendanceSlotBookingMeta().isLoading"
                             (onClick)="confirmMarkAsAttended($event, rowData._id)" />
                         <p-confirmpopup />
+                        } @else {
+                        <div class="flex flex-col gap-2">
+                            <p-button disabled label="Already attended" icon="pi pi-check" size="small"
+                                [severity]="'success'" [outlined]="true" />
+                            <span class="text-sm">{{ rowData.attendedAt }} by {{ rowData.attendedBy?.name }}</span>
+                        </div>
                         }
                     </div>
                 </td>
