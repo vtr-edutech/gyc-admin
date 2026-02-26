@@ -82,16 +82,13 @@ export class AuthService {
                         data: null,
                     });
                     if (error.status === 401) {
-
                         localStorage.removeItem('token');
                         if (this.router.url !== "/") {
                             this.router.navigate(['']);
                         }
-                        onError?.('Please sign in again');
-                        return of(null);
+                        onError?.(error.error.error);
                     }
                     onError?.(getErrorMessage(error));
-                    return of(null);
                 })
             }
         )

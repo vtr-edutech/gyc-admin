@@ -44,8 +44,8 @@ export class SlotBookingService {
                 ...booking.attendedBy,
                 updatedAt: formatDates(booking.attendedBy.attendedAt)
               } : null,
-              createdAt: formatDates(booking.createdAt),
-              updatedAt: formatDates(booking.updatedAt)
+              createdAt: formatDates(booking.createdAt, true),
+              updatedAt: formatDates(booking.updatedAt, true)
             })) || []
           }
         });
