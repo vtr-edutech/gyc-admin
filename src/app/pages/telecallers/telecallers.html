@@ -1,0 +1,80 @@
+<div class="flex flex-col gap-3">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-semibold">Telecallers</h1>
+            <p>View and manage all telecallers</p>
+        </div>
+    </div>
+    <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+        [lazy]="true" (onLazyLoad)="loadTelecallers($event)"
+        [totalRecords]="this.telecallerService.telecallers().data?.totalDocs || 0"
+        [value]="this.telecallerService.telecallers().data?.data || []" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template #header>
+            <tr>
+                <th class="w-[80px]">
+                    S.No.
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Username
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Mobile
+                </th>
+                <th>
+                    Created At
+                </th>
+            </tr>
+        </ng-template>
+        @if (this.telecallerService.telecallers().isLoading) {
+        <ng-template #body let-rowData>
+            <tr>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+                <td><p-skeleton height="1.5rem" /></td>
+            </tr>
+        </ng-template>
+        }
+        @else {
+        <ng-template #body let-rowData>
+            <tr>
+                <td>
+                    {{ rowData.index }}
+                </td>
+                <td>
+                    {{ rowData.name }}
+                </td>
+                <td>
+                    {{ rowData.username }}
+                </td>
+                <td>
+                    {{ rowData.email }}
+                </td>
+                <td>
+                    {{ rowData.mobile }}
+                </td>
+                <td>
+                    {{ rowData.createdAt }}
+                </td>
+            </tr>
+        </ng-template>
+        }
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="6" class="text-center">
+                    <div class="w-full grid content-center">
+                        <p class="text-lg font-semibold">No Bookings Found</p>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

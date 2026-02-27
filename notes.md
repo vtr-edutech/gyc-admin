@@ -1,3 +1,4 @@
 # Note
 1. I dont wait for `authService.isLoading()` in any of the inner components because `<router-outlet>` itself is not rendered until `isLoading()` is false.
 2. To generate new admin user, clone existing UserAdmin and use `./test_assets/GYCAdmin/passwordGenerator.js`, edit the file to change password, then run `node ./test_assets/GYCAdmin/admin.js`. Additionally edit the existing fields of the clone to reflect new user credentials
+3. `telecaller.service.ts` may use `AdminUser` type, but it is used with a generic mentioning the role, hence the `AdminUser` type is really just a general way of stating the shape of an admin user object, wherein admin user is the one who is capable of using GYC Admin web app, but need appropriate permissions themselves to do certain operations.

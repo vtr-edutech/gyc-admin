@@ -25,11 +25,21 @@ export interface LoginPayload {
     password: string;
 }
 
+export interface CreateTelecallerPayload {
+    name: string;
+    userName: string;
+    email: string;
+    mobile: string;
+    password: string;
+}
+
+type AdminUserRoles = "admin" | "superadmin" | "telecaller" | "editor"
+
 export interface LoginResponse {
     token: string;
     userName: string;
     name: string;
-    role: "admin" | "superadmin" | "telecaller" | "editor";
+    role: AdminUserRoles;
     id: string;
 }
 
@@ -130,4 +140,14 @@ export interface SlotBooking extends Timestamps {
         name: string;
     } & MongooseSchema | null,
     attendedAt: string,
+}
+
+export interface AdminUser<T = AdminUserRoles> extends Timestamps {
+    name: string;
+    username: string;
+    mobile: string;
+    email: string;
+    role: T;
+    createdAt: string;
+    updatedAt: string;
 }

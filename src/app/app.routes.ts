@@ -51,6 +51,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/bookings/bookings').then((m) => m.Bookings),
         title: 'Bookings - GYC Admin',
       },
+      {
+        path: 'telecallers',
+        loadComponent: () => import('./pages/telecallers/telecallers').then((m) => m.Telecallers),
+        title: 'Telecallers - GYC Admin',
+      },
     ],
   },
   {

@@ -51,7 +51,7 @@ export class Navbar {
     },
     {
       label: "Telecaller",
-      path: "/telecaller",
+      path: "/telecallers",
       icon: "pi pi-user",
       accessRoles: ["admin", "superadmin"]
     },
