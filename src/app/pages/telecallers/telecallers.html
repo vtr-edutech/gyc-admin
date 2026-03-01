@@ -4,6 +4,7 @@
             <h1 class="text-3xl font-semibold">Telecallers</h1>
             <p>View and manage all telecallers</p>
         </div>
+        <p-button icon="pi pi-plus-circle" (onClick)="openTelecallerForm('new')">Create new telecaller</p-button>
     </div>
     <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
         [lazy]="true" (onLazyLoad)="loadTelecallers($event)"
@@ -78,3 +79,56 @@
         </ng-template>
     </p-table>
 </div>
+
+<p-dialog [(visible)]="isTelecallerModalOpen" [modal]="true"
+    [header]="isEdit ? 'Edit Telecaller data' : 'Create New Telecaller'">
+    <form #createTelecallerForm="ngForm" class="flex flex-col gap-3">
+        <input type="hidden" name="_id" ngModel #id="ngModel">
+        <div class="flex flex-col gap-2">
+            <label for="name" class="font-semibold">Name</label>
+            <input id="name" type="text" name="name" ngModel required #name="ngModel" placeholder="Provide a name..."
+                pInputText class="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': name.invalid && (name.dirty || name.touched)}" />
+            @if (name.invalid && (name.dirty || name.touched)) {
+            <small class="text-red-500">Name is required.</small>
+            }
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="username" class="font-semibold">Username</label>
+            <input id="username" type="text" name="userName" ngModel required #userName="ngModel"
+                placeholder="Provide a username..." pInputText class="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': userName.invalid && (userName.dirty || userName.touched)}" />
+            @if (userName.invalid && (userName.dirty || userName.touched)) {
+            <small class="text-red-500">Username is required.</small>
+            }
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="email" class="font-semibold">Email</label>
+            <input id="email" type="text" type="email" ngModel required #email="ngModel"
+                placeholder="Provide an email..." pInputText class="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': email.invalid && (email.dirty || email.touched)}" />
+            @if (email.invalid && (email.dirty || email.touched)) {
+            <small class="text-red-500">Email is required.</small>
+            }
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="mobile" class="font-semibold">Mobile</label>
+            <input id="mobile" type="text" type="text" ngModel required #mobile="ngModel"
+                placeholder="Provide an mobile..." pInputText class="w-full" pattern=""
+                [ngClass]="{'ng-invalid ng-dirty': mobile.invalid && (mobile.dirty || mobile.touched)}" />
+            @if (mobile.invalid && (mobile.dirty || mobile.touched)) {
+            <small class="text-red-500">Mobile is required.</small>
+            }
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+            <p-button [label]="'Cancel'" size="small"
+                [disabled]="telecallerService.createTelecallerUserMeta().isLoading" [outlined]="true"
+                (onClick)="isTelecallerModalOpen = false; isEdit = false" />
+            <p-button [label]="isEdit ? 'Update' : 'Create'" size="small"
+                [disabled]="createTelecallerForm.invalid || telecallerService.createTelecallerUserMeta().isLoading"
+                (onClick)="isEdit ? updateTelecaller(createTelecallerForm) : createTelecaller(createTelecallerForm)" />
+        </div>
+    </form>
+</p-dialog>
+
+<p-toast />
