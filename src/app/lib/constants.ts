@@ -20,5 +20,6 @@ export const API = {
     GET_SLOT_BOOKINGS: API_URL + '/admin/slot-bookings',
     MARK_ATTENDANCE_SLOT_BOOKING: (id: string) => API_URL + '/admin/slot-bookings/' + id + '/attendance',
     GET_TELECALLERS: API_URL + '/admin/telecallers',
-    CREATE_TELECALLER: API_URL + '/admin/telecallers/new'
+    CREATE_TELECALLER: API_URL + '/admin/telecallers/new',
+    UPDATE_TELECALLER: (id: string) => API_URL + '/admin/telecallers/' + id + '/edit',
 };

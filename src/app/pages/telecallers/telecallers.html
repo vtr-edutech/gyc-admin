@@ -31,11 +31,15 @@
                 <th>
                     Created At
                 </th>
+                <th>
+                    Actions
+                </th>
             </tr>
         </ng-template>
         @if (this.telecallerService.telecallers().isLoading) {
         <ng-template #body let-rowData>
             <tr>
+                <td><p-skeleton height="1.5rem" /></td>
                 <td><p-skeleton height="1.5rem" /></td>
                 <td><p-skeleton height="1.5rem" /></td>
                 <td><p-skeleton height="1.5rem" /></td>
@@ -66,6 +70,10 @@
                 <td>
                     {{ rowData.createdAt }}
                 </td>
+                <td>
+                    <p-button icon="pi pi-pencil" variant="outlined" label="Edit" [size]="'small'"
+                        (onClick)="toggleTelecallerForm(true, 'edit', rowData)" />
+                </td>
             </tr>
         </ng-template>
         }
@@ -81,9 +89,9 @@
     </p-table>
 </div>
 
-<p-dialog [(visible)]="isTelecallerModalOpen" [modal]="true" [style]="{ width: '80%' }"
-    [header]="isEdit ? 'Edit Telecaller data' : 'Create New Telecaller'">
-    <form #createTelecallerForm="ngForm" class="flex flex-col gap-3">
+<p-dialog [(visible)]="modalControls.isTelecallerModalOpen" [modal]="true" [style]="{ width: '80%' }"
+    [header]="modalControls.isEdit ? 'Edit Telecaller data' : 'Create New Telecaller'">
+    <form #telecallerForm="ngForm" class="flex flex-col gap-3">
         <input type="hidden" name="_id" ngModel #id="ngModel">
         <div class="flex flex-col gap-2">
             <label for="name" class="font-semibold">Name</label>
@@ -127,8 +135,8 @@
             <p-password fluid="true" id="password" type="password" name="password" [toggleMask]="true"
                 [feedback]="false" ngModel required #password="ngModel" placeholder="Provide a password..."
                 class="w-full"
-                [ngClass]="{'ng-invalid ng-dirty': password.invalid && (password.dirty || password.touched)}" />
-            @if (password.invalid && (password.dirty || password.touched)) {
+                [ngClass]="{'ng-invalid ng-dirty': password.value?.trim() !== '' && password.invalid && (password.dirty || password.touched)}" />
+            @if (password.value?.trim() !== '' && password.invalid && (password.dirty || password.touched)) {
             <small class="text-red-500">Password is required.</small>
             }
         </div>
@@ -137,9 +145,10 @@
             <p-password fluid="true" id="mobile" type="password" name="confirmPassword" [toggleMask]="true"
                 [feedback]="false" required placeholder="Confirm password..." class="w-full" #confirmPassword="ngModel"
                 ngModel
-                [ngClass]="{'ng-invalid ng-dirty': confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)}" />
-            @if (confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)) {
-            @if (password.value !== confirmPassword.value) {
+                [ngClass]="{'ng-invalid ng-dirty': confirmPassword.value !== '' && confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)}" />
+            @if (confirmPassword.value?.trim() !== '' && confirmPassword.invalid && (confirmPassword.dirty ||
+            confirmPassword.touched)) {
+            @if (password.value?.trim() !== confirmPassword.value) {
             <small class="text-red-500">Passwords do not match.</small>
             } @else {
             <small class="text-red-500">Confirm password is required.</small>
@@ -150,9 +159,9 @@
             <p-button [label]="'Cancel'" size="small"
                 [disabled]="telecallerService.createTelecallerUserMeta().isLoading" [outlined]="true"
                 (onClick)="toggleTelecallerForm(false, 'new')" />
-            <p-button [label]="isEdit ? 'Update' : 'Create'" size="small"
-                [disabled]="createTelecallerForm.invalid || telecallerService.createTelecallerUserMeta().isLoading"
-                (onClick)="isEdit ? updateTelecaller(createTelecallerForm) : createTelecaller(createTelecallerForm)" />
+            <p-button [label]="modalControls.isEdit ? 'Update' : 'Create'" size="small"
+                [disabled]="(!modalControls.isEdit && telecallerForm.invalid) || telecallerService.createTelecallerUserMeta().isLoading"
+                (onClick)="modalControls.isEdit ? updateTelecaller(telecallerForm) : createTelecaller(telecallerForm)" />
         </div>
     </form>
 </p-dialog>

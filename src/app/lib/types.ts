@@ -145,8 +145,8 @@ export interface SlotBooking extends Timestamps {
 export interface AdminUser<T = AdminUserRoles> extends Timestamps {
     name: string;
     username: string;
-    mobile: string;
-    email: string;
+    mobile?: string;
+    email?: string;
     role: T;
     createdAt: string;
     updatedAt: string;

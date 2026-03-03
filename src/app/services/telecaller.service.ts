@@ -70,4 +70,19 @@ export class TelecallerService {
             }
         });
     }
+
+    updateTelecaller(id: string, data: CreateTelecallerPayload, onSuccess?: Function, onError?: ErrorFnCallback): void {
+        this.createTelecallerUserMeta.set({ isLoading: true, error: null, data: null });
+        this.http.post<GenericResponse<AdminUser<"telecaller">>>(API.UPDATE_TELECALLER(id), data).subscribe({
+            next: (response) => {
+                this.createTelecallerUserMeta.set({ isLoading: false, error: null, data: response });
+                this.fetchTelecaller();
+                onSuccess?.();
+            },
+            error: (error: HttpErrorResponse) => {
+                this.createTelecallerUserMeta.set({ isLoading: false, error: getErrorMessage(error), data: null });
+                onError?.(getErrorMessage(error));
+            }
+        });
+    }
 }
