@@ -6,10 +6,11 @@ import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
+import { Password } from "primeng/password";
 
 @Component({
   selector: 'app-sign-in',
-  imports: [CardModule, FloatLabel, InputText, Button, ReactiveFormsModule],
+  imports: [CardModule, FloatLabel, InputText, Button, ReactiveFormsModule, Password],
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.css',
 })

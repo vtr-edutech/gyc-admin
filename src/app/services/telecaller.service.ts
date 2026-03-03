@@ -58,7 +58,7 @@ export class TelecallerService {
 
     createTelecaller(data: CreateTelecallerPayload, onSuccess?: Function, onError?: ErrorFnCallback): void {
         this.createTelecallerUserMeta.set({ isLoading: true, error: null, data: null });
-        this.http.post<GenericResponse<AdminUser<"telecaller">>>(API.CREATE_ANNOUNCEMENT, data).subscribe({
+        this.http.post<GenericResponse<AdminUser<"telecaller">>>(API.CREATE_TELECALLER, data).subscribe({
             next: (response) => {
                 this.createTelecallerUserMeta.set({ isLoading: false, error: null, data: response });
                 this.fetchTelecaller();

@@ -1,18 +1,19 @@
+import { NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Button } from "primeng/button";
 import { Dialog } from "primeng/dialog";
-import { InputText } from "primeng/inputtext";
+import { PasswordModule } from 'primeng/password';
 import { Skeleton } from "primeng/skeleton";
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Toast } from "primeng/toast";
 import { TelecallerService } from '../../services/telecaller.service';
-import { NgClass } from '@angular/common';
+import { InputText } from "primeng/inputtext";
 
 @Component({
   selector: 'app-telecallers',
-  imports: [TableModule, Skeleton, Dialog, Toast, FormsModule, NgClass, Button, InputText],
+  imports: [TableModule, Skeleton, Dialog, Toast, FormsModule, NgClass, Button, PasswordModule, InputText],
   templateUrl: './telecallers.html',
   styleUrl: './telecallers.css',
 })
@@ -31,8 +32,8 @@ export class Telecallers {
     });
   }
 
-  openTelecallerForm(mode: "edit" | "new") {
-    this.isTelecallerModalOpen = true;
+  toggleTelecallerForm(toggle: boolean, mode: "edit" | "new") {
+    this.isTelecallerModalOpen = toggle;
     this.isEdit = mode === "edit";
   }
 
