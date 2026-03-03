@@ -130,6 +130,7 @@
             <small class="text-red-500">Mobile is required.</small>
             }
         </div>
+        @if (!modalControls.isEdit) {
         <div class="flex flex-col gap-2">
             <label for="password" class="font-semibold">Password</label>
             <p-password fluid="true" id="password" type="password" name="password" [toggleMask]="true"
@@ -155,6 +156,7 @@
             }
             }
         </div>
+        }
         <div class="flex justify-end gap-2 mt-4">
             <p-button [label]="'Cancel'" size="small"
                 [disabled]="telecallerService.createTelecallerUserMeta().isLoading" [outlined]="true"
