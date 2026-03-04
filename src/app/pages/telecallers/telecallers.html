@@ -4,8 +4,12 @@
             <h1 class="text-3xl font-semibold">Telecallers</h1>
             <p>View and manage all telecallers</p>
         </div>
-        <p-button icon="pi pi-plus" class="my-5" [size]="'small'" (onClick)="toggleTelecallerForm(true, 'new')" label="Create
-            new telecaller" />
+        <div class="flex gap-3">
+            <p-button icon="pi pi-plus" [size]="'small'" (onClick)="toggleTelecallerForm(true, 'new')" label="Create
+                new telecaller" />
+            <p-button icon="pi pi-calendar" [size]="'small'" routerLink="/telecallers/bookings"
+                label="Manage bookings" />
+        </div>
     </div>
     <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
         [lazy]="true" (onLazyLoad)="loadTelecallers($event)"
@@ -93,7 +97,7 @@
     [header]="modalControls.isEdit ? 'Edit Telecaller data' : 'Create New Telecaller'">
     <form #telecallerForm="ngForm" class="flex flex-col gap-3">
         <input type="hidden" name="_id" ngModel #id="ngModel">
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-1">
             <label for="name" class="font-semibold">Name</label>
             <input id="name" type="text" name="name" ngModel required #name="ngModel" placeholder="Provide a name..."
                 pInputText fluid="true" class="w-full"
@@ -102,7 +106,7 @@
             <small class="text-red-500">Name is required.</small>
             }
         </div>
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-1">
             <label for="username" class="font-semibold">Username</label>
             <input id="username" type="text" name="userName" ngModel required #userName="ngModel"
                 placeholder="Provide a username..." pInputText class="w-full"
@@ -111,27 +115,38 @@
             <small class="text-red-500">Username is required.</small>
             }
         </div>
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-1">
             <label for="email" class="font-semibold">Email</label>
             <input id="email" type="text" type="email" name="email" ngModel required #email="ngModel"
                 placeholder="Provide an email..." pInputText class="w-full"
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                 [ngClass]="{'ng-invalid ng-dirty': email.invalid && (email.dirty || email.touched)}" />
             @if (email.invalid && (email.dirty || email.touched)) {
+            @if (email.value?.trim() === '') {
             <small class="text-red-500">Email is required.</small>
             }
+            @if (email.value?.trim() !== '' && email.invalid) {
+            <small class="text-red-500">Email is invalid.</small>
+            }
+            }
         </div>
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-1">
             <label for="mobile" class="font-semibold">Mobile</label>
             <input id="mobile" type="text" name="mobile" ngModel #mobile="ngModel"
                 placeholder="Provide mobile number..." pInputText class="w-full" pattern="[6-9][0-9]{9}" minlength="10"
                 maxlength="10"
                 [ngClass]="{'ng-invalid ng-dirty': mobile.invalid && (mobile.dirty || mobile.touched)}" />
             @if (mobile.invalid && (mobile.dirty || mobile.touched)) {
-            <small class="text-red-500">Mobile is required.</small>
+            @if (mobile.value?.trim() === '') {
+            <small class="text-red-500">Mobile number is required.</small>
+            }
+            @if (mobile.value?.trim() !== '' && mobile.invalid) {
+            <small class="text-red-500">Mobile number is invalid.</small>
+            }
             }
         </div>
         @if (!modalControls.isEdit) {
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-1">
             <label for="password" class="font-semibold">Password</label>
             <p-password fluid="true" id="password" type="password" name="password" [toggleMask]="true"
                 [feedback]="false" ngModel required #password="ngModel" placeholder="Provide a password..."
@@ -141,7 +156,7 @@
             <small class="text-red-500">Password is required.</small>
             }
         </div>
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-1">
             <label for="mobile" class="font-semibold">Confirm password</label>
             <p-password fluid="true" id="mobile" type="password" name="confirmPassword" [toggleMask]="true"
                 [feedback]="false" required placeholder="Confirm password..." class="w-full" #confirmPassword="ngModel"

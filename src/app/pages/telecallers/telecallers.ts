@@ -11,6 +11,7 @@ import { Toast } from "primeng/toast";
 import { TelecallerService } from '../../services/telecaller.service';
 import { InputText } from "primeng/inputtext";
 import { AdminUser } from '../../lib/types';
+import { RouterLink } from "@angular/router";
 
 type TModalControls = {
   isTelecallerModalOpen: boolean;
@@ -20,7 +21,7 @@ type TModalControls = {
 
 @Component({
   selector: 'app-telecallers',
-  imports: [TableModule, Skeleton, Dialog, Toast, FormsModule, NgClass, Button, PasswordModule, InputText],
+  imports: [TableModule, Skeleton, Dialog, Toast, FormsModule, NgClass, Button, PasswordModule, InputText, RouterLink],
   templateUrl: './telecallers.html',
   styleUrl: './telecallers.css',
 })
