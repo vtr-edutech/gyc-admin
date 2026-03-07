@@ -151,3 +151,38 @@ export interface AdminUser<T = AdminUserRoles> extends Timestamps {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface TelecallerAssignment extends Timestamps {
+    refNo: string,
+    studentName: string,
+    parentName: string,
+    mobile: string,
+    alternateMobile: string,
+    email: string,
+    school: string,
+    subjects: string[],
+    dataValidationStatus: "correct" | "incorrect" | "partial",
+    dataStatus: string,
+    board: string,
+    schoolType: string,
+    firstGraduate: boolean,
+    community: string,
+    area: string,
+    district: string,
+    domainInterest: string,
+    courseInterest: string,
+    remarks: string,
+    fatherOccupation: string,
+    assignedTo: AdminUser<"telecaller"> | null,
+    assignedAt: string,
+    admissionComplete: boolean,
+}
+
+export interface TelecallerServiceHistory extends Timestamps {
+    college: string,
+    remarks: string,
+    calledDate: string,
+    followUpDate: string,
+    attendedBy: AdminUser<"telecaller"> | null,
+    attendedAt: string
+}

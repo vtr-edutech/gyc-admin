@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Button } from "primeng/button";
 
 @Component({
   selector: 'app-telecaller-bookings',
-  imports: [],
+  imports: [Button],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
 })
