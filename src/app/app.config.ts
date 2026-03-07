@@ -5,6 +5,18 @@ import { providePrimeNG } from 'primeng/config';
 import Lara from '@primeuix/themes/lara';
 import { routes } from './app.routes';
 import { authTokenInterceptor } from './interceptors/auth-token-interceptor';
+import {
+  HOT_GLOBAL_CONFIG,
+  HotGlobalConfig,
+  NON_COMMERCIAL_LICENSE,
+} from "@handsontable/angular-wrapper";
+
+const globalHotConfig: HotGlobalConfig = {
+  license: NON_COMMERCIAL_LICENSE,
+  layoutDirection: "ltr",
+  language: "en",
+  themeName: "ht-theme-main",
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,5 +32,6 @@ export const appConfig: ApplicationConfig = {
       },
       ripple: true,
     }),
+    { provide: HOT_GLOBAL_CONFIG, useValue: globalHotConfig },
   ],
 };

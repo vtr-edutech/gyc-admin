@@ -1,10 +1,11 @@
 <div class="flex justify-between items-center">
-    <div>
-        <h1 class="text-3xl font-semibold">Telecaller Bookings</h1>
-        <p>View and manage all telecaller bookings</p>
-    </div>
-    <div class="flex gap-3">
-        <p-button icon="pi pi-plus" [size]="'small'" label="Create
-                new booking" />
-    </div>
+  <div>
+    <h1 class="text-3xl font-semibold">Telecaller Bookings</h1>
+    <p>View and manage all telecaller bookings</p>
+  </div>
+  <div class="flex gap-3">
+    <p-button icon="pi pi-plus" [size]="'small'" label="Create new booking" />
+  </div>
 </div>
+
+<hot-table [data]="data" [settings]="gridSettings"> </hot-table>

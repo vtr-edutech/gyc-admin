@@ -4,6 +4,10 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { LoadingOverlay } from "./components/loading-overlay/loading-overlay";
 import { AuthService } from './services/auth.service';
+import Handsontable from "handsontable/base";
+import { registerAllModules } from "handsontable/registry";
+
+registerAllModules();
 
 @Component({
   selector: 'app-root',
