@@ -18,7 +18,7 @@ export class TelecallerBookingService {
 
   private http = inject(HttpClient);
 
-  fetchTelecallerBookings(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
+  fetchTelecallerBookings(page: number = 1, limit: number = 50, onError?: ErrorFnCallback): void {
     this.telecallerBookings.set({
       isLoading: true,
       error: null,

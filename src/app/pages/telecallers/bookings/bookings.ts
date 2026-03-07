@@ -34,8 +34,6 @@ export class TelecallerBookings implements OnInit {
   rowHeaders = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
   gridSettings: GridSettings = {
-    width: 600,
-    height: 300,
     stretchH: 'all',
     colHeaders: this.colHeaders,
     rowHeaders: this.rowHeaders,
