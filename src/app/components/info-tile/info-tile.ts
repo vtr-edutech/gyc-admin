@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Skeleton } from "primeng/skeleton";
+import { Skeleton } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-info-tile',

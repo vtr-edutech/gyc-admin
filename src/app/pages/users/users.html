@@ -1,105 +1,155 @@
 <div class="flex justify-between">
-    <div class="flex flex-col gap-1">
-        <h1 class="text-3xl font-semibold">Users</h1>
-        <p>View all users of Get Your College</p>
-    </div>
-    <div class="flex gap-2 items-center">
-        <p-datepicker placeholder="Select start and end dates" [(ngModel)]="downloadModel" [showIcon]="true"
-            selectionMode="range" size="small" showClear="true" />
-        <p-button label="Download" icon="pi pi-download" severity="primary" size="small" (click)="download()" />
-    </div>
+  <div class="flex flex-col gap-1">
+    <h1 class="text-3xl font-semibold">Users</h1>
+    <p>View all users of Get Your College</p>
+  </div>
+  <div class="flex gap-2 items-center">
+    <p-datepicker
+      placeholder="Select start and end dates"
+      [(ngModel)]="downloadModel"
+      [showIcon]="true"
+      selectionMode="range"
+      size="small"
+      showClear="true"
+    />
+    <p-button
+      label="Download"
+      icon="pi pi-download"
+      severity="primary"
+      size="small"
+      (click)="download()"
+    />
+  </div>
 </div>
 <div class="grid py-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-    <app-info-tile title="Total Users" [isLoading]="this.usersService.users().isLoading"
-        [value]="this.usersService.users().data?.totalDocs"></app-info-tile>
+  <app-info-tile
+    title="Total Users"
+    [isLoading]="this.usersService.users().isLoading"
+    [value]="this.usersService.users().data?.totalDocs"
+  ></app-info-tile>
 </div>
 
 <div class="flex gap-2 p-1 items-center">
-    <input type="search" name="name" [(ngModel)]="searchModel.name" id="name" pInputText placeholder="Name"
-        size="small" />
-    <input type="search" name="mobile" [(ngModel)]="searchModel.mobile" id="mobile" pInputText placeholder="Mobile"
-        size="small" />
-    <input type="search" name="email" [(ngModel)]="searchModel.email" id="email" pInputText placeholder="Email"
-        size="small" />
-    <p-datepicker placeholder="Date" [(ngModel)]="searchModel.date" [showIcon]="true" showClear="true" />
-    <p-button label="Search" (click)="search()" icon="pi pi-search" severity="primary" size="small" />
+  <input
+    type="search"
+    name="name"
+    [(ngModel)]="searchModel.name"
+    id="name"
+    pInputText
+    placeholder="Name"
+    size="small"
+  />
+  <input
+    type="search"
+    name="mobile"
+    [(ngModel)]="searchModel.mobile"
+    id="mobile"
+    pInputText
+    placeholder="Mobile"
+    size="small"
+  />
+  <input
+    type="search"
+    name="email"
+    [(ngModel)]="searchModel.email"
+    id="email"
+    pInputText
+    placeholder="Email"
+    size="small"
+  />
+  <p-datepicker
+    placeholder="Date"
+    [(ngModel)]="searchModel.date"
+    [showIcon]="true"
+    showClear="true"
+  />
+  <p-button label="Search" (click)="search()" icon="pi pi-search" severity="primary" size="small" />
 </div>
 
 <div class="flex flex-col gap-3">
-    <p-table #dt [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10"
-        [rowsPerPageOptions]="[10, 25, 50]" [lazy]="true" (onLazyLoad)="loadUsers($event)"
-        [totalRecords]="this.isSearchActive() ? this.usersService.users().data?.totalDocsForFilter || 0 : this.usersService.users().data?.totalDocs || 0"
-        [value]="this.usersService.users().data?.data || []" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template #header>
-            <tr>
-                <th class="w-[80px]">
-                    S.No.
-                </th>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Mobile
-                </th>
-                <th>
-                    District
-                </th>
-                <th>
-                    Created At
-                </th>
-                <th>
-                    Actions
-                </th>
-            </tr>
-        </ng-template>
-        @if (this.usersService.users().isLoading) {
-        <ng-template #body let-rowData>
-            <tr>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-            </tr>
-        </ng-template>
-        }
-        @else {
-        <ng-template #body let-rowData>
-            <tr>
-                <td>
-                    {{ rowData.index }}
-                </td>
-                <td>
-                    {{ rowData.firstName }} {{ rowData.lastName }}
-                </td>
-                <td>
-                    {{ rowData.mobile }}
-                </td>
-                <td>
-                    {{ rowData.district }}
-                </td>
-                <td>
-                    {{ rowData.createdAt}}
-                </td>
-                <td>
-                    <p-button icon="pi pi-eye" [size]="'small'" [variant]="'outlined'"
-                        (click)="toggleUserDetailsModal(rowData)" rounded="true"></p-button>
-                </td>
-            </tr>
-        </ng-template>
-        }
-    </p-table>
+  <p-table
+    #dt
+    [size]="'large'"
+    [stripedRows]="true"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [lazy]="true"
+    (onLazyLoad)="loadUsers($event)"
+    [totalRecords]="
+      this.isSearchActive()
+        ? this.usersService.users().data?.totalDocsForFilter || 0
+        : this.usersService.users().data?.totalDocs || 0
+    "
+    [value]="this.usersService.users().data?.data || []"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="w-[80px]">S.No.</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>District</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    @if (this.usersService.users().isLoading) {
+      <ng-template #body let-rowData>
+        <tr>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+        </tr>
+      </ng-template>
+    } @else {
+      <ng-template #body let-rowData>
+        <tr>
+          <td>
+            {{ rowData.index }}
+          </td>
+          <td>{{ rowData.firstName }} {{ rowData.lastName }}</td>
+          <td>
+            {{ rowData.mobile }}
+          </td>
+          <td>
+            {{ rowData.district }}
+          </td>
+          <td>
+            {{ rowData.createdAt }}
+          </td>
+          <td>
+            <p-button
+              icon="pi pi-eye"
+              [size]="'small'"
+              [variant]="'outlined'"
+              (click)="toggleUserDetailsModal(rowData)"
+              rounded="true"
+            ></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    }
+  </p-table>
 </div>
 
-<p-dialog [visible]="isUserDetailsModalOpen" [modal]="true" [draggable]="false" [resizable]="false"
-    [style]="{ width: '50vw' }" (onHide)="toggleUserDetailsModal(null)">
-    <ng-template #header>
-        <h3>User Details</h3>
-    </ng-template>
-    <ng-template #content>
-        <app-user-details [user]="selectedUser"></app-user-details>
-    </ng-template>
+<p-dialog
+  [visible]="isUserDetailsModalOpen"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '50vw' }"
+  (onHide)="toggleUserDetailsModal(null)"
+>
+  <ng-template #header>
+    <h3>User Details</h3>
+  </ng-template>
+  <ng-template #content>
+    <app-user-details [user]="selectedUser"></app-user-details>
+  </ng-template>
 </p-dialog>
 
 <p-toast></p-toast>

@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
-import { Password } from "primeng/password";
+import { Password } from 'primeng/password';
 
 @Component({
   selector: 'app-sign-in',
@@ -27,7 +27,7 @@ export class SignIn {
   onSubmit() {
     if (this.signInForm.valid) {
       const { username, password } = this.signInForm.value;
-      this.authService.login({ userName: username, password }, response => {
+      this.authService.login({ userName: username, password }, (response) => {
         if (response.data && response.data.token) {
           localStorage.setItem('token', response.data.token);
           this.router.navigate(['/home']);

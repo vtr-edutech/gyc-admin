@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
   templateUrl: './telecaller.html',
   styleUrl: './telecaller.css',
 })
-export class HomeTelecaller {
-
-}
+export class HomeTelecaller {}

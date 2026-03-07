@@ -1,12 +1,10 @@
 <div class="text-gray-500 text-sm font-semibold">{{ title }}</div>
 @if (isLoading) {
-<p-skeleton height="1.5rem" width="5rem" />
-}
-@else {
-@if (value) {
-<div class="text-black text-lg font-normal">{{ value }}</div>
-}
-@else {
-<span class="text-gray-400 italic font-normal">{{ noDataMessage }}</span>
-}
+  <p-skeleton height="1.5rem" width="5rem" />
+} @else {
+  @if (value) {
+    <div class="text-black text-lg font-normal">{{ value }}</div>
+  } @else {
+    <span class="text-gray-400 italic font-normal">{{ noDataMessage }}</span>
+  }
 }

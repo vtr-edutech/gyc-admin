@@ -23,7 +23,8 @@ export const routes: Routes = [
       },
       {
         path: 'announcements',
-        loadComponent: () => import('./pages/notifications/notifications').then((m) => m.Notifications),
+        loadComponent: () =>
+          import('./pages/notifications/notifications').then((m) => m.Notifications),
         title: 'Announcements - GYC Admin',
       },
       {
@@ -58,7 +59,8 @@ export const routes: Routes = [
       },
       {
         path: 'telecallers/bookings',
-        loadComponent: () => import('./pages/telecallers/bookings/bookings').then((m) => m.TelecallerBookings),
+        loadComponent: () =>
+          import('./pages/telecallers/bookings/bookings').then((m) => m.TelecallerBookings),
         title: 'Telecallers Bookings - GYC Admin',
       },
     ],

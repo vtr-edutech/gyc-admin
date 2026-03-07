@@ -1,25 +1,38 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableLazyLoadEvent, TableModule } from "primeng/table";
-import { Skeleton } from "primeng/skeleton";
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { Skeleton } from 'primeng/skeleton';
 import { AnnouncementsService } from '../../services/announcements.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Button } from "primeng/button";
-import { Toast } from "primeng/toast";
-import { Dialog } from "primeng/dialog";
-import { Select } from "primeng/select";
-import { InputText } from "primeng/inputtext";
-import { Textarea } from "primeng/textarea";
-import { DatePicker } from "primeng/datepicker";
+import { Button } from 'primeng/button';
+import { Toast } from 'primeng/toast';
+import { Dialog } from 'primeng/dialog';
+import { Select } from 'primeng/select';
+import { InputText } from 'primeng/inputtext';
+import { Textarea } from 'primeng/textarea';
+import { DatePicker } from 'primeng/datepicker';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ConfirmPopup } from "primeng/confirmpopup";
+import { ConfirmPopup } from 'primeng/confirmpopup';
 
 @Component({
   selector: 'app-notifications',
-  imports: [CommonModule, TableModule, Skeleton, Button, Toast, Dialog, Select, InputText, Textarea, DatePicker, FormsModule, ConfirmPopup],
+  imports: [
+    CommonModule,
+    TableModule,
+    Skeleton,
+    Button,
+    Toast,
+    Dialog,
+    Select,
+    InputText,
+    Textarea,
+    DatePicker,
+    FormsModule,
+    ConfirmPopup,
+  ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',
-  providers: [ConfirmationService]
+  providers: [ConfirmationService],
 })
 export class Notifications {
   announcementsService = inject(AnnouncementsService);
@@ -38,7 +51,7 @@ export class Notifications {
   announcementTypes = [
     { label: 'Engineering', value: 'engg' },
     { label: 'Medical', value: 'medical' },
-    { label: 'JoSAA', value: 'josaa' }
+    { label: 'JoSAA', value: 'josaa' },
   ];
 
   isCreateAnnouncementModalOpen = false;
@@ -47,7 +60,9 @@ export class Notifications {
   openEditAnnouncement(announcementId: string, form: NgForm) {
     this.isCreateAnnouncementModalOpen = true;
     this.isEdit = true;
-    const currentAnnouncement = this.announcementsService.announcements().data?.data?.find((announcement) => announcement._id === announcementId);
+    const currentAnnouncement = this.announcementsService
+      .announcements()
+      .data?.data?.find((announcement) => announcement._id === announcementId);
     if (currentAnnouncement) {
       const startDate = new Date(currentAnnouncement.startDate);
       const endDate = new Date(currentAnnouncement.endDate);
@@ -59,8 +74,8 @@ export class Notifications {
         startDate: startDate,
         endDate: endDate,
         link: currentAnnouncement.link,
-        _id: currentAnnouncement._id
-      }
+        _id: currentAnnouncement._id,
+      };
 
       form.setValue(formValues);
     }
@@ -74,17 +89,25 @@ export class Notifications {
     const payload = {
       ...rest,
       startDate: startDate ? new Date(startDate).toISOString() : undefined,
-      endDate: endDate ? new Date(endDate).toISOString() : undefined
+      endDate: endDate ? new Date(endDate).toISOString() : undefined,
     };
 
-    this.announcementsService.updateAnnouncement(payload, () => {
-      this.isCreateAnnouncementModalOpen = false;
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement updated successfully' });
-      form.reset();
-      form.resetForm();
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
-    });
+    this.announcementsService.updateAnnouncement(
+      payload,
+      () => {
+        this.isCreateAnnouncementModalOpen = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Announcement updated successfully',
+        });
+        form.reset();
+        form.resetForm();
+      },
+      (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+      },
+    );
   }
 
   createAnnouncement(form: NgForm): void {
@@ -95,17 +118,25 @@ export class Notifications {
     const payload = {
       ...rest,
       startDate: startDate ? new Date(startDate).toISOString() : undefined,
-      endDate: endDate ? new Date(endDate).toISOString() : undefined
+      endDate: endDate ? new Date(endDate).toISOString() : undefined,
     };
 
-    this.announcementsService.createAnnouncement(payload, () => {
-      this.isCreateAnnouncementModalOpen = false;
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement created successfully' });
-      form.reset();
-      form.resetForm();
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
-    });
+    this.announcementsService.createAnnouncement(
+      payload,
+      () => {
+        this.isCreateAnnouncementModalOpen = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Announcement created successfully',
+        });
+        form.reset();
+        form.resetForm();
+      },
+      (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+      },
+    );
   }
 
   confirmDelete(event: Event, id: string) {
@@ -116,25 +147,32 @@ export class Notifications {
       rejectButtonProps: {
         label: 'Cancel',
         severity: 'secondary',
-        outlined: true
+        outlined: true,
       },
       acceptButtonProps: {
         label: 'Delete announcement',
-        severity: 'danger'
+        severity: 'danger',
       },
       accept: () => {
         this.deleteAnnouncement(id);
       },
-      reject: () => {
-      }
+      reject: () => {},
     });
   }
 
   deleteAnnouncement(announcementId: string): void {
-    this.announcementsService.deleteAnnouncement(announcementId, () => {
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Announcement deleted successfully' });
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
-    });
+    this.announcementsService.deleteAnnouncement(
+      announcementId,
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Announcement deleted successfully',
+        });
+      },
+      (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+      },
+    );
   }
 }

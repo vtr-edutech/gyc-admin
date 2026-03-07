@@ -1,11 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { LoadingOverlay } from "./components/loading-overlay/loading-overlay";
+import { LoadingOverlay } from './components/loading-overlay/loading-overlay';
 import { AuthService } from './services/auth.service';
-import Handsontable from "handsontable/base";
-import { registerAllModules } from "handsontable/registry";
+import Handsontable from 'handsontable/base';
+import { registerAllModules } from 'handsontable/registry';
 
 registerAllModules();
 
@@ -14,7 +21,7 @@ registerAllModules();
   imports: [RouterOutlet, ToastModule, LoadingOverlay],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  providers: [MessageService]
+  providers: [MessageService],
 })
 export class App {
   isPageLoading = signal(false);
@@ -36,8 +43,7 @@ export class App {
 
   ngOnInit(): void {
     this.authService.fetchAuth(() => {
-      if (this.router.url === '/')
-        this.router.navigate(['/home']);
+      if (this.router.url === '/') this.router.navigate(['/home']);
     });
   }
 }

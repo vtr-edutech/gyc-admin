@@ -1,5 +1,5 @@
 @reference "tailwindcss";
 
 :host {
-    @apply flex flex-col gap-5;
+  @apply flex flex-col gap-5;
 }

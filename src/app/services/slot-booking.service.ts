@@ -14,7 +14,9 @@ export class SlotBookingService {
     data: null,
   });
 
-  markAttendanceSlotBookingMeta: WritableSignal<FetchState<SlotBooking>> = signal<FetchState<SlotBooking>>({
+  markAttendanceSlotBookingMeta: WritableSignal<FetchState<SlotBooking>> = signal<
+    FetchState<SlotBooking>
+  >({
     isLoading: false,
     error: null,
     data: null,
@@ -23,57 +25,75 @@ export class SlotBookingService {
   private http = inject(HttpClient);
 
   fetchSlotBookings(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
-    this.slotBookings.set({ isLoading: true, error: null, data: { data: generateNumbers(limit) as unknown as SlotBooking[] } });
-
-    this.http.post<GenericResponse<SlotBooking[]>>(API.GET_SLOT_BOOKINGS, {}, {
-      params: {
-        page: page.toString(),
-        limit: limit.toString()
-      }
-    }).subscribe({
-      next: (response) => {
-        this.slotBookings.set({
-          isLoading: false,
-          error: null,
-          data: {
-            ...response,
-            data: response!.data?.map((booking, i) => ({
-              ...booking,
-              index: (page - 1) * limit + i + 1,
-              attendedBy: booking.attendedBy ? {
-                ...booking.attendedBy,
-              } : null,
-              attendedAt: formatDates(booking.attendedAt),
-              createdAt: formatDates(booking.createdAt, true),
-              updatedAt: formatDates(booking.updatedAt, true)
-            })) || []
-          }
-        });
-      },
-      error: (error) => {
-        this.slotBookings.set({
-          isLoading: false,
-          error: getErrorMessage(error),
-          data: null,
-        });
-        onError?.(getErrorMessage(error));
-      }
+    this.slotBookings.set({
+      isLoading: true,
+      error: null,
+      data: { data: generateNumbers(limit) as unknown as SlotBooking[] },
     });
-  }
 
+    this.http
+      .post<GenericResponse<SlotBooking[]>>(
+        API.GET_SLOT_BOOKINGS,
+        {},
+        {
+          params: {
+            page: page.toString(),
+            limit: limit.toString(),
+          },
+        },
+      )
+      .subscribe({
+        next: (response) => {
+          this.slotBookings.set({
+            isLoading: false,
+            error: null,
+            data: {
+              ...response,
+              data:
+                response!.data?.map((booking, i) => ({
+                  ...booking,
+                  index: (page - 1) * limit + i + 1,
+                  attendedBy: booking.attendedBy
+                    ? {
+                        ...booking.attendedBy,
+                      }
+                    : null,
+                  attendedAt: formatDates(booking.attendedAt),
+                  createdAt: formatDates(booking.createdAt, true),
+                  updatedAt: formatDates(booking.updatedAt, true),
+                })) || [],
+            },
+          });
+        },
+        error: (error) => {
+          this.slotBookings.set({
+            isLoading: false,
+            error: getErrorMessage(error),
+            data: null,
+          });
+          onError?.(getErrorMessage(error));
+        },
+      });
+  }
 
   markAttendanceSlotBooking(id: string, onSuccess?: Function, onError?: ErrorFnCallback) {
     this.markAttendanceSlotBookingMeta.set({ isLoading: true, error: null, data: null });
-    this.http.post<GenericResponse<SlotBooking>>(API.MARK_ATTENDANCE_SLOT_BOOKING(id), {}).subscribe({
-      next: (response) => {
-        this.markAttendanceSlotBookingMeta.set({ isLoading: false, error: null, data: response });
-        this.fetchSlotBookings();
-        onSuccess?.();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.markAttendanceSlotBookingMeta.set({ isLoading: false, error: getErrorMessage(error), data: null });
-        onError?.(getErrorMessage(error));
-      }
-    });
+    this.http
+      .post<GenericResponse<SlotBooking>>(API.MARK_ATTENDANCE_SLOT_BOOKING(id), {})
+      .subscribe({
+        next: (response) => {
+          this.markAttendanceSlotBookingMeta.set({ isLoading: false, error: null, data: response });
+          this.fetchSlotBookings();
+          onSuccess?.();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.markAttendanceSlotBookingMeta.set({
+            isLoading: false,
+            error: getErrorMessage(error),
+            data: null,
+          });
+          onError?.(getErrorMessage(error));
+        },
+      });
   }
 }

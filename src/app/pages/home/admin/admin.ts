@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
-import { ValueCard } from "../../../components/value-card/value-card";
+import { ValueCard } from '../../../components/value-card/value-card';
 import { HomeService } from '../../../services/home.service';
-import { UIChart } from "primeng/chart"
+import { UIChart } from 'primeng/chart';
 
 @Component({
   selector: 'app-home-admin',

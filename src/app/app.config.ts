@@ -9,13 +9,13 @@ import {
   HOT_GLOBAL_CONFIG,
   HotGlobalConfig,
   NON_COMMERCIAL_LICENSE,
-} from "@handsontable/angular-wrapper";
+} from '@handsontable/angular-wrapper';
 
 const globalHotConfig: HotGlobalConfig = {
   license: NON_COMMERCIAL_LICENSE,
-  layoutDirection: "ltr",
-  language: "en",
-  themeName: "ht-theme-main",
+  layoutDirection: 'ltr',
+  language: 'en',
+  themeName: 'ht-theme-main',
 };
 
 export const appConfig: ApplicationConfig = {

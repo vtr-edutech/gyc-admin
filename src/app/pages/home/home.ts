@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { HomeAdmin } from './admin/admin';
-import { HomeTelecaller } from "./telecaller/telecaller";
+import { HomeTelecaller } from './telecaller/telecaller';
 
 @Component({
   selector: 'app-home',

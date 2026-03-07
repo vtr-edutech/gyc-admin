@@ -1,7 +1,6 @@
 <h1 class="text-2xl font-bold">Dashboard</h1>
 @if (userRole() === 'admin') {
-<app-home-admin />
-}
-@else if (userRole() === 'telecaller') {
-<app-home-telecaller />
+  <app-home-admin />
+} @else if (userRole() === 'telecaller') {
+  <app-home-telecaller />
 }

@@ -1,7 +1,6 @@
 @if (authService.authState().isLoading || isPageLoading()) {
-<app-loading-overlay></app-loading-overlay>
-}
-@else {
-<router-outlet></router-outlet>
+  <app-loading-overlay></app-loading-overlay>
+} @else {
+  <router-outlet></router-outlet>
 }
 <p-toast></p-toast>

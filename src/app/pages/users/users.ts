@@ -1,6 +1,6 @@
 import { Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Button } from "primeng/button";
+import { Button } from 'primeng/button';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { UserService } from '../../services/user.service';
 import { Skeleton } from 'primeng/skeleton';
@@ -8,18 +8,29 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { generateNumbers } from '../../lib/utils';
 import { User } from '../../lib/types';
-import { InfoTile } from "../../components/info-tile/info-tile";
-import { UserDetails } from "../../components/user-details/user-details";
+import { InfoTile } from '../../components/info-tile/info-tile';
+import { UserDetails } from '../../components/user-details/user-details';
 import { DialogModule } from 'primeng/dialog';
-import { InputText } from "primeng/inputtext";
-import { DatePicker } from "primeng/datepicker";
+import { InputText } from 'primeng/inputtext';
+import { DatePicker } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-users',
-  imports: [TableModule, Button, Skeleton, ToastModule, InfoTile, UserDetails, DialogModule, InputText, DatePicker, FormsModule],
+  imports: [
+    TableModule,
+    Button,
+    Skeleton,
+    ToastModule,
+    InfoTile,
+    UserDetails,
+    DialogModule,
+    InputText,
+    DatePicker,
+    FormsModule,
+  ],
   templateUrl: './users.html',
   styleUrl: './users.css',
-  providers: [MessageService]
+  providers: [MessageService],
 })
 export class Users {
   usersService = inject(UserService);
@@ -31,7 +42,7 @@ export class Users {
     name: '',
     email: '',
     mobile: '',
-    date: null
+    date: null,
   };
 
   downloadModel = [];
@@ -50,12 +61,19 @@ export class Users {
   }
 
   isSearchActive(): boolean {
-    return this.usersService.users().data?.totalDocsForFilter !== this.usersService.users().data?.totalDocs;
+    return (
+      this.usersService.users().data?.totalDocsForFilter !==
+      this.usersService.users().data?.totalDocs
+    );
   }
 
   download(): void {
     if (this.downloadModel.length !== 2) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please select a date range' });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please select a date range',
+      });
       return;
     }
     this.usersService.downloadUsers(this.downloadModel, (error) => {

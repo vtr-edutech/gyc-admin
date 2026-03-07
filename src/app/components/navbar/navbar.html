@@ -1,19 +1,36 @@
 <div class="pr-8">
-    <img src="/logo_new.png" alt="GYC logo" class="w-[90%] mx-auto h-auto">
+  <img src="/logo_new.png" alt="GYC logo" class="w-[90%] mx-auto h-auto" />
 </div>
 
 <div class="flex flex-col pt-4 pr-0">
-    @for (link of roleFilteredNavLinks(); track $index) {
-    <a [routerLink]="link.path" routerLinkActive="bg-gray-100 text-zinc-600 tracking-wide" pRipple
-        class="flex uppercase font-medium text-gray-500 items-center gap-2 p-4">
-        <i [class]="link.icon"></i>
-        <span>{{ link.label }}</span>
+  @for (link of roleFilteredNavLinks(); track $index) {
+    <a
+      [routerLink]="link.path"
+      routerLinkActive="bg-gray-100 text-zinc-600 tracking-wide"
+      pRipple
+      class="flex uppercase font-medium text-gray-500 items-center gap-2 p-4"
+    >
+      <i [class]="link.icon"></i>
+      <span>{{ link.label }}</span>
     </a>
-    }
+  }
 </div>
 
 <div class="mt-auto flex gap-1 items-center">
-    <p-avatar icon="pi pi-user" class="mr-2" size="normal" shape="circle" [label]="this.authService.userNameLabel()" />
-    <p-button [severity]="'danger'" icon="pi pi-sign-out" [size]="'small'" [variant]="'outlined'" pRipple
-        (click)="logout()" label="Logout"></p-button>
+  <p-avatar
+    icon="pi pi-user"
+    class="mr-2"
+    size="normal"
+    shape="circle"
+    [label]="this.authService.userNameLabel()"
+  />
+  <p-button
+    [severity]="'danger'"
+    icon="pi pi-sign-out"
+    [size]="'small'"
+    [variant]="'outlined'"
+    pRipple
+    (click)="logout()"
+    label="Logout"
+  ></p-button>
 </div>

@@ -1,186 +1,285 @@
 <div class="flex flex-col gap-3">
-    <div class="flex justify-between items-center">
-        <div>
-            <h1 class="text-3xl font-semibold">Telecallers</h1>
-            <p>View and manage all telecallers</p>
-        </div>
-        <div class="flex gap-3">
-            <p-button icon="pi pi-plus" [size]="'small'" (onClick)="toggleTelecallerForm(true, 'new')" label="Create
-                new telecaller" />
-            <p-button icon="pi pi-calendar" [size]="'small'" routerLink="/telecallers/bookings"
-                label="Manage bookings" />
-        </div>
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-semibold">Telecallers</h1>
+      <p>View and manage all telecallers</p>
     </div>
-    <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
-        [lazy]="true" (onLazyLoad)="loadTelecallers($event)"
-        [totalRecords]="this.telecallerService.telecallers().data?.totalDocs || 0"
-        [value]="this.telecallerService.telecallers().data?.data || []" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template #header>
-            <tr>
-                <th class="w-[80px]">
-                    S.No.
-                </th>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Username
-                </th>
-                <th>
-                    Email
-                </th>
-                <th>
-                    Mobile
-                </th>
-                <th>
-                    Created At
-                </th>
-                <th>
-                    Actions
-                </th>
-            </tr>
-        </ng-template>
-        @if (this.telecallerService.telecallers().isLoading) {
-        <ng-template #body let-rowData>
-            <tr>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-                <td><p-skeleton height="1.5rem" /></td>
-            </tr>
-        </ng-template>
-        }
-        @else {
-        <ng-template #body let-rowData>
-            <tr>
-                <td>
-                    {{ rowData.index }}
-                </td>
-                <td>
-                    {{ rowData.name }}
-                </td>
-                <td>
-                    {{ rowData.username }}
-                </td>
-                <td>
-                    {{ rowData.email }}
-                </td>
-                <td>
-                    {{ rowData.mobile }}
-                </td>
-                <td>
-                    {{ rowData.createdAt }}
-                </td>
-                <td>
-                    <p-button icon="pi pi-pencil" variant="outlined" label="Edit" [size]="'small'"
-                        (onClick)="toggleTelecallerForm(true, 'edit', rowData)" />
-                </td>
-            </tr>
-        </ng-template>
-        }
-        <ng-template #emptymessage>
-            <tr>
-                <td colspan="6" class="text-center">
-                    <div class="w-full grid content-center">
-                        <p class="text-lg font-semibold">No Bookings Found</p>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+    <div class="flex gap-3">
+      <p-button
+        icon="pi pi-plus"
+        [size]="'small'"
+        (onClick)="toggleTelecallerForm(true, 'new')"
+        label="Create
+                new telecaller"
+      />
+      <p-button
+        icon="pi pi-calendar"
+        [size]="'small'"
+        routerLink="/telecallers/bookings"
+        label="Manage bookings"
+      />
+    </div>
+  </div>
+  <p-table
+    [size]="'large'"
+    [stripedRows]="true"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [lazy]="true"
+    (onLazyLoad)="loadTelecallers($event)"
+    [totalRecords]="this.telecallerService.telecallers().data?.totalDocs || 0"
+    [value]="this.telecallerService.telecallers().data?.data || []"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="w-[80px]">S.No.</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    @if (this.telecallerService.telecallers().isLoading) {
+      <ng-template #body let-rowData>
+        <tr>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+        </tr>
+      </ng-template>
+    } @else {
+      <ng-template #body let-rowData>
+        <tr>
+          <td>
+            {{ rowData.index }}
+          </td>
+          <td>
+            {{ rowData.name }}
+          </td>
+          <td>
+            {{ rowData.username }}
+          </td>
+          <td>
+            {{ rowData.email }}
+          </td>
+          <td>
+            {{ rowData.mobile }}
+          </td>
+          <td>
+            {{ rowData.createdAt }}
+          </td>
+          <td>
+            <p-button
+              icon="pi pi-pencil"
+              variant="outlined"
+              label="Edit"
+              [size]="'small'"
+              (onClick)="toggleTelecallerForm(true, 'edit', rowData)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    }
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6" class="text-center">
+          <div class="w-full grid content-center">
+            <p class="text-lg font-semibold">No Bookings Found</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
 
-<p-dialog [(visible)]="modalControls.isTelecallerModalOpen" [modal]="true" [style]="{ width: '80%' }"
-    [header]="modalControls.isEdit ? 'Edit Telecaller data' : 'Create New Telecaller'">
-    <form #telecallerForm="ngForm" class="flex flex-col gap-3">
-        <input type="hidden" name="_id" ngModel #id="ngModel">
-        <div class="flex flex-col gap-1">
-            <label for="name" class="font-semibold">Name</label>
-            <input id="name" type="text" name="name" ngModel required #name="ngModel" placeholder="Provide a name..."
-                pInputText fluid="true" class="w-full"
-                [ngClass]="{'ng-invalid ng-dirty': name.invalid && (name.dirty || name.touched)}" />
-            @if (name.invalid && (name.dirty || name.touched)) {
-            <small class="text-red-500">Name is required.</small>
-            }
-        </div>
-        <div class="flex flex-col gap-1">
-            <label for="username" class="font-semibold">Username</label>
-            <input id="username" type="text" name="userName" ngModel required #userName="ngModel"
-                placeholder="Provide a username..." pInputText class="w-full"
-                [ngClass]="{'ng-invalid ng-dirty': userName.invalid && (userName.dirty || userName.touched)}" />
-            @if (userName.invalid && (userName.dirty || userName.touched)) {
-            <small class="text-red-500">Username is required.</small>
-            }
-        </div>
-        <div class="flex flex-col gap-1">
-            <label for="email" class="font-semibold">Email</label>
-            <input id="email" type="text" type="email" name="email" ngModel required #email="ngModel"
-                placeholder="Provide an email..." pInputText class="w-full"
-                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                [ngClass]="{'ng-invalid ng-dirty': email.invalid && (email.dirty || email.touched)}" />
-            @if (email.invalid && (email.dirty || email.touched)) {
-            @if (email.value?.trim() === '') {
-            <small class="text-red-500">Email is required.</small>
-            }
-            @if (email.value?.trim() !== '' && email.invalid) {
-            <small class="text-red-500">Email is invalid.</small>
-            }
-            }
-        </div>
-        <div class="flex flex-col gap-1">
-            <label for="mobile" class="font-semibold">Mobile</label>
-            <input id="mobile" type="text" name="mobile" ngModel #mobile="ngModel"
-                placeholder="Provide mobile number..." pInputText class="w-full" pattern="[6-9][0-9]{9}" minlength="10"
-                maxlength="10"
-                [ngClass]="{'ng-invalid ng-dirty': mobile.invalid && (mobile.dirty || mobile.touched)}" />
-            @if (mobile.invalid && (mobile.dirty || mobile.touched)) {
-            @if (mobile.value?.trim() === '') {
-            <small class="text-red-500">Mobile number is required.</small>
-            }
-            @if (mobile.value?.trim() !== '' && mobile.invalid) {
-            <small class="text-red-500">Mobile number is invalid.</small>
-            }
-            }
-        </div>
-        @if (!modalControls.isEdit) {
-        <div class="flex flex-col gap-1">
-            <label for="password" class="font-semibold">Password</label>
-            <p-password fluid="true" id="password" type="password" name="password" [toggleMask]="true"
-                [feedback]="false" ngModel required #password="ngModel" placeholder="Provide a password..."
-                class="w-full"
-                [ngClass]="{'ng-invalid ng-dirty': password.value?.trim() !== '' && password.invalid && (password.dirty || password.touched)}" />
-            @if (password.value?.trim() !== '' && password.invalid && (password.dirty || password.touched)) {
-            <small class="text-red-500">Password is required.</small>
-            }
-        </div>
-        <div class="flex flex-col gap-1">
-            <label for="mobile" class="font-semibold">Confirm password</label>
-            <p-password fluid="true" id="mobile" type="password" name="confirmPassword" [toggleMask]="true"
-                [feedback]="false" required placeholder="Confirm password..." class="w-full" #confirmPassword="ngModel"
-                ngModel
-                [ngClass]="{'ng-invalid ng-dirty': confirmPassword.value !== '' && confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)}" />
-            @if (confirmPassword.value?.trim() !== '' && confirmPassword.invalid && (confirmPassword.dirty ||
-            confirmPassword.touched)) {
-            @if (password.value?.trim() !== confirmPassword.value) {
-            <small class="text-red-500">Passwords do not match.</small>
-            } @else {
-            <small class="text-red-500">Confirm password is required.</small>
-            }
-            }
-        </div>
+<p-dialog
+  [(visible)]="modalControls.isTelecallerModalOpen"
+  [modal]="true"
+  [style]="{ width: '80%' }"
+  [header]="modalControls.isEdit ? 'Edit Telecaller data' : 'Create New Telecaller'"
+>
+  <form #telecallerForm="ngForm" class="flex flex-col gap-3">
+    <input type="hidden" name="_id" ngModel #id="ngModel" />
+    <div class="flex flex-col gap-1">
+      <label for="name" class="font-semibold">Name</label>
+      <input
+        id="name"
+        type="text"
+        name="name"
+        ngModel
+        required
+        #name="ngModel"
+        placeholder="Provide a name..."
+        pInputText
+        fluid="true"
+        class="w-full"
+        [ngClass]="{ 'ng-invalid ng-dirty': name.invalid && (name.dirty || name.touched) }"
+      />
+      @if (name.invalid && (name.dirty || name.touched)) {
+        <small class="text-red-500">Name is required.</small>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="username" class="font-semibold">Username</label>
+      <input
+        id="username"
+        type="text"
+        name="userName"
+        ngModel
+        required
+        #userName="ngModel"
+        placeholder="Provide a username..."
+        pInputText
+        class="w-full"
+        [ngClass]="{
+          'ng-invalid ng-dirty': userName.invalid && (userName.dirty || userName.touched),
+        }"
+      />
+      @if (userName.invalid && (userName.dirty || userName.touched)) {
+        <small class="text-red-500">Username is required.</small>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="email" class="font-semibold">Email</label>
+      <input
+        id="email"
+        type="text"
+        type="email"
+        name="email"
+        ngModel
+        required
+        #email="ngModel"
+        placeholder="Provide an email..."
+        pInputText
+        class="w-full"
+        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        [ngClass]="{ 'ng-invalid ng-dirty': email.invalid && (email.dirty || email.touched) }"
+      />
+      @if (email.invalid && (email.dirty || email.touched)) {
+        @if (email.value?.trim() === '') {
+          <small class="text-red-500">Email is required.</small>
         }
-        <div class="flex justify-end gap-2 mt-4">
-            <p-button [label]="'Cancel'" size="small"
-                [disabled]="telecallerService.createTelecallerUserMeta().isLoading" [outlined]="true"
-                (onClick)="toggleTelecallerForm(false, 'new')" />
-            <p-button [label]="modalControls.isEdit ? 'Update' : 'Create'" size="small"
-                [disabled]="(!modalControls.isEdit && telecallerForm.invalid) || telecallerService.createTelecallerUserMeta().isLoading"
-                (onClick)="modalControls.isEdit ? updateTelecaller(telecallerForm) : createTelecaller(telecallerForm)" />
-        </div>
-    </form>
+        @if (email.value?.trim() !== '' && email.invalid) {
+          <small class="text-red-500">Email is invalid.</small>
+        }
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="mobile" class="font-semibold">Mobile</label>
+      <input
+        id="mobile"
+        type="text"
+        name="mobile"
+        ngModel
+        #mobile="ngModel"
+        placeholder="Provide mobile number..."
+        pInputText
+        class="w-full"
+        pattern="[6-9][0-9]{9}"
+        minlength="10"
+        maxlength="10"
+        [ngClass]="{ 'ng-invalid ng-dirty': mobile.invalid && (mobile.dirty || mobile.touched) }"
+      />
+      @if (mobile.invalid && (mobile.dirty || mobile.touched)) {
+        @if (mobile.value?.trim() === '') {
+          <small class="text-red-500">Mobile number is required.</small>
+        }
+        @if (mobile.value?.trim() !== '' && mobile.invalid) {
+          <small class="text-red-500">Mobile number is invalid.</small>
+        }
+      }
+    </div>
+    @if (!modalControls.isEdit) {
+      <div class="flex flex-col gap-1">
+        <label for="password" class="font-semibold">Password</label>
+        <p-password
+          fluid="true"
+          id="password"
+          type="password"
+          name="password"
+          [toggleMask]="true"
+          [feedback]="false"
+          ngModel
+          required
+          #password="ngModel"
+          placeholder="Provide a password..."
+          class="w-full"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              password.value?.trim() !== '' &&
+              password.invalid &&
+              (password.dirty || password.touched),
+          }"
+        />
+        @if (
+          password.value?.trim() !== '' && password.invalid && (password.dirty || password.touched)
+        ) {
+          <small class="text-red-500">Password is required.</small>
+        }
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="mobile" class="font-semibold">Confirm password</label>
+        <p-password
+          fluid="true"
+          id="mobile"
+          type="password"
+          name="confirmPassword"
+          [toggleMask]="true"
+          [feedback]="false"
+          required
+          placeholder="Confirm password..."
+          class="w-full"
+          #confirmPassword="ngModel"
+          ngModel
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              confirmPassword.value !== '' &&
+              confirmPassword.invalid &&
+              (confirmPassword.dirty || confirmPassword.touched),
+          }"
+        />
+        @if (
+          confirmPassword.value?.trim() !== '' &&
+          confirmPassword.invalid &&
+          (confirmPassword.dirty || confirmPassword.touched)
+        ) {
+          @if (password.value?.trim() !== confirmPassword.value) {
+            <small class="text-red-500">Passwords do not match.</small>
+          } @else {
+            <small class="text-red-500">Confirm password is required.</small>
+          }
+        }
+      </div>
+    }
+    <div class="flex justify-end gap-2 mt-4">
+      <p-button
+        [label]="'Cancel'"
+        size="small"
+        [disabled]="telecallerService.createTelecallerUserMeta().isLoading"
+        [outlined]="true"
+        (onClick)="toggleTelecallerForm(false, 'new')"
+      />
+      <p-button
+        [label]="modalControls.isEdit ? 'Update' : 'Create'"
+        size="small"
+        [disabled]="
+          (!modalControls.isEdit && telecallerForm.invalid) ||
+          telecallerService.createTelecallerUserMeta().isLoading
+        "
+        (onClick)="
+          modalControls.isEdit ? updateTelecaller(telecallerForm) : createTelecaller(telecallerForm)
+        "
+      />
+    </div>
+  </form>
 </p-dialog>
 
 <p-toast />

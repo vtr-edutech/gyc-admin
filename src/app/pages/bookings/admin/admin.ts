@@ -34,25 +34,32 @@ export class AdminBookings {
       rejectButtonProps: {
         label: 'Cancel',
         severity: 'secondary',
-        outlined: true
+        outlined: true,
       },
       acceptButtonProps: {
         label: 'Mark as attended',
-        severity: 'success'
+        severity: 'success',
       },
       accept: () => {
         this.markAsAttended(id);
       },
-      reject: () => {
-      }
+      reject: () => {},
     });
   }
 
   markAsAttended(id: string) {
-    this.slotBookingService.markAttendanceSlotBooking(id, () => {
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Booking marked as attended successfully' });
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
-    });
+    this.slotBookingService.markAttendanceSlotBooking(
+      id,
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Booking marked as attended successfully',
+        });
+      },
+      (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+      },
+    );
   }
 }

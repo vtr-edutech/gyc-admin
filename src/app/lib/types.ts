@@ -1,188 +1,190 @@
 export interface GenericResponse<T> {
-    message?: string;
-    data?: T;
-    page?: number;
-    limit?: number;
-    totalPages?: number;
-    totalDocs?: number;
-    error?: string;
-    totalPagesForFilter?: number;
-    totalDocsForFilter?: number;
+  message?: string;
+  data?: T;
+  page?: number;
+  limit?: number;
+  totalPages?: number;
+  totalDocs?: number;
+  error?: string;
+  totalPagesForFilter?: number;
+  totalDocsForFilter?: number;
 }
 
 export interface FetchState<T> {
-    isLoading: boolean;
-    error: string | object | null;
-    data: GenericResponse<T> | null;
+  isLoading: boolean;
+  error: string | object | null;
+  data: GenericResponse<T> | null;
 }
 
 export interface ErrorFnCallback {
-    (error: string): void;
+  (error: string): void;
 }
 
 export interface LoginPayload {
-    userName: string;
-    password: string;
+  userName: string;
+  password: string;
 }
 
 export interface CreateTelecallerPayload {
-    name: string;
-    userName: string;
-    email: string;
-    mobile: string;
-    password: string;
+  name: string;
+  userName: string;
+  email: string;
+  mobile: string;
+  password: string;
 }
 
-type AdminUserRoles = "admin" | "superadmin" | "telecaller" | "editor"
+type AdminUserRoles = 'admin' | 'superadmin' | 'telecaller' | 'editor';
 
 export interface LoginResponse {
-    token: string;
-    userName: string;
-    name: string;
-    role: AdminUserRoles;
-    id: string;
+  token: string;
+  userName: string;
+  name: string;
+  role: AdminUserRoles;
+  id: string;
 }
 
 interface MongooseSchema {
-    _id: string;
+  _id: string;
 }
 
 interface Timestamps extends MongooseSchema {
-    createdAt: string;
-    updatedAt: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface User extends Timestamps {
-    name?: string,
-    mobile: string,
-    isMobileVerified: boolean,
-    lastOTP: string,
-    firstName?: string,
-    lastName?: string,
-    gender?: "male" | "female" | "other",
-    email?: string,
-    registerNo?: string,
-    neetRegNo?: string,
-    TNEAApplicationNo?: string,
-    AIR?: number,
-    emailVerified: boolean,
-    category?: string,
-    group?: string,
-    boardOfStudy?: string,
-    district?: string,
-    pincode?: string,
-    dob?: Date,
-    imageURL?: string,
-    cutoff: [
-        {
-            physics: number,
-            chemistry: number,
-            maths: number,
-        },
-    ],
-    NEETScore: [
-        {
-            score: number,
-            minRank: number,
-            maxRank: number,
-        },
-    ],
-    userPlan: "default" | "basic-mentorship" | "premium",
+  name?: string;
+  mobile: string;
+  isMobileVerified: boolean;
+  lastOTP: string;
+  firstName?: string;
+  lastName?: string;
+  gender?: 'male' | 'female' | 'other';
+  email?: string;
+  registerNo?: string;
+  neetRegNo?: string;
+  TNEAApplicationNo?: string;
+  AIR?: number;
+  emailVerified: boolean;
+  category?: string;
+  group?: string;
+  boardOfStudy?: string;
+  district?: string;
+  pincode?: string;
+  dob?: Date;
+  imageURL?: string;
+  cutoff: [
+    {
+      physics: number;
+      chemistry: number;
+      maths: number;
+    },
+  ];
+  NEETScore: [
+    {
+      score: number;
+      minRank: number;
+      maxRank: number;
+    },
+  ];
+  userPlan: 'default' | 'basic-mentorship' | 'premium';
 }
 
 export interface Announcement extends Timestamps {
-    title: string,
-    description: string,
-    image: string,
-    link: string,
-    type: "engg" | "medical" | "josaa",
-    startDate: string,
-    endDate: string,
+  title: string;
+  description: string;
+  image: string;
+  link: string;
+  type: 'engg' | 'medical' | 'josaa';
+  startDate: string;
+  endDate: string;
 }
 
 export interface Blog extends Timestamps {
-    title: string,
-    content: string,
-    thumbnailUrl: string,
-    createdBy: {
-        _id: string;
-        name: string;
-    } & MongooseSchema,
-    slug: string,
-    createdAt: string,
+  title: string;
+  content: string;
+  thumbnailUrl: string;
+  createdBy: {
+    _id: string;
+    name: string;
+  } & MongooseSchema;
+  slug: string;
+  createdAt: string;
 }
 
 export interface HomeData extends Timestamps {
-    totalUsers: number,
-    totalAdmins: number,
-    totalAnnouncements: number,
-    totalAdmissions: number,
-    totalColleges: number,
-    totalBlogs: number,
-    signUpTrend: {
-        labels: string[];
-        datasets: {
-            label: string;
-            data: any[];
-            fill: boolean;
-            borderColor: string;
-            tension: number;
-        }[];
-    }
+  totalUsers: number;
+  totalAdmins: number;
+  totalAnnouncements: number;
+  totalAdmissions: number;
+  totalColleges: number;
+  totalBlogs: number;
+  signUpTrend: {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: any[];
+      fill: boolean;
+      borderColor: string;
+      tension: number;
+    }[];
+  };
 }
 
 export interface SlotBooking extends Timestamps {
-    name: string,
-    mobile: string,
-    message: string,
-    attendedBy: {
+  name: string;
+  mobile: string;
+  message: string;
+  attendedBy:
+    | ({
         _id: string;
         name: string;
-    } & MongooseSchema | null,
-    attendedAt: string,
+      } & MongooseSchema)
+    | null;
+  attendedAt: string;
 }
 
 export interface AdminUser<T = AdminUserRoles> extends Timestamps {
-    name: string;
-    username: string;
-    mobile?: string;
-    email?: string;
-    role: T;
-    createdAt: string;
-    updatedAt: string;
+  name: string;
+  username: string;
+  mobile?: string;
+  email?: string;
+  role: T;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface TelecallerAssignment extends Timestamps {
-    refNo: string,
-    studentName: string,
-    parentName: string,
-    mobile: string,
-    alternateMobile: string,
-    email: string,
-    school: string,
-    subjects: string[],
-    dataValidationStatus: "correct" | "incorrect" | "partial",
-    dataStatus: string,
-    board: string,
-    schoolType: string,
-    firstGraduate: boolean,
-    community: string,
-    area: string,
-    district: string,
-    domainInterest: string,
-    courseInterest: string,
-    remarks: string,
-    fatherOccupation: string,
-    assignedTo: AdminUser<"telecaller"> | null,
-    assignedAt: string,
-    admissionComplete: boolean,
+  refNo: string;
+  studentName: string;
+  parentName: string;
+  mobile: string;
+  alternateMobile: string;
+  email: string;
+  school: string;
+  subjects: string[];
+  dataValidationStatus: 'correct' | 'incorrect' | 'partial';
+  dataStatus: string;
+  board: string;
+  schoolType: string;
+  firstGraduate: boolean;
+  community: string;
+  area: string;
+  district: string;
+  domainInterest: string;
+  courseInterest: string;
+  remarks: string;
+  fatherOccupation: string;
+  assignedTo: AdminUser<'telecaller'> | null;
+  assignedAt: string;
+  admissionComplete: boolean;
 }
 
 export interface TelecallerServiceHistory extends Timestamps {
-    college: string,
-    remarks: string,
-    calledDate: string,
-    followUpDate: string,
-    attendedBy: AdminUser<"telecaller"> | null,
-    attendedAt: string
+  college: string;
+  remarks: string;
+  calledDate: string;
+  followUpDate: string;
+  attendedBy: AdminUser<'telecaller'> | null;
+  attendedAt: string;
 }

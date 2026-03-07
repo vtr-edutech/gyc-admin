@@ -8,9 +8,8 @@ describe('Telecaller', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Telecaller]
-    })
-    .compileComponents();
+      imports: [Telecaller],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Telecaller);
     component = fixture.componentInstance;

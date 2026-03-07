@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ProgressSpinner } from "primeng/progressspinner";
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-loading-overlay',
@@ -7,6 +7,4 @@ import { ProgressSpinner } from "primeng/progressspinner";
   templateUrl: './loading-overlay.html',
   styleUrl: './loading-overlay.css',
 })
-export class LoadingOverlay {
-
-}
+export class LoadingOverlay {}

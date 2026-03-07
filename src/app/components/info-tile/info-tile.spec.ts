@@ -8,9 +8,8 @@ describe('InfoTile', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InfoTile]
-    })
-    .compileComponents();
+      imports: [InfoTile],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(InfoTile);
     component = fixture.componentInstance;

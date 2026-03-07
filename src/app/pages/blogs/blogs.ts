@@ -1,10 +1,10 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Button } from "primeng/button";
-import { Table, TableLazyLoadEvent, TableModule } from "primeng/table";
+import { Button } from 'primeng/button';
+import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { BlogService } from '../../services/blog.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Skeleton } from "primeng/skeleton";
+import { Skeleton } from 'primeng/skeleton';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 @Component({
@@ -12,7 +12,7 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
   imports: [Button, RouterLink, TableModule, Skeleton, ConfirmPopupModule],
   templateUrl: './blogs.html',
   styleUrl: './blogs.css',
-  providers: [ConfirmationService]
+  providers: [ConfirmationService],
 })
 export class Blogs {
   blogService = inject(BlogService);
@@ -23,7 +23,7 @@ export class Blogs {
 
   searchModel = {
     title: '',
-    date: null
+    date: null,
   };
 
   loadBlogs(event: TableLazyLoadEvent): void {
@@ -40,16 +40,26 @@ export class Blogs {
   }
 
   deleteBlog(id: string): void {
-    this.blogService.deleteBlog(id, () => {
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Blog deleted successfully' });
-      this.dt.reset();
-    }, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
-    });
+    this.blogService.deleteBlog(
+      id,
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Blog deleted successfully',
+        });
+        this.dt.reset();
+      },
+      (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+      },
+    );
   }
 
   isSearchActive(): boolean {
-    return this.blogService.blogs().data?.totalDocsForFilter !== this.blogService.blogs().data?.totalDocs;
+    return (
+      this.blogService.blogs().data?.totalDocsForFilter !== this.blogService.blogs().data?.totalDocs
+    );
   }
 
   confirmDelete(event: Event, id: string): void {
@@ -60,17 +70,16 @@ export class Blogs {
       rejectButtonProps: {
         label: 'Cancel',
         severity: 'secondary',
-        outlined: true
+        outlined: true,
       },
       acceptButtonProps: {
         label: 'Delete blog',
-        severity: 'danger'
+        severity: 'danger',
       },
       accept: () => {
         this.deleteBlog(id);
       },
-      reject: () => {
-      }
+      reject: () => {},
     });
   }
 }
