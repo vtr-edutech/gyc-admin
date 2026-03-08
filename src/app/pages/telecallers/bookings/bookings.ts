@@ -1,5 +1,6 @@
-import { Component, effect, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, inject, OnInit, ViewChild } from '@angular/core';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
+import Handsontable from 'handsontable';
 import { Button } from 'primeng/button';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
@@ -11,7 +12,7 @@ import { TelecallerBookingService } from '../../../services/telecaller-booking.s
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
 })
-export class TelecallerBookings implements OnInit {
+export class TelecallerBookings implements OnInit, AfterViewInit {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
 
   telecallerBookingsService = inject(TelecallerBookingService);
@@ -25,11 +26,41 @@ export class TelecallerBookings implements OnInit {
   gridSettings: GridSettings = {
     stretchH: 'all',
     colHeaders: this.colHeaders,
-    columnHeaderHeight: 40,
     rowHeaders: ['1'],
     autoColumnSize: true,
     manualRowMove: true,
     manualColumnMove: true,
+    headerClassName: 'font-semibold text-lg',
+    columns: TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS.map((col) => {
+      if (col.key === 'dataValidationStatus') {
+        return {
+          renderer: (
+            hot: Handsontable,
+            TD: HTMLTableCellElement,
+            row: number,
+            column: number,
+            prop: string | number,
+            value: string,
+            cellProperties: Handsontable.CellProperties,
+          ) => {
+            Handsontable.renderers.TextRenderer(hot, TD, row, column, prop, value, cellProperties);
+            // Reset any previously applied status classes before re-applying.
+            TD.classList.remove(
+              'bg-green-200',
+              '!text-green-900',
+              'bg-red-200',
+              '!text-red-900',
+              'bg-amber-200',
+              '!text-amber-900',
+            );
+            if (value === 'correct') TD.classList.add('!bg-green-200', '!text-green-700');
+            if (value === 'incorrect') TD.classList.add('!bg-red-200', '!text-red-700');
+            if (value === 'partial') TD.classList.add('!bg-amber-200', '!text-amber-700');
+          },
+        };
+      }
+      return {};
+    }),
   };
 
   hotColumnModifierWatch = effect(() => {
@@ -47,7 +78,6 @@ export class TelecallerBookings implements OnInit {
           columns: hiddenColIndices,
           indicators: false,
         },
-        readOnly: true,
       });
 
       // Build each row as an array ordered by TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS,
@@ -66,5 +96,9 @@ export class TelecallerBookings implements OnInit {
 
   ngOnInit(): void {
     this.telecallerBookingsService.fetchTelecallerBookings();
+  }
+
+  ngAfterViewInit(): void {
+    // this.hotTable.hotInstance?.addHook("aftercell")
   }
 }
