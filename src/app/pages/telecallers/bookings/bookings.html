@@ -9,11 +9,14 @@
     </div>
   </div>
 
-  <div class="min-h-[80vh] overflow-x-auto">
-    <hot-table
-      [data]="telecallerBookingsService.telecallerBookings().data?.data"
-      [settings]="gridSettings"
-    >
-    </hot-table>
+  <div class="min-h-[80vh] overflow-x-auto relative">
+    @if (telecallerBookingsService.telecallerBookings().isLoading) {
+      <div
+        class="absolute top-0 left-0 w-full h-full bg-black/5 z-10 flex items-center justify-center"
+      >
+        <p-progress-spinner />
+      </div>
+    }
+    <hot-table #hotTable [data]="data" [settings]="gridSettings"> </hot-table>
   </div>
 </div>

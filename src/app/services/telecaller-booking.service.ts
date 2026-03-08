@@ -1,15 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
-import { AdminUser, ErrorFnCallback, FetchState, GenericResponse } from '../lib/types';
+import {
+  AdminUser,
+  ErrorFnCallback,
+  FetchState,
+  GenericResponse,
+  TelecallerAssignment,
+} from '../lib/types';
 import { formatDates, generateNumbers, getErrorMessage } from '../lib/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TelecallerBookingService {
-  telecallerBookings: WritableSignal<FetchState<AdminUser<'telecaller'>[]>> = signal<
-    FetchState<AdminUser<'telecaller'>[]>
+  telecallerBookings: WritableSignal<FetchState<TelecallerAssignment[]>> = signal<
+    FetchState<TelecallerAssignment[]>
   >({
     isLoading: false,
     error: null,
@@ -22,11 +28,11 @@ export class TelecallerBookingService {
     this.telecallerBookings.set({
       isLoading: true,
       error: null,
-      data: { data: generateNumbers(limit) as unknown as AdminUser<'telecaller'>[] },
+      data: null,
     });
 
     this.http
-      .get<GenericResponse<AdminUser<'telecaller'>[]>>(API.GET_TELECALLER_BOOKINGS, {
+      .get<GenericResponse<TelecallerAssignment[]>>(API.GET_TELECALLER_BOOKINGS, {
         params: {
           page: page.toString(),
           limit: limit.toString(),
@@ -40,11 +46,10 @@ export class TelecallerBookingService {
             data: {
               ...response,
               data:
-                response!.data?.map((user, i) => ({
-                  ...user,
-                  index: (page - 1) * limit + i + 1,
-                  createdAt: formatDates(user.createdAt),
-                  updatedAt: formatDates(user.updatedAt),
+                response!.data?.map((booking, i) => ({
+                  ...booking,
+                  createdAt: formatDates(booking.createdAt),
+                  updatedAt: formatDates(booking.updatedAt),
                 })) || [],
             },
           });

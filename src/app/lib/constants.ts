@@ -25,3 +25,26 @@ export const API = {
   UPDATE_TELECALLER: (id: string) => API_URL + '/admin/telecallers/' + id + '/edit',
   GET_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings',
 };
+
+export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS = [
+  { key: '_id', columnName: '_Id', isVisible: false },
+  { key: 'refNo', columnName: 'Ref no' },
+  { key: 'studentName', columnName: 'Student name' },
+  { key: 'parentName', columnName: 'Parent name' },
+  { key: 'fatherOccupation', columnName: 'Father occupation' },
+  { key: 'mobile', columnName: 'Mobile' },
+  { key: 'alternateMobile', columnName: 'Alternate mobile' },
+  { key: 'school', columnName: 'School' },
+  { key: 'board', columnName: 'Board' },
+  { key: 'schoolType', columnName: 'School Type' },
+  { key: 'subjects', columnName: 'Subjects' },
+  { key: 'community', columnName: 'Community' },
+  { key: 'area', columnName: 'Area' },
+  { key: 'district', columnName: 'District' },
+  { key: 'domainInterest', columnName: 'Domain interest' },
+  { key: 'courseInterest', columnName: 'Course interest' },
+  { key: 'dataValidationStatus', columnName: 'Data validation status' },
+  { key: 'remarks', columnName: 'Remarks' },
+  { key: 'createdAt', columnName: 'Created at' },
+  { key: 'updatedAt', columnName: 'Updated at' },
+];
