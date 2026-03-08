@@ -1,14 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
-import {
-  AdminUser,
-  ErrorFnCallback,
-  FetchState,
-  GenericResponse,
-  TelecallerAssignment,
-} from '../lib/types';
-import { formatDates, generateNumbers, getErrorMessage } from '../lib/utils';
+import { ErrorFnCallback, FetchState, GenericResponse, TelecallerAssignment } from '../lib/types';
+import { formatDates, getErrorMessage } from '../lib/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +39,12 @@ export class TelecallerBookingService {
             error: null,
             data: {
               ...response,
-              data: response!.data || [],
+              data:
+                response!.data?.map((response) => ({
+                  ...response,
+                  createdAt: formatDates(response.createdAt),
+                  updatedAt: formatDates(response.updatedAt),
+                })) || [],
             },
           });
         },

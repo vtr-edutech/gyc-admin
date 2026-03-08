@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, effect, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
 import { Button } from 'primeng/button';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -13,6 +21,7 @@ import { TelecallerBookingService } from '../../../services/telecaller-booking.s
 })
 export class TelecallerBookings implements OnInit, AfterViewInit {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
+  @ViewChild('paginationContainer') paginationContainer!: ElementRef;
 
   telecallerBookingsService = inject(TelecallerBookingService);
 
@@ -46,6 +55,7 @@ export class TelecallerBookings implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.hotTable.hotInstance?.addHook("aftercell")
+    const data = this.telecallerBookingsService.telecallerBookings().data;
+    const hotInstance = this.hotTable.hotInstance;
   }
 }

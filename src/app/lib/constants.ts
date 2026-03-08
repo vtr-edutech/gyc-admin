@@ -64,6 +64,14 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
     },
   },
   { data: 'remarks', title: 'Remarks' },
-  { data: 'createdAt', title: 'Created at', type: 'time' },
-  { data: 'updatedAt', title: 'Updated at', type: 'time' },
+  {
+    data: 'createdAt',
+    title: 'Created at',
+    readOnly: true,
+  },
+  {
+    data: 'updatedAt',
+    title: 'Updated at',
+    readOnly: true,
+  },
 ];
