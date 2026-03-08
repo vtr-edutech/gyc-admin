@@ -1,29 +1,24 @@
-import {
-  AfterViewInit,
-  Component,
-  effect,
-  ElementRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, effect, inject, OnInit, ViewChild } from '@angular/core';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
 import { Button } from 'primeng/button';
+import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
 import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
 
 @Component({
   selector: 'app-telecaller-bookings',
-  imports: [Button, HotTableModule, ProgressSpinner],
+  imports: [Button, HotTableModule, ProgressSpinner, Paginator],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
 })
-export class TelecallerBookings implements OnInit, AfterViewInit {
+export class TelecallerBookings implements OnInit {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
-  @ViewChild('paginationContainer') paginationContainer!: ElementRef;
 
   telecallerBookingsService = inject(TelecallerBookingService);
+
+  first = 0;
+  limit = 50;
 
   data = Array.from({ length: 50 }, (_, i) =>
     Array.from({ length: TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS.length }, (_, j) => ''),
@@ -50,12 +45,13 @@ export class TelecallerBookings implements OnInit, AfterViewInit {
     }
   });
 
-  ngOnInit(): void {
-    this.telecallerBookingsService.fetchTelecallerBookings();
+  onPageChange(event: Paginator['paginatorState']) {
+    this.first = event.first;
+    this.limit = event.rows;
+    this.telecallerBookingsService.fetchTelecallerBookings(event.page + 1, this.limit);
   }
 
-  ngAfterViewInit(): void {
-    const data = this.telecallerBookingsService.telecallerBookings().data;
-    const hotInstance = this.hotTable.hotInstance;
+  ngOnInit(): void {
+    this.telecallerBookingsService.fetchTelecallerBookings(1, this.limit);
   }
 }

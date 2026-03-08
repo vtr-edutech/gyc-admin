@@ -19,5 +19,13 @@
     }
     <hot-table #hotTable [data]="data" [settings]="gridSettings"> </hot-table>
   </div>
-  <div #paginationContainer></div>
+  <p-paginator
+    (onPageChange)="onPageChange($event)"
+    [first]="first"
+    [rows]="limit"
+    [totalRecords]="telecallerBookingsService.telecallerBookings().data?.totalDocs ?? 0"
+    [rowsPerPageOptions]="[10, 20, 50, 100, 500]"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+    showCurrentPageReport="true"
+  />
 </div>
