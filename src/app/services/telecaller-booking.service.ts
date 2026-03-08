@@ -45,12 +45,7 @@ export class TelecallerBookingService {
             error: null,
             data: {
               ...response,
-              data:
-                response!.data?.map((booking, i) => ({
-                  ...booking,
-                  createdAt: formatDates(booking.createdAt),
-                  updatedAt: formatDates(booking.updatedAt),
-                })) || [],
+              data: response!.data || [],
             },
           });
         },

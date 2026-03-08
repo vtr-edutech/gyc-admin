@@ -1,3 +1,4 @@
+import { ColumnSettings } from 'handsontable/settings';
 import { environment } from '../../environments/environment';
 
 const API_URL = environment.apiUrl;
@@ -26,25 +27,43 @@ export const API = {
   GET_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings',
 };
 
-export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS = [
-  { key: '_id', columnName: '_Id', isVisible: false },
-  { key: 'refNo', columnName: 'Ref no' },
-  { key: 'studentName', columnName: 'Student name' },
-  { key: 'parentName', columnName: 'Parent name' },
-  { key: 'fatherOccupation', columnName: 'Father occupation' },
-  { key: 'mobile', columnName: 'Mobile' },
-  { key: 'alternateMobile', columnName: 'Alternate mobile' },
-  { key: 'school', columnName: 'School' },
-  { key: 'board', columnName: 'Board' },
-  { key: 'schoolType', columnName: 'School Type' },
-  { key: 'subjects', columnName: 'Subjects' },
-  { key: 'community', columnName: 'Community' },
-  { key: 'area', columnName: 'Area' },
-  { key: 'district', columnName: 'District' },
-  { key: 'domainInterest', columnName: 'Domain interest' },
-  { key: 'courseInterest', columnName: 'Course interest' },
-  { key: 'dataValidationStatus', columnName: 'Data validation status' },
-  { key: 'remarks', columnName: 'Remarks' },
-  { key: 'createdAt', columnName: 'Created at' },
-  { key: 'updatedAt', columnName: 'Updated at' },
+export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
+  { data: '_id', title: '_Id' },
+  { data: 'refNo', title: 'Ref no' },
+  { data: 'studentName', title: 'Student name' },
+  { data: 'parentName', title: 'Parent name' },
+  { data: 'fatherOccupation', title: 'Father occupation' },
+  { data: 'mobile', title: 'Mobile' },
+  { data: 'alternateMobile', title: 'Alternate mobile' },
+  { data: 'school', title: 'School' },
+  { data: 'board', title: 'Board' },
+  { data: 'schoolType', title: 'School Type' },
+  { data: 'subjects', title: 'Subjects' },
+  { data: 'community', title: 'Community' },
+  { data: 'area', title: 'Area' },
+  { data: 'district', title: 'District' },
+  { data: 'domainInterest', title: 'Domain interest' },
+  { data: 'courseInterest', title: 'Course interest' },
+  {
+    data: 'dataValidationStatus',
+    title: 'Data validation status',
+    renderer: (instance, td, row, col, prop, value) => {
+      // Always reset before re-applying so stale classes don't accumulate on data refresh.
+      td.classList.remove(
+        'bg-green-200',
+        '!text-green-900',
+        'bg-red-200',
+        '!text-red-900',
+        'bg-amber-200',
+        '!text-amber-900',
+      );
+      if (value === 'correct') td.classList.add('!bg-green-200', '!text-green-900');
+      if (value === 'incorrect') td.classList.add('!bg-red-200', '!text-red-900');
+      if (value === 'partial') td.classList.add('!bg-amber-200', '!text-amber-900');
+      td.textContent = value ?? '';
+    },
+  },
+  { data: 'remarks', title: 'Remarks' },
+  { data: 'createdAt', title: 'Created at', type: 'time' },
+  { data: 'updatedAt', title: 'Updated at', type: 'time' },
 ];
