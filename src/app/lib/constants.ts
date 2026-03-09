@@ -39,7 +39,18 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'school', title: 'School' },
   { data: 'board', title: 'Board' },
   { data: 'schoolType', title: 'School Type' },
-  { data: 'subjects', title: 'Subjects' },
+  {
+    data: 'subjects',
+    title: 'Subjects',
+    renderer: (...renderObj) => {
+      const [, td, , , , value] = renderObj;
+      if (Array.isArray(value)) {
+        td.textContent = value.join(', ');
+      } else {
+        td.textContent = value ?? '';
+      }
+    },
+  },
   { data: 'community', title: 'Community' },
   { data: 'area', title: 'Area' },
   { data: 'district', title: 'District' },

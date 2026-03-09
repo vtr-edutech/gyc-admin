@@ -5,7 +5,14 @@
       <p>View and manage all telecaller bookings</p>
     </div>
     <div class="flex gap-3">
-      <input type="file" #fileInput name="file" id="file" class="hidden" (change)="handleFileUpload($event)" />
+      <input
+        type="file"
+        #fileInput
+        name="file"
+        id="file"
+        class="hidden"
+        (change)="handleFileUpload($event)"
+      />
       <p-button
         icon="pi pi-plus"
         [size]="'small'"
@@ -15,7 +22,44 @@
     </div>
   </div>
 
-  <div class="h-[80vh] overflow-x-auto relative">
+  <div class="flex gap-2 p-1 items-center">
+    <input
+      type="search"
+      name="name"
+      [(ngModel)]="searchCriteria.name"
+      id="name"
+      pInputText
+      placeholder="Name"
+      pSize="small"
+    />
+    <input
+      type="search"
+      name="mobile"
+      [(ngModel)]="searchCriteria.mobile"
+      id="mobile"
+      pInputText
+      placeholder="Mobile"
+      pSize="small"
+    />
+    <input
+      type="search"
+      name="email"
+      [(ngModel)]="searchCriteria.email"
+      id="email"
+      pInputText
+      placeholder="Email"
+      pSize="small"
+    />
+    <p-button
+      label="Search"
+      (click)="searchRecords()"
+      icon="pi pi-search"
+      severity="primary"
+      size="small"
+    />
+  </div>
+
+  <div class="h-[80vh] max-w-full overflow-x-auto relative">
     @if (telecallerBookingsService.telecallerBookings().isLoading) {
       <div
         class="absolute top-0 left-0 w-full h-full bg-black/5 z-10 flex items-center justify-center"
@@ -27,8 +71,8 @@
   </div>
   <p-paginator
     (onPageChange)="onPageChange($event)"
-    [first]="first"
-    [rows]="limit"
+    [first]="pagination.first"
+    [rows]="pagination.limit"
     [totalRecords]="telecallerBookingsService.telecallerBookings().data?.totalDocs ?? 0"
     [rowsPerPageOptions]="[10, 20, 50, 100, 500]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"

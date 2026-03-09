@@ -5,10 +5,13 @@ import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
 import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
+import Handsontable from 'handsontable';
+import { FormsModule } from '@angular/forms';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-telecaller-bookings',
-  imports: [Button, HotTableModule, ProgressSpinner, Paginator],
+  imports: [Button, HotTableModule, ProgressSpinner, Paginator, FormsModule, InputText],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
 })
@@ -17,8 +20,17 @@ export class TelecallerBookings implements OnInit {
 
   telecallerBookingsService = inject(TelecallerBookingService);
 
-  first = 0;
-  limit = 50;
+  pagination = {
+    first: 0,
+    limit: 50,
+  };
+
+  searchCriteria = {
+    name: '',
+    email: '',
+    mobile: '',
+    date: null,
+  };
 
   data = Array.from({ length: 50 }, (_, i) =>
     Array.from({ length: TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS.length }, (_, j) => ''),
@@ -44,6 +56,14 @@ export class TelecallerBookings implements OnInit {
     columnSorting: {
       headerAction: true,
       indicator: false,
+      sortEmptyCells: false,
+    },
+    allowRemoveRow: false,
+    allowRemoveColumn: false,
+    beforeKeyDown: function (event) {
+      if (event.key === 'Backspace' || event.key === 'Delete') {
+        Handsontable.dom.stopImmediatePropagation(event);
+      }
     },
   };
 
@@ -55,13 +75,13 @@ export class TelecallerBookings implements OnInit {
   });
 
   onPageChange(event: Paginator['paginatorState']) {
-    this.first = event.first;
-    this.limit = event.rows;
-    this.telecallerBookingsService.fetchTelecallerBookings(event.page + 1, this.limit);
+    this.pagination.first = event.first;
+    this.pagination.limit = event.rows;
+    this.telecallerBookingsService.fetchTelecallerBookings(event.page + 1, this.pagination.limit);
   }
 
   ngOnInit(): void {
-    this.telecallerBookingsService.fetchTelecallerBookings(1, this.limit);
+    this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
   }
 
   handleFileUpload(event: Event) {
@@ -70,4 +90,6 @@ export class TelecallerBookings implements OnInit {
       this.telecallerBookingsService.uploadTelecallerBookings(file);
     }
   }
+
+  searchRecords() {}
 }
