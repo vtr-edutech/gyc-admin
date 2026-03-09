@@ -14,7 +14,6 @@ import {
 const globalHotConfig: HotGlobalConfig = {
   license: NON_COMMERCIAL_LICENSE,
   layoutDirection: 'ltr',
-  language: 'en',
   themeName: 'ht-theme-main',
 };
 

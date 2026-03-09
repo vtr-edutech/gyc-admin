@@ -28,13 +28,22 @@ export class TelecallerBookings implements OnInit {
     stretchH: 'all',
     rowHeaders: ['1'],
     autoColumnSize: true,
-    manualRowMove: true,
-    manualColumnMove: true,
+    manualRowMove: false,
+    manualColumnMove: false,
+    manualColumnResize: true,
     headerClassName: 'font-semibold text-lg',
     columns: TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS,
     hiddenColumns: {
       columns: [0],
       indicators: false,
+    },
+    filters: true,
+    dropdownMenu: {
+      items: ['filter_by_value', 'filter_action_bar'],
+    },
+    columnSorting: {
+      headerAction: true,
+      indicator: false,
     },
   };
 
@@ -53,5 +62,12 @@ export class TelecallerBookings implements OnInit {
 
   ngOnInit(): void {
     this.telecallerBookingsService.fetchTelecallerBookings(1, this.limit);
+  }
+
+  handleFileUpload(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.telecallerBookingsService.uploadTelecallerBookings(file);
+    }
   }
 }

@@ -25,6 +25,7 @@ export const API = {
   CREATE_TELECALLER: API_URL + '/admin/telecallers/new',
   UPDATE_TELECALLER: (id: string) => API_URL + '/admin/telecallers/' + id + '/edit',
   GET_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings',
+  UPLOAD_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/upload',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
@@ -47,7 +48,8 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   {
     data: 'dataValidationStatus',
     title: 'Data validation status',
-    renderer: (instance, td, row, col, prop, value) => {
+    renderer: (...renderObj) => {
+      const [, td, , , , value] = renderObj;
       // Always reset before re-applying so stale classes don't accumulate on data refresh.
       td.classList.remove(
         'bg-green-200',
@@ -68,10 +70,12 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
     data: 'createdAt',
     title: 'Created at',
     readOnly: true,
+    width: 150,
   },
   {
     data: 'updatedAt',
     title: 'Updated at',
     readOnly: true,
+    width: 150,
   },
 ];

@@ -15,6 +15,11 @@ export class TelecallerBookingService {
     error: null,
     data: null,
   });
+  telecallerBookingsMutationMeta: WritableSignal<FetchState<string>> = signal<FetchState<string>>({
+    isLoading: false,
+    error: null,
+    data: null,
+  });
 
   private http = inject(HttpClient);
 
@@ -57,5 +62,34 @@ export class TelecallerBookingService {
           onError?.(getErrorMessage(error));
         },
       });
+  }
+
+  uploadTelecallerBookings(file: File, onError?: ErrorFnCallback): void {
+    this.telecallerBookingsMutationMeta.set({
+      isLoading: true,
+      error: null,
+      data: null,
+    });
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.http.post<GenericResponse<string>>(API.UPLOAD_TELECALLER_BOOKINGS, formData).subscribe({
+      next: (response) => {
+        this.telecallerBookingsMutationMeta.set({
+          isLoading: false,
+          error: null,
+          data: response,
+        });
+      },
+      error: (error) => {
+        this.telecallerBookingsMutationMeta.set({
+          isLoading: false,
+          error: getErrorMessage(error),
+          data: null,
+        });
+        onError?.(getErrorMessage(error));
+      },
+    });
   }
 }

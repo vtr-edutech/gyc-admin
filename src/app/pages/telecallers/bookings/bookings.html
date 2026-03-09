@@ -5,7 +5,13 @@
       <p>View and manage all telecaller bookings</p>
     </div>
     <div class="flex gap-3">
-      <p-button icon="pi pi-plus" [size]="'small'" label="Create new booking" />
+      <input type="file" #fileInput name="file" id="file" class="hidden" (change)="handleFileUpload($event)" />
+      <p-button
+        icon="pi pi-plus"
+        [size]="'small'"
+        label="Create new booking"
+        (onClick)="fileInput.click()"
+      />
     </div>
   </div>
 
