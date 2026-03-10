@@ -26,28 +26,11 @@
     <input
       type="search"
       name="name"
-      [(ngModel)]="searchCriteria.name"
+      [(ngModel)]="searchKey"
+      (search)="searchKeyChange()"
       id="name"
       pInputText
-      placeholder="Name"
-      pSize="small"
-    />
-    <input
-      type="search"
-      name="mobile"
-      [(ngModel)]="searchCriteria.mobile"
-      id="mobile"
-      pInputText
-      placeholder="Mobile"
-      pSize="small"
-    />
-    <input
-      type="search"
-      name="email"
-      [(ngModel)]="searchCriteria.email"
-      id="email"
-      pInputText
-      placeholder="Email"
+      placeholder="Search"
       pSize="small"
     />
     <p-button

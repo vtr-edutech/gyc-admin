@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
 import { Button } from 'primeng/button';
 import { Paginator } from 'primeng/paginator';
@@ -25,12 +25,13 @@ export class TelecallerBookings implements OnInit {
     limit: 50,
   };
 
-  searchCriteria = {
-    name: '',
-    email: '',
-    mobile: '',
-    date: null,
-  };
+  searchKey = '';
+
+  searchKeyChange() {
+    if (this.searchKey === '')
+      this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+    else this.searchRecords();
+  }
 
   data = Array.from({ length: 50 }, (_, i) =>
     Array.from({ length: TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS.length }, (_, j) => ''),
@@ -91,5 +92,11 @@ export class TelecallerBookings implements OnInit {
     }
   }
 
-  searchRecords() {}
+  searchRecords() {
+    this.telecallerBookingsService.fetchTelecallerBookings(
+      1,
+      this.pagination.limit,
+      this.searchKey,
+    );
+  }
 }

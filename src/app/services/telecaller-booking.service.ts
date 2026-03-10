@@ -23,7 +23,12 @@ export class TelecallerBookingService {
 
   private http = inject(HttpClient);
 
-  fetchTelecallerBookings(page: number = 1, limit: number = 50, onError?: ErrorFnCallback): void {
+  fetchTelecallerBookings(
+    page: number = 1,
+    limit: number = 50,
+    searchKey: string = '',
+    onError?: ErrorFnCallback,
+  ): void {
     this.telecallerBookings.set({
       isLoading: true,
       error: null,
@@ -35,6 +40,7 @@ export class TelecallerBookingService {
         params: {
           page: page.toString(),
           limit: limit.toString(),
+          search: searchKey,
         },
       })
       .subscribe({
