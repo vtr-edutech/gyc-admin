@@ -1,20 +1,16 @@
 import { Component, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
+import Handsontable from 'handsontable';
+import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
 import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
-import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
-import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
-import Handsontable from 'handsontable';
-import { FormsModule } from '@angular/forms';
-import { InputText } from 'primeng/inputtext';
-import { TelecallerAssignment } from '../../../lib/types';
 import { Toast } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
-
-type TelecallerAssignmentUpdate = { _id: string } & Partial<
-  Record<keyof TelecallerAssignment, string>
->;
+import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
+import { TelecallerAssignmentUpdate } from '../../../lib/types';
+import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
 
 @Component({
   selector: 'app-telecaller-bookings',
@@ -38,7 +34,7 @@ export class TelecallerBookings implements OnInit {
 
   isChangeListenerHookAdded = false;
 
-  rowUpdates: TelecallerAssignmentUpdate[] = [];
+  rowUpdates = signal<TelecallerAssignmentUpdate[]>([]);
 
   searchKeyChange() {
     if (this.searchKey === '')
@@ -110,18 +106,30 @@ export class TelecallerBookings implements OnInit {
         }
 
         // Update existing update object if same id is edited
-        const existingUpdate = this.rowUpdates.find(
+        const existingUpdate = this.rowUpdates().find(
           (update) => update._id === bookingsData[rowIndex]._id,
         );
         if (existingUpdate) {
           existingUpdate[fieldName as keyof TelecallerAssignmentUpdate] = newValue;
+          const updatedUpdates = this.rowUpdates().map((update) => {
+            if (update._id === bookingsData[rowIndex]._id) {
+              return existingUpdate;
+            }
+            return update;
+          });
+          this.rowUpdates.set(updatedUpdates);
+          console.log('updated row updates:', updatedUpdates);
           return;
         }
 
-        this.rowUpdates.push({
-          _id: bookingsData[rowIndex]._id,
-          [fieldName]: newValue,
-        });
+        this.rowUpdates.update((updates) => [
+          ...updates,
+          {
+            _id: bookingsData[rowIndex]._id,
+            [fieldName]: newValue,
+          },
+        ]);
+        console.log('new row updates:', this.rowUpdates());
       });
     };
     if (!this.isChangeListenerHookAdded) {
@@ -147,7 +155,24 @@ export class TelecallerBookings implements OnInit {
   handleFileUpload(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      this.telecallerBookingsService.uploadTelecallerBookings(file);
+      this.telecallerBookingsService.uploadTelecallerBookings(
+        file,
+        () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+          });
+          this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+        },
+        (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error,
+          });
+        },
+      );
     }
   }
 
@@ -156,6 +181,28 @@ export class TelecallerBookings implements OnInit {
       1,
       this.pagination.limit,
       this.searchKey,
+    );
+  }
+
+  updateChanges() {
+    this.telecallerBookingsService.updateTelecallerBooking(
+      this.rowUpdates(),
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+        });
+        this.rowUpdates.set([]);
+        this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+      },
+      (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error,
+        });
+      },
     );
   }
 }

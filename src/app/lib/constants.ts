@@ -26,6 +26,7 @@ export const API = {
   UPDATE_TELECALLER: (id: string) => API_URL + '/admin/telecallers/' + id + '/edit',
   GET_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings',
   UPLOAD_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/upload',
+  UPDATE_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/update',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [

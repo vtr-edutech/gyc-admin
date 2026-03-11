@@ -18,26 +18,39 @@
         [size]="'small'"
         label="Create new booking"
         (onClick)="fileInput.click()"
+        [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
       />
     </div>
   </div>
 
-  <div class="flex gap-2 p-1 items-center">
-    <input
-      type="search"
-      name="name"
-      [(ngModel)]="searchKey"
-      (search)="searchKeyChange()"
-      id="name"
-      pInputText
-      placeholder="Search"
-      pSize="small"
-    />
+  <div class="flex justify-between">
+    <div class="flex gap-2 p-1 items-center">
+      <input
+        type="search"
+        name="name"
+        [(ngModel)]="searchKey"
+        (search)="searchKeyChange()"
+        id="name"
+        pInputText
+        placeholder="Search"
+        pSize="small"
+      />
+      <p-button
+        label="Search"
+        (click)="searchRecords()"
+        icon="pi pi-search"
+        severity="primary"
+        size="small"
+      />
+    </div>
+
     <p-button
-      label="Search"
-      (click)="searchRecords()"
-      icon="pi pi-search"
-      severity="primary"
+      label="Save Changes"
+      (onClick)="updateChanges()"
+      [disabled]="
+        telecallerBookingsService.telecallerBookingsMutationMeta().isLoading ||
+        rowUpdates().length === 0
+      "
       size="small"
     />
   </div>

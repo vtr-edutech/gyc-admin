@@ -33,6 +33,10 @@ export interface CreateTelecallerPayload {
   password: string;
 }
 
+export type TelecallerAssignmentUpdate = { _id: string } & Partial<
+  Record<keyof TelecallerAssignment, string>
+>;
+
 type AdminUserRoles = 'admin' | 'superadmin' | 'telecaller' | 'editor';
 
 export interface LoginResponse {

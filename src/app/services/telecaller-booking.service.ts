@@ -1,7 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
-import { ErrorFnCallback, FetchState, GenericResponse, TelecallerAssignment } from '../lib/types';
+import {
+  ErrorFnCallback,
+  FetchState,
+  GenericResponse,
+  TelecallerAssignment,
+  TelecallerAssignmentUpdate,
+} from '../lib/types';
 import { formatDates, getErrorMessage } from '../lib/utils';
 
 @Injectable({
@@ -70,7 +76,7 @@ export class TelecallerBookingService {
       });
   }
 
-  uploadTelecallerBookings(file: File, onError?: ErrorFnCallback): void {
+  uploadTelecallerBookings(file: File, onSuccess?: Function, onError?: ErrorFnCallback): void {
     this.telecallerBookingsMutationMeta.set({
       isLoading: true,
       error: null,
@@ -87,6 +93,38 @@ export class TelecallerBookingService {
           error: null,
           data: response,
         });
+        onSuccess?.();
+      },
+      error: (error) => {
+        this.telecallerBookingsMutationMeta.set({
+          isLoading: false,
+          error: getErrorMessage(error),
+          data: null,
+        });
+        onError?.(getErrorMessage(error));
+      },
+    });
+  }
+
+  updateTelecallerBooking(
+    updates: TelecallerAssignmentUpdate[],
+    onSuccess?: Function,
+    onError?: ErrorFnCallback,
+  ) {
+    this.telecallerBookingsMutationMeta.set({
+      isLoading: true,
+      error: null,
+      data: null,
+    });
+
+    this.http.post<GenericResponse<string>>(API.UPDATE_TELECALLER_BOOKINGS, updates).subscribe({
+      next: (response) => {
+        this.telecallerBookingsMutationMeta.set({
+          isLoading: false,
+          error: null,
+          data: response,
+        });
+        onSuccess?.();
       },
       error: (error) => {
         this.telecallerBookingsMutationMeta.set({
