@@ -56,9 +56,15 @@
     (onPageChange)="onPageChange($event)"
     [first]="pagination.first"
     [rows]="pagination.limit"
-    [totalRecords]="telecallerBookingsService.telecallerBookings().data?.totalDocs ?? 0"
+    [totalRecords]="
+      (this.searchKey !== ''
+        ? telecallerBookingsService.telecallerBookings().data?.totalDocsForFilter
+        : telecallerBookingsService.telecallerBookings().data?.totalDocs) ?? 0
+    "
     [rowsPerPageOptions]="[10, 20, 50, 100, 500]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
     showCurrentPageReport="true"
   />
 </div>
+
+<p-toast></p-toast>

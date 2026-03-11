@@ -8,17 +8,26 @@ import { TelecallerBookingService } from '../../../services/telecaller-booking.s
 import Handsontable from 'handsontable';
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
+import { TelecallerAssignment } from '../../../lib/types';
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
+type TelecallerAssignmentUpdate = { _id: string } & Partial<
+  Record<keyof TelecallerAssignment, string>
+>;
 
 @Component({
   selector: 'app-telecaller-bookings',
-  imports: [Button, HotTableModule, ProgressSpinner, Paginator, FormsModule, InputText],
+  imports: [Button, HotTableModule, ProgressSpinner, Paginator, FormsModule, InputText, Toast],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
+  providers: [MessageService],
 })
 export class TelecallerBookings implements OnInit {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
 
   telecallerBookingsService = inject(TelecallerBookingService);
+  messageService = inject(MessageService);
 
   pagination = {
     first: 0,
@@ -26,6 +35,10 @@ export class TelecallerBookings implements OnInit {
   };
 
   searchKey = '';
+
+  isChangeListenerHookAdded = false;
+
+  rowUpdates: TelecallerAssignmentUpdate[] = [];
 
   searchKeyChange() {
     if (this.searchKey === '')
@@ -68,17 +81,63 @@ export class TelecallerBookings implements OnInit {
     },
   };
 
-  hotColumnModifierWatch = effect(() => {
-    if (this.telecallerBookingsService.telecallerBookings().data?.data) {
-      const rows = this.telecallerBookingsService.telecallerBookings().data!.data!;
-      this.hotTable.hotInstance?.updateData(rows);
+  hotModifierWatch = effect(() => {
+    const bookingsData = this.telecallerBookingsService.telecallerBookings().data?.data;
+    if (!bookingsData) return;
+    // Update HoT table with data
+    const rows = bookingsData;
+    this.hotTable.hotInstance?.updateData(rows);
+
+    // Register afterChange callback func to track row edits
+    const afterChangeCallback: Handsontable.GridSettings['afterChange'] = (changes, source) => {
+      const validChangeSources: Handsontable.ChangeSource[] = [
+        'UndoRedo.redo',
+        'UndoRedo.undo',
+        'edit',
+      ];
+      if (!validChangeSources.includes(source) || !changes) return;
+
+      changes.forEach((change) => {
+        const [rowIndex, fieldName, , newValue] = change;
+
+        if (typeof fieldName !== 'string' || !(fieldName in bookingsData[rowIndex])) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `Something went wrong in capturing update for Row ${rowIndex + 1}, Column ${fieldName}`,
+          });
+          return;
+        }
+
+        // Update existing update object if same id is edited
+        const existingUpdate = this.rowUpdates.find(
+          (update) => update._id === bookingsData[rowIndex]._id,
+        );
+        if (existingUpdate) {
+          existingUpdate[fieldName as keyof TelecallerAssignmentUpdate] = newValue;
+          return;
+        }
+
+        this.rowUpdates.push({
+          _id: bookingsData[rowIndex]._id,
+          [fieldName]: newValue,
+        });
+      });
+    };
+    if (!this.isChangeListenerHookAdded) {
+      this.hotTable.hotInstance?.addHook('afterChange', afterChangeCallback);
+      this.isChangeListenerHookAdded = true;
     }
   });
 
   onPageChange(event: Paginator['paginatorState']) {
     this.pagination.first = event.first;
     this.pagination.limit = event.rows;
-    this.telecallerBookingsService.fetchTelecallerBookings(event.page + 1, this.pagination.limit);
+    this.telecallerBookingsService.fetchTelecallerBookings(
+      event.page + 1,
+      this.pagination.limit,
+      this.searchKey,
+    );
   }
 
   ngOnInit(): void {
