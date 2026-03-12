@@ -1,7 +1,7 @@
 import { Component, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
-import Handsontable from 'handsontable';
+import Handsontable, { CellRange } from 'handsontable';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
@@ -32,7 +32,11 @@ export class TelecallerBookings implements OnInit {
 
   searchKey = '';
 
-  isChangeListenerHookAdded = false;
+  hotMeta = {
+    areHotHooksAdded: false,
+    isRowSelectMouseDown: false,
+    selectedRows: <number[]>[],
+  };
 
   rowUpdates = signal<TelecallerAssignmentUpdate[]>([]);
 
@@ -49,6 +53,7 @@ export class TelecallerBookings implements OnInit {
   gridSettings: GridSettings = {
     stretchH: 'all',
     rowHeaders: ['1'],
+    renderAllColumns: true,
     autoColumnSize: true,
     manualRowMove: false,
     manualColumnMove: false,
@@ -83,6 +88,30 @@ export class TelecallerBookings implements OnInit {
     // Update HoT table with data
     const rows = bookingsData;
     this.hotTable.hotInstance?.updateData(rows);
+
+    // Register afterSelectRows callback func to track row selection
+    const afterOnCellMouseDownCallback: Handsontable.GridSettings['afterOnCellMouseDown'] = (
+      event,
+      coords,
+      selection,
+    ) => {
+      console.log(event, coords, selection);
+      // Calculate selection ONLY from row headers which yield column value -1
+      if (coords.col !== -1) return;
+
+      const selectedRowsRange = this.hotTable.hotInstance?.getSelectedRangeActive();
+      // Detect single cell click in if, handle multiple cells click in else
+      // if (!selectedRowsRange || selectedRowsRange.from.row === selectedRowsRange.to.row) {
+      //   if (this.hotMeta.selectedRows.includes(fromRow)) {
+      //     this.hotMeta.selectedRows = this.hotMeta.selectedRows.filter((row) => row !== fromRow);
+      //   } else {
+      //     this.hotMeta.selectedRows.push(fromRow);
+      //   }
+      // } else {
+      //   this.hotMeta.selectedRows.push(selectedRowsRange.from.row, selectedRowsRange.to.row);
+      // }
+      // console.log(this.hotMeta.selectedRows);
+    };
 
     // Register afterChange callback func to track row edits
     const afterChangeCallback: Handsontable.GridSettings['afterChange'] = (changes, source) => {
@@ -129,12 +158,13 @@ export class TelecallerBookings implements OnInit {
             [fieldName]: newValue,
           },
         ]);
-        console.log('new row updates:', this.rowUpdates());
       });
     };
-    if (!this.isChangeListenerHookAdded) {
+
+    if (!this.hotMeta.areHotHooksAdded) {
       this.hotTable.hotInstance?.addHook('afterChange', afterChangeCallback);
-      this.isChangeListenerHookAdded = true;
+      this.hotTable.hotInstance?.addHook('afterOnCellMouseDown', afterOnCellMouseDownCallback);
+      this.hotMeta.areHotHooksAdded = true;
     }
   });
 
