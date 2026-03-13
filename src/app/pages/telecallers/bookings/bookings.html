@@ -44,15 +44,53 @@
       />
     </div>
 
-    <p-button
-      label="Save Changes"
-      (onClick)="updateChanges()"
-      [disabled]="
-        telecallerBookingsService.telecallerBookingsMutationMeta().isLoading ||
-        rowUpdates().length === 0
-      "
-      size="small"
-    />
+    <div class="flex items-center gap-2">
+      @if (hotMeta.selectedRows().length > 0) {
+        <p-floatlabel variant="on" class="min-w-64">
+          <p-multiselect
+            id="telecallerAssign"
+            [options]="telecallerService.telecallers().data?.data"
+            [loading]="telecallerService.telecallers().isLoading"
+            fluid="true"
+            display="chip"
+            filter="false"
+            [showToggleAll]="false"
+            showClear="true"
+            class="max-w-108"
+            optionLabel="name"
+            optionValue="_id"
+          >
+            <ng-template let-telecaller #item>
+              <span class="text-sm">{{ telecaller.name }}</span>
+            </ng-template>
+            <!-- The template for customizing selected callers chips -->
+            <ng-template #selecteditems let-selectedTelecallers let-placeholder="placeholder">
+              @if (selectedTelecallers && selectedTelecallers.length > 0) {
+                <div class="flex gap-1 flex-wrap max-h-14 overflow-y-auto">
+                  @for (t of selectedTelecallers; track t._id) {
+                    <span class="bg-blue-100 text-sm text-blue-800 px-2 rounded">{{ t.name }}</span>
+                  }
+                </div>
+              } @else {
+                <span class="text-gray-400">{{ placeholder }}</span>
+              }
+            </ng-template>
+          </p-multiselect>
+          <label for="telecallerAssign" class="text-sm"
+            >Assign {{ hotMeta.selectedRows().length }} students to Telecaller</label
+          >
+        </p-floatlabel>
+      }
+      <p-button
+        label="Save Changes"
+        (onClick)="updateChanges()"
+        [disabled]="
+          telecallerBookingsService.telecallerBookingsMutationMeta().isLoading ||
+          rowUpdates().length === 0
+        "
+        size="small"
+      />
+    </div>
   </div>
 
   <div class="h-[80vh] max-w-full overflow-x-auto relative">

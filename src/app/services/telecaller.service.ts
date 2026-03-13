@@ -33,7 +33,7 @@ export class TelecallerService {
 
   private http = inject(HttpClient);
 
-  fetchTelecaller(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
+  fetchTelecallers(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
     this.telecallers.set({
       isLoading: true,
       error: null,
@@ -90,7 +90,7 @@ export class TelecallerService {
       .subscribe({
         next: (response) => {
           this.createTelecallerUserMeta.set({ isLoading: false, error: null, data: response });
-          this.fetchTelecaller();
+          this.fetchTelecallers();
           onSuccess?.();
         },
         error: (error: HttpErrorResponse) => {
@@ -116,7 +116,7 @@ export class TelecallerService {
       .subscribe({
         next: (response) => {
           this.createTelecallerUserMeta.set({ isLoading: false, error: null, data: response });
-          this.fetchTelecaller();
+          this.fetchTelecallers();
           onSuccess?.();
         },
         error: (error: HttpErrorResponse) => {

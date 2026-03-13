@@ -50,7 +50,7 @@ export class Telecallers {
     const page = (event.first || 0) / (event.rows || 10) + 1;
     const limit = event.rows || 10;
 
-    this.telecallerService.fetchTelecaller(page, limit, (error) => {
+    this.telecallerService.fetchTelecallers(page, limit, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
     });
   }

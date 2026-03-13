@@ -31,6 +31,7 @@ export const API = {
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   { data: '_id', title: '_Id' },
+  { title: 'Select', type: 'checkbox', data: 'select' },
   { data: 'refNo', title: 'Ref no' },
   { data: 'studentName', title: 'Student name' },
   { data: 'parentName', title: 'Parent name' },

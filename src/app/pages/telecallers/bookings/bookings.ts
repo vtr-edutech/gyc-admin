@@ -1,20 +1,33 @@
 import { Component, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
-import Handsontable, { CellRange } from 'handsontable';
+import Handsontable from 'handsontable';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { MultiSelect } from 'primeng/multiselect';
 import { Toast } from 'primeng/toast';
 import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
 import { TelecallerAssignmentUpdate } from '../../../lib/types';
 import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
+import { TelecallerService } from '../../../services/telecaller.service';
 
 @Component({
   selector: 'app-telecaller-bookings',
-  imports: [Button, HotTableModule, ProgressSpinner, Paginator, FormsModule, InputText, Toast],
+  imports: [
+    Button,
+    HotTableModule,
+    ProgressSpinner,
+    Paginator,
+    FormsModule,
+    InputText,
+    Toast,
+    MultiSelect,
+    FloatLabelModule,
+  ],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
   providers: [MessageService],
@@ -23,6 +36,7 @@ export class TelecallerBookings implements OnInit {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
 
   telecallerBookingsService = inject(TelecallerBookingService);
+  telecallerService = inject(TelecallerService);
   messageService = inject(MessageService);
 
   pagination = {
@@ -34,8 +48,7 @@ export class TelecallerBookings implements OnInit {
 
   hotMeta = {
     areHotHooksAdded: false,
-    isRowSelectMouseDown: false,
-    selectedRows: <number[]>[],
+    selectedRows: signal<number[]>([]),
   };
 
   rowUpdates = signal<TelecallerAssignmentUpdate[]>([]);
@@ -89,38 +102,33 @@ export class TelecallerBookings implements OnInit {
     const rows = bookingsData;
     this.hotTable.hotInstance?.updateData(rows);
 
-    // Register afterSelectRows callback func to track row selection
-    const afterOnCellMouseDownCallback: Handsontable.GridSettings['afterOnCellMouseDown'] = (
-      event,
-      coords,
-      selection,
-    ) => {
-      console.log(event, coords, selection);
-      // Calculate selection ONLY from row headers which yield column value -1
-      if (coords.col !== -1) return;
-
-      const selectedRowsRange = this.hotTable.hotInstance?.getSelectedRangeActive();
-      // Detect single cell click in if, handle multiple cells click in else
-      // if (!selectedRowsRange || selectedRowsRange.from.row === selectedRowsRange.to.row) {
-      //   if (this.hotMeta.selectedRows.includes(fromRow)) {
-      //     this.hotMeta.selectedRows = this.hotMeta.selectedRows.filter((row) => row !== fromRow);
-      //   } else {
-      //     this.hotMeta.selectedRows.push(fromRow);
-      //   }
-      // } else {
-      //   this.hotMeta.selectedRows.push(selectedRowsRange.from.row, selectedRowsRange.to.row);
-      // }
-      // console.log(this.hotMeta.selectedRows);
+    const handleSelectRows = (changes: Handsontable.CellChange[]) => {
+      changes.forEach((change) => {
+        const [rowIndex, , , newValue] = change;
+        if (newValue === true) {
+          this.hotMeta.selectedRows.update((rows) => [...rows, rowIndex]);
+        } else {
+          this.hotMeta.selectedRows.update((rows) => rows.filter((row) => row !== rowIndex));
+        }
+      });
     };
 
     // Register afterChange callback func to track row edits
     const afterChangeCallback: Handsontable.GridSettings['afterChange'] = (changes, source) => {
+      console.log(changes);
+
       const validChangeSources: Handsontable.ChangeSource[] = [
         'UndoRedo.redo',
         'UndoRedo.undo',
         'edit',
       ];
       if (!validChangeSources.includes(source) || !changes) return;
+
+      // check select column change
+      if (changes.every((change) => change[1] === 'select')) {
+        handleSelectRows(changes);
+        return;
+      }
 
       changes.forEach((change) => {
         const [rowIndex, fieldName, , newValue] = change;
@@ -163,7 +171,6 @@ export class TelecallerBookings implements OnInit {
 
     if (!this.hotMeta.areHotHooksAdded) {
       this.hotTable.hotInstance?.addHook('afterChange', afterChangeCallback);
-      this.hotTable.hotInstance?.addHook('afterOnCellMouseDown', afterOnCellMouseDownCallback);
       this.hotMeta.areHotHooksAdded = true;
     }
   });
@@ -180,6 +187,7 @@ export class TelecallerBookings implements OnInit {
 
   ngOnInit(): void {
     this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+    this.telecallerService.fetchTelecallers();
   }
 
   handleFileUpload(event: Event) {
