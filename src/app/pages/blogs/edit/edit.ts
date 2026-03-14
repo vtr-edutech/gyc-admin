@@ -7,6 +7,7 @@ import { MessageService } from 'primeng/api';
 import { LoadingOverlay } from '../../../components/loading-overlay/loading-overlay';
 import { InputText } from 'primeng/inputtext';
 import { Editor } from 'primeng/editor';
+import { formatDates } from '../../../lib/utils';
 
 @Component({
   selector: 'app-blog-edit',
@@ -31,6 +32,8 @@ export class EditBlog {
       this.image = input.files[0];
     }
   }
+
+  protected formatDates = formatDates;
 
   constructor() {
     effect(() => {

@@ -27,7 +27,7 @@
       <tr>
         <th>S.No.</th>
         <th>Title</th>
-        <th>Content</th>
+        <th>Content Preview</th>
         <th>Author</th>
         <th>Created At</th>
         <th>Actions</th>
@@ -53,8 +53,11 @@
               {{ blog.title }}
             </a>
           </td>
-          <td>
-            <div [innerHTML]="blog.content?.substring(0, 75) + '...'"></div>
+          <td class="w-36">
+            <div
+              class="text-sm truncate"
+              [innerHTML]="blog.content?.substring(0, 100) + '...'"
+            ></div>
           </td>
           <td>{{ blog.createdBy?.name }}</td>
           <td>{{ blog.createdAt }}</td>

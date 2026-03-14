@@ -259,6 +259,11 @@
         }
       </div>
     }
+    @if (modalControls.isEdit) {
+      <span class="text-sm text-gray-600"
+        >Last updated at {{ formatDates(modalControls.selectedTelecaller!.updatedAt) }}</span
+      >
+    }
     <div class="flex justify-end gap-2 mt-4">
       <p-button
         [label]="'Cancel'"

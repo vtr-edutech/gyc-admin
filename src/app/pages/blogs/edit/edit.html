@@ -129,7 +129,10 @@
     </div>
 
     <!-- Submit Button -->
-    <div class="flex justify-end">
+    <div class="flex items-center justify-end">
+      <span class="text-gray-500 mr-2"
+        >Last edited {{ formatDates(blogService.blog().data?.data?.updatedAt || '') }}</span
+      >
       <p-button
         label="{{ blogService.mutateBlogsState().isLoading ? 'Saving...' : 'Save changes' }}"
         size="small"

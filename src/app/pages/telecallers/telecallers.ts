@@ -12,6 +12,7 @@ import { TelecallerService } from '../../services/telecaller.service';
 import { InputText } from 'primeng/inputtext';
 import { AdminUser } from '../../lib/types';
 import { RouterLink } from '@angular/router';
+import { formatDates } from '../../lib/utils';
 
 type TModalControls = {
   isTelecallerModalOpen: boolean;
@@ -55,6 +56,8 @@ export class Telecallers {
     });
   }
 
+  protected formatDates = formatDates;
+
   toggleTelecallerForm(
     toggle: boolean,
     mode: 'edit' | 'new',
@@ -72,6 +75,7 @@ export class Telecallers {
         mobile: selectedTelecaller.mobile || '',
         password: '',
         confirmPassword: '',
+        updatedAt: selectedTelecaller.updatedAt,
       });
     }
   }
