@@ -121,6 +121,8 @@ export class Notifications {
       endDate: endDate ? new Date(endDate).toISOString() : undefined,
     };
 
+    delete payload._id;
+
     this.announcementsService.createAnnouncement(
       payload,
       () => {
