@@ -181,7 +181,8 @@ export interface TelecallerAssignment extends Timestamps {
   fatherOccupation: string;
   assignedTo: AdminUser<'telecaller'> | null;
   assignedAt: string;
-  admissionComplete: boolean;
+  isAdmissionComplete: boolean;
+  isDeactivated: boolean;
 }
 
 export interface TelecallerServiceHistory extends Timestamps {

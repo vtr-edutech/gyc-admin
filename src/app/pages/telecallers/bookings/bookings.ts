@@ -106,7 +106,7 @@ export class TelecallerBookings implements OnInit {
       changes.forEach((change) => {
         const [rowIndex, , , newValue] = change;
         if (newValue === true) {
-          this.hotMeta.selectedRows.update((rows) => [...rows, rowIndex]);
+          this.hotMeta.selectedRows.update((rows) => Array.from(new Set([...rows, rowIndex])));
         } else {
           this.hotMeta.selectedRows.update((rows) => rows.filter((row) => row !== rowIndex));
         }
@@ -115,12 +115,11 @@ export class TelecallerBookings implements OnInit {
 
     // Register afterChange callback func to track row edits
     const afterChangeCallback: Handsontable.GridSettings['afterChange'] = (changes, source) => {
-      console.log(changes);
-
       const validChangeSources: Handsontable.ChangeSource[] = [
         'UndoRedo.redo',
         'UndoRedo.undo',
         'edit',
+        'Autofill.fill',
       ];
       if (!validChangeSources.includes(source) || !changes) return;
 
