@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Avatar } from 'primeng/avatar';
@@ -12,7 +12,7 @@ import { BlogService } from '../../../services/blog.service';
   templateUrl: './blog.html',
   styleUrl: './blog.css',
 })
-export class Blog {
+export class Blog implements OnInit {
   authService = inject(AuthService);
   private router = inject(Router);
   blogService = inject(BlogService);
@@ -29,6 +29,7 @@ export class Blog {
         detail: 'Blog ID is required',
       });
       this.router.navigate(['/blogs']);
+      return;
     }
 
     this.blogService.fetchBlog(blogId!);

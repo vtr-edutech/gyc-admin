@@ -49,7 +49,7 @@
         <tr>
           <td>{{ blog.index }}</td>
           <td>
-            <a [href]="'/blogs/' + blog._id" class="text-blue-500 hover:underline">
+            <a [routerLink]="['/blogs', blog._id]" class="text-blue-500 hover:underline">
               {{ blog.title }}
             </a>
           </td>
@@ -68,7 +68,7 @@
                 outlined="true"
                 label="Edit"
                 icon="pi pi-pencil"
-                [routerLink]="'/blogs/' + blog._id + '/edit'"
+                [routerLink]="['/blogs', blog._id, 'edit']"
               />
               <p-button
                 [disabled]="this.blogService.mutateBlogsState().isLoading"
