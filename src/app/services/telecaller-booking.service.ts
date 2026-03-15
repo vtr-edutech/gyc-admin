@@ -136,4 +136,31 @@ export class TelecallerBookingService {
       },
     });
   }
+
+  deactivateTelecallerBooking(ids: string[], onSuccess?: Function, onError?: ErrorFnCallback) {
+    this.telecallerBookingsMutationMeta.set({
+      isLoading: true,
+      error: null,
+      data: null,
+    });
+
+    this.http.post<GenericResponse<string>>(API.DEACTIVATE_TELECALLER_BOOKINGS, ids).subscribe({
+      next: (response) => {
+        this.telecallerBookingsMutationMeta.set({
+          isLoading: false,
+          error: null,
+          data: response,
+        });
+        onSuccess?.();
+      },
+      error: (error) => {
+        this.telecallerBookingsMutationMeta.set({
+          isLoading: false,
+          error: getErrorMessage(error),
+          data: null,
+        });
+        onError?.(getErrorMessage(error));
+      },
+    });
+  }
 }

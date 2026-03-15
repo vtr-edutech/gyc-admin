@@ -46,6 +46,14 @@
 
     <div class="flex items-center gap-2">
       @if (hotMeta.selectedRows().length > 0) {
+        <p-button
+          label="Deactivate"
+          icon="pi pi-user-minus"
+          severity="danger"
+          size="small"
+          [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
+          (onClick)="confirmDeactivateUsers($event)"
+        />
         <p-floatlabel variant="on" class="min-w-64">
           <p-multiselect
             id="telecallerAssign"
@@ -119,3 +127,4 @@
 </div>
 
 <p-toast></p-toast>
+<p-confirmpopup></p-confirmpopup>

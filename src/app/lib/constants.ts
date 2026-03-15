@@ -27,6 +27,7 @@ export const API = {
   GET_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings',
   UPLOAD_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/upload',
   UPDATE_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/update',
+  DEACTIVATE_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/deactivate',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
@@ -61,6 +62,10 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   {
     data: 'dataValidationStatus',
     title: 'Data validation status',
+    type: 'dropdown',
+    allowInvalid: false,
+    allowEmpty: false,
+    source: ['correct', 'incorrect', 'partial'],
     renderer: (...renderObj) => {
       const [, td, , , , value] = renderObj;
       // Always reset before re-applying so stale classes don't accumulate on data refresh.

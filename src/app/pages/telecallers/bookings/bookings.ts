@@ -2,7 +2,7 @@ import { Component, effect, inject, OnInit, signal, ViewChild } from '@angular/c
 import { FormsModule } from '@angular/forms';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
 import Handsontable from 'handsontable';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
@@ -14,6 +14,7 @@ import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
 import { TelecallerAssignmentUpdate } from '../../../lib/types';
 import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
 import { TelecallerService } from '../../../services/telecaller.service';
+import { ConfirmPopup } from 'primeng/confirmpopup';
 
 @Component({
   selector: 'app-telecaller-bookings',
@@ -27,10 +28,11 @@ import { TelecallerService } from '../../../services/telecaller.service';
     Toast,
     MultiSelect,
     FloatLabelModule,
+    ConfirmPopup,
   ],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
 })
 export class TelecallerBookings implements OnInit {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
@@ -38,6 +40,7 @@ export class TelecallerBookings implements OnInit {
   telecallerBookingsService = inject(TelecallerBookingService);
   telecallerService = inject(TelecallerService);
   messageService = inject(MessageService);
+  confirmationService = inject(ConfirmationService);
 
   pagination = {
     first: 0,
@@ -67,7 +70,6 @@ export class TelecallerBookings implements OnInit {
     stretchH: 'all',
     rowHeaders: ['1'],
     renderAllColumns: true,
-    autoColumnSize: true,
     manualRowMove: false,
     manualColumnMove: false,
     manualColumnResize: true,
@@ -218,6 +220,55 @@ export class TelecallerBookings implements OnInit {
       1,
       this.pagination.limit,
       this.searchKey,
+    );
+  }
+
+  confirmDeactivateUsers(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure you want to deactivate the selected users?',
+      header: 'Confirm Deactivate',
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        // providing label here is not accepted by the button
+        severity: 'danger',
+      },
+      acceptLabel: 'Deactivate',
+      accept: () => {
+        this.deactivateUsers();
+      },
+    });
+  }
+
+  deactivateUsers() {
+    this.telecallerBookingsService.deactivateTelecallerBooking(
+      this.hotMeta
+        .selectedRows()
+        .map(
+          (rowIndex) =>
+            this.telecallerBookingsService.telecallerBookings().data!.data!.at(rowIndex)!._id!,
+        ),
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+        });
+        this.rowUpdates.set([]);
+        this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+      },
+      (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error,
+        });
+      },
     );
   }
 
