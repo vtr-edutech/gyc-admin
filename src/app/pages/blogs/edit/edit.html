@@ -26,6 +26,7 @@
     <!-- Image thumbnail preview -->
     <div class="flex flex-col gap-1">
       @if (thumbnailUrl) {
+        <span class="text-gray-500">Current thumbnail</span>
         <img [src]="thumbnailUrl" alt="Image thumbnail" class="w-[50%] object-cover" />
       } @else {
         <div
@@ -34,6 +35,11 @@
           <i class="pi pi-asterisk text-4xl text-gray-400"></i>
           <span class="text-gray-500">No thumbnail provided</span>
         </div>
+      }
+
+      @if (newThumbnailUrl) {
+        <span class="text-gray-500">New thumbnail</span>
+        <img [src]="newThumbnailUrl" alt="Image thumbnail" class="w-[50%] object-cover" />
       }
     </div>
 
@@ -131,7 +137,7 @@
     <!-- Submit Button -->
     <div class="flex items-center justify-end">
       <span class="text-gray-500 mr-2"
-        >Last edited {{ formatDates(blogService.blog().data?.data?.updatedAt || '') }}</span
+        >Last edited at {{ formatDates(blogService.blog().data?.data?.updatedAt || '') }}</span
       >
       <p-button
         label="{{ blogService.mutateBlogsState().isLoading ? 'Saving...' : 'Save changes' }}"

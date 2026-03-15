@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 export function formatDates(date: string | Date, withTime: boolean = false) {
   return !date || date.toString().trim() === ''
-    ? 'Invalid Date'
+    ? 'N/A'
     : formatDate(date, `EE, MMM dd, y ${withTime ? "'at' h:mm a" : ''}`, 'en', 'Asia/Kolkata');
 }
 
