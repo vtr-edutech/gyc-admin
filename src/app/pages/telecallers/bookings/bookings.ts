@@ -56,30 +56,28 @@ export class TelecallerBookings implements OnInit {
 
   rowUpdates = signal<TelecallerAssignmentUpdate[]>([]);
 
-  deactivatedUsersList = computed(
-    () =>
-      this.telecallerBookingsService
-        .telecallerBookings()
-        .data?.data?.map((booking, rowIndex) => ({
-          _id: booking._id,
-          rowIndex,
-          isDeactivated: booking.isDeactivated,
-        }))
-        .filter((booking) => booking.isDeactivated) || [],
-  );
+  selectedBookings = computed(() => {
+    const data = this.telecallerBookingsService.telecallerBookings().data?.data;
+    if (!data) return [];
+    return this.hotMeta
+      .selectedRows()
+      .map((rowIndex) => data[rowIndex])
+      .filter(Boolean);
+  });
 
-  deactivatedUsersInSelectedRows = computed(() =>
-    this.hotMeta.selectedRows().filter((rowIndex) =>
-      !!this.deactivatedUsersList().find((booking) => booking.rowIndex === rowIndex),
-    ),
-  );
+  isAllSelectedActivated = computed(() => {
+    const selected = this.selectedBookings();
+    return selected.length > 0 && selected.every((booking) => !booking.isDeactivated);
+  });
 
-  // if deactivated users list includes selected rows, show confirm activate popup
-  confirmActivatePopupVisible = computed(() =>
-    this.deactivatedUsersList().some((booking) =>
-      this.hotMeta.selectedRows().includes(booking.rowIndex),
-    ),
-  );
+  isAllSelectedDeactivated = computed(() => {
+    const selected = this.selectedBookings();
+    return selected.length > 0 && selected.every((booking) => booking.isDeactivated);
+  });
+
+  hasAnyDeactivatedSelected = computed(() => {
+    return this.selectedBookings().some((booking) => booking.isDeactivated);
+  });
 
   searchKeyChange() {
     if (this.searchKey === '')
@@ -236,7 +234,7 @@ export class TelecallerBookings implements OnInit {
 
   ngOnInit(): void {
     this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
-    this.telecallerService.fetchTelecallers();
+    this.telecallerService.fetchTelecallers(1, 100);
   }
 
   handleFileUpload(event: Event) {
@@ -306,7 +304,7 @@ export class TelecallerBookings implements OnInit {
       },
       acceptButtonProps: {
         // providing label here is not accepted by the button
-        severity: 'danger',
+        severity: 'success',
       },
       acceptLabel: 'Activate',
       accept: () => {
