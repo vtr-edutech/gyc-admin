@@ -37,9 +37,9 @@
         </div>
       }
 
-      @if (newThumbnailUrl) {
+      @if (newThumbnailUrl()) {
         <span class="text-gray-500">New thumbnail</span>
-        <img [src]="newThumbnailUrl" alt="Image thumbnail" class="w-[50%] object-cover" />
+        <img [src]="newThumbnailUrl()" alt="Image thumbnail" class="w-[50%] object-cover" />
       }
     </div>
 

@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { BlogService } from '../../../services/blog.service';
@@ -20,7 +20,7 @@ export class EditBlog {
   content: string = '';
   image: File | null = null;
   thumbnailUrl: string = '';
-  newThumbnailUrl: string | null = null;
+  newThumbnailUrl = signal<string | null>(null);
 
   public blogService = inject(BlogService);
   private router = inject(Router);
@@ -29,12 +29,13 @@ export class EditBlog {
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
+
     if (input.files && input.files.length > 0) {
       this.image = input.files[0];
-      
+
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.newThumbnailUrl = e.target?.result as string;
+        this.newThumbnailUrl.set(e.target?.result as string);
       };
       reader.readAsDataURL(this.image);
     }
