@@ -50,7 +50,7 @@ export class TelecallerBookings implements OnInit {
   searchKey = '';
 
   hotMeta = {
-    areHotHooksAdded: false,
+    areHotChangesMade: false,
     selectedRows: signal<number[]>([]),
   };
 
@@ -100,79 +100,102 @@ export class TelecallerBookings implements OnInit {
   hotModifierWatch = effect(() => {
     const bookingsData = this.telecallerBookingsService.telecallerBookings().data?.data;
     if (!bookingsData) return;
-    // Update HoT table with data
-    const rows = bookingsData;
-    this.hotTable.hotInstance?.updateData(rows);
 
-    const handleSelectRows = (changes: Handsontable.CellChange[]) => {
-      changes.forEach((change) => {
-        const [rowIndex, , , newValue] = change;
-        if (newValue === true) {
-          this.hotMeta.selectedRows.update((rows) => Array.from(new Set([...rows, rowIndex])));
-        } else {
-          this.hotMeta.selectedRows.update((rows) => rows.filter((row) => row !== rowIndex));
-        }
+    const hotInstance = this.hotTable?.hotInstance;
+    if (!hotInstance) return;
+
+    // Boolean check to handle HotChanges only once
+    if (!this.hotMeta.areHotChangesMade) {
+      // Update HoT table with data
+      hotInstance.updateData(bookingsData);
+      // Update settings to apply bg red to deactivated rows
+      hotInstance.updateSettings({
+        // this function runs every time a change is made. i dont think this is very efficient.
+        // we shall see if an issue arises and if so, change to single column isdeactivated data
+        cells(this: Handsontable.CellProperties, row, column, prop) {
+          if (column <= 1) {
+            this.readOnly = false;
+            return this;
+          }
+
+          const isDeactivatedRow = bookingsData[row].isDeactivated;
+          if (isDeactivatedRow) {
+            this.readOnly = true;
+            this.className = '!bg-red-200';
+          }
+          return this;
+        },
       });
-    };
 
-    // Register afterChange callback func to track row edits
-    const afterChangeCallback: Handsontable.GridSettings['afterChange'] = (changes, source) => {
-      const validChangeSources: Handsontable.ChangeSource[] = [
-        'UndoRedo.redo',
-        'UndoRedo.undo',
-        'edit',
-        'Autofill.fill',
-      ];
-      if (!validChangeSources.includes(source) || !changes) return;
+      // Handle select column changes
+      const handleSelectRows = (changes: Handsontable.CellChange[]) => {
+        changes.forEach((change) => {
+          const [rowIndex, , , newValue] = change;
+          if (newValue === true) {
+            this.hotMeta.selectedRows.update((rows) => Array.from(new Set([...rows, rowIndex])));
+          } else {
+            this.hotMeta.selectedRows.update((rows) => rows.filter((row) => row !== rowIndex));
+          }
+        });
+      };
 
-      // check select column change
-      if (changes.every((change) => change[1] === 'select')) {
-        handleSelectRows(changes);
-        return;
-      }
+      // Register afterChange callback func to track row edits
+      const afterChangeCallback: Handsontable.GridSettings['afterChange'] = (changes, source) => {
+        const validChangeSources: Handsontable.ChangeSource[] = [
+          'UndoRedo.redo',
+          'UndoRedo.undo',
+          'edit',
+          'Autofill.fill',
+        ];
+        if (!validChangeSources.includes(source) || !changes) return;
 
-      changes.forEach((change) => {
-        const [rowIndex, fieldName, , newValue] = change;
-
-        if (typeof fieldName !== 'string' || !(fieldName in bookingsData[rowIndex])) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: `Something went wrong in capturing update for Row ${rowIndex + 1}, Column ${fieldName}`,
-          });
+        // check select column change
+        if (changes.every((change) => change[1] === 'select')) {
+          handleSelectRows(changes);
           return;
         }
 
-        // Update existing update object if same id is edited
-        const existingUpdate = this.rowUpdates().find(
-          (update) => update._id === bookingsData[rowIndex]._id,
-        );
-        if (existingUpdate) {
-          existingUpdate[fieldName as keyof TelecallerAssignmentUpdate] = newValue;
-          const updatedUpdates = this.rowUpdates().map((update) => {
-            if (update._id === bookingsData[rowIndex]._id) {
-              return existingUpdate;
-            }
-            return update;
-          });
-          this.rowUpdates.set(updatedUpdates);
-          console.log('updated row updates:', updatedUpdates);
-          return;
-        }
+        changes.forEach((change) => {
+          const [rowIndex, fieldName, , newValue] = change;
 
-        this.rowUpdates.update((updates) => [
-          ...updates,
-          {
-            _id: bookingsData[rowIndex]._id,
-            [fieldName]: newValue,
-          },
-        ]);
-      });
-    };
+          if (typeof fieldName !== 'string' || !(fieldName in bookingsData[rowIndex])) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: `Something went wrong in capturing update for Row ${rowIndex + 1}, Column ${fieldName}`,
+            });
+            return;
+          }
 
-    if (!this.hotMeta.areHotHooksAdded) {
-      this.hotTable.hotInstance?.addHook('afterChange', afterChangeCallback);
-      this.hotMeta.areHotHooksAdded = true;
+          // Update existing update object if same id is edited
+          const existingUpdate = this.rowUpdates().find(
+            (update) => update._id === bookingsData[rowIndex]._id,
+          );
+          if (existingUpdate) {
+            existingUpdate[fieldName as keyof TelecallerAssignmentUpdate] = newValue;
+            const updatedUpdates = this.rowUpdates().map((update) => {
+              if (update._id === bookingsData[rowIndex]._id) {
+                return existingUpdate;
+              }
+              return update;
+            });
+            this.rowUpdates.set(updatedUpdates);
+            console.log('updated row updates:', updatedUpdates);
+            return;
+          }
+
+          this.rowUpdates.update((updates) => [
+            ...updates,
+            {
+              _id: bookingsData[rowIndex]._id,
+              [fieldName]: newValue,
+            },
+          ]);
+        });
+      };
+
+      hotInstance.addHook('afterChange', afterChangeCallback);
+      this.hotMeta.areHotChangesMade = true;
     }
   });
 
