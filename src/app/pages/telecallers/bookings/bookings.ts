@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
 import Handsontable from 'handsontable';
@@ -55,6 +55,31 @@ export class TelecallerBookings implements OnInit {
   };
 
   rowUpdates = signal<TelecallerAssignmentUpdate[]>([]);
+
+  deactivatedUsersList = computed(
+    () =>
+      this.telecallerBookingsService
+        .telecallerBookings()
+        .data?.data?.map((booking, rowIndex) => ({
+          _id: booking._id,
+          rowIndex,
+          isDeactivated: booking.isDeactivated,
+        }))
+        .filter((booking) => booking.isDeactivated) || [],
+  );
+
+  deactivatedUsersInSelectedRows = computed(() =>
+    this.hotMeta.selectedRows().filter((rowIndex) =>
+      !!this.deactivatedUsersList().find((booking) => booking.rowIndex === rowIndex),
+    ),
+  );
+
+  // if deactivated users list includes selected rows, show confirm activate popup
+  confirmActivatePopupVisible = computed(() =>
+    this.deactivatedUsersList().some((booking) =>
+      this.hotMeta.selectedRows().includes(booking.rowIndex),
+    ),
+  );
 
   searchKeyChange() {
     if (this.searchKey === '')
@@ -263,19 +288,42 @@ export class TelecallerBookings implements OnInit {
       },
       acceptLabel: 'Deactivate',
       accept: () => {
-        this.deactivateUsers();
+        this.updateUserActivationStatus(false);
       },
     });
   }
 
-  deactivateUsers() {
-    this.telecallerBookingsService.deactivateTelecallerBooking(
+  confirmActivateUsers(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure you want to activate the selected users?',
+      header: 'Confirm Activate',
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        // providing label here is not accepted by the button
+        severity: 'danger',
+      },
+      acceptLabel: 'Activate',
+      accept: () => {
+        this.updateUserActivationStatus(true);
+      },
+    });
+  }
+
+  updateUserActivationStatus(activate: boolean) {
+    this.telecallerBookingsService.updateUsersActivationStatus(
       this.hotMeta
         .selectedRows()
         .map(
           (rowIndex) =>
             this.telecallerBookingsService.telecallerBookings().data!.data!.at(rowIndex)!._id!,
         ),
+      activate,
       () => {
         this.messageService.add({
           severity: 'success',
@@ -283,6 +331,8 @@ export class TelecallerBookings implements OnInit {
           detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
         });
         this.rowUpdates.set([]);
+        this.hotMeta.areHotChangesMade = false;
+        this.hotMeta.selectedRows.set([]);
         this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
       },
       (error) => {

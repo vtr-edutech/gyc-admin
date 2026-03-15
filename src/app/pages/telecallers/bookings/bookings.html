@@ -46,17 +46,31 @@
 
     <div class="flex items-center gap-2">
       @if (hotMeta.selectedRows().length > 0) {
-        <p-button
-          label="Deactivate"
-          icon="pi pi-user-minus"
-          severity="danger"
-          size="small"
-          [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
-          (onClick)="confirmDeactivateUsers($event)"
-        />
-        <p-floatlabel variant="on" class="min-w-64">
+        @if (!confirmActivatePopupVisible()) {
+          <p-button
+            [label]="'Deactivate'"
+            [icon]="'pi pi-user-minus'"
+            [severity]="'danger'"
+            size="small"
+            [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
+            (onClick)="confirmDeactivateUsers($event)"
+          />
+        } @else {
+          @if (this.deactivatedUsersInSelectedRows().length <= this.deactivatedUsersList().length) {
+            <p-button
+              [label]="'Activate'"
+              [icon]="'pi pi-user-plus'"
+              [severity]="'success'"
+              size="small"
+              [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
+              (onClick)="confirmActivateUsers($event)"
+            />
+          }
+        }
+        <p-floatlabel variant="on" class="min-w-68">
           <p-multiselect
             id="telecallerAssign"
+            [disabled]="confirmActivatePopupVisible()"
             [options]="telecallerService.telecallers().data?.data"
             [loading]="telecallerService.telecallers().isLoading"
             fluid="true"
@@ -84,9 +98,11 @@
               }
             </ng-template>
           </p-multiselect>
-          <label for="telecallerAssign" class="text-sm"
-            >Assign {{ hotMeta.selectedRows().length }} students to Telecaller</label
-          >
+          <label for="telecallerAssign" class="text-sm">{{
+            confirmActivatePopupVisible()
+              ? 'Cannot assign deactivated users'
+              : `Assign ${hotMeta.selectedRows().length} students to Telecaller`
+          }}</label>
         </p-floatlabel>
       }
       <p-button
