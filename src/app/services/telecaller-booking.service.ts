@@ -137,14 +137,14 @@ export class TelecallerBookingService {
     });
   }
 
-  deactivateTelecallerBooking(ids: string[], onSuccess?: Function, onError?: ErrorFnCallback) {
+  updateUsersActivationStatus(ids: string[], activate: boolean, onSuccess?: Function, onError?: ErrorFnCallback) {
     this.telecallerBookingsMutationMeta.set({
       isLoading: true,
       error: null,
       data: null,
     });
 
-    this.http.post<GenericResponse<string>>(API.DEACTIVATE_TELECALLER_BOOKINGS, ids).subscribe({
+    this.http.post<GenericResponse<string>>(API.UPDATE_TELECALLER_BOOKINGS_ACTIVATION_STATUS, {ids, activate }).subscribe({
       next: (response) => {
         this.telecallerBookingsMutationMeta.set({
           isLoading: false,
