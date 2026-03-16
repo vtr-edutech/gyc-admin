@@ -39,7 +39,7 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'fatherOccupation', title: 'Father occupation' },
   { data: 'mobile', title: 'Mobile' },
   { data: 'alternateMobile', title: 'Alternate mobile' },
-  { data: 'school', title: 'School' },
+  { data: 'school', title: 'School', width: 300 },
   { data: 'board', title: 'Board' },
   { data: 'schoolType', title: 'School Type' },
   {

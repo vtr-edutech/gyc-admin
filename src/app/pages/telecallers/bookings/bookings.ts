@@ -11,7 +11,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 import { MultiSelect } from 'primeng/multiselect';
 import { Toast } from 'primeng/toast';
 import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
-import { TelecallerAssignmentUpdate } from '../../../lib/types';
+import { TelecallerAssignment, TelecallerAssignmentUpdate } from '../../../lib/types';
 import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
 import { TelecallerService } from '../../../services/telecaller.service';
 import { ConfirmPopup } from 'primeng/confirmpopup';
@@ -127,10 +127,23 @@ export class TelecallerBookings implements OnInit {
     const hotInstance = this.hotTable?.hotInstance;
     if (!hotInstance) return;
 
+    // if there are rowUpdates, patch it in the bookingsData before populating so that changes stay across pagination changes
+    this.rowUpdates().forEach((update) => {
+      const rowIndex = bookingsData.findIndex((booking) => booking._id === update._id);
+      if (rowIndex !== -1) {
+        const updatedSubjects = (update.subjects as string)?.split(',');
+        bookingsData[rowIndex] = {
+          ...bookingsData[rowIndex],
+          ...update,
+          subjects: updatedSubjects,
+        } as TelecallerAssignment;
+      }
+    });
+    hotInstance.updateData(bookingsData);
+
     // Boolean check to handle HotChanges only once
     if (!this.hotMeta.areHotChangesMade) {
       // Update HoT table with data
-      hotInstance.updateData(bookingsData);
       // Update settings to apply bg red to deactivated rows
       hotInstance.updateSettings({
         // this function runs every time a change is made. i dont think this is very efficient.
@@ -141,7 +154,7 @@ export class TelecallerBookings implements OnInit {
             return this;
           }
 
-          const isDeactivatedRow = bookingsData[row].isDeactivated;
+          const isDeactivatedRow = bookingsData[row]?.isDeactivated;
           if (isDeactivatedRow) {
             this.readOnly = true;
             this.className = '!bg-red-200';
