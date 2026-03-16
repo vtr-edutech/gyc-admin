@@ -73,8 +73,9 @@
             [options]="telecallerService.telecallers().data?.data"
             [loading]="telecallerService.telecallers().isLoading"
             fluid="true"
+            filter="true"
+            filterBy="name,username"
             display="chip"
-            filter="false"
             [showToggleAll]="false"
             showClear="true"
             class="max-w-108"
@@ -82,7 +83,7 @@
             optionValue="_id"
           >
             <ng-template let-telecaller #item>
-              <span class="text-sm">{{ telecaller.name }}</span>
+              <span class="text-sm">{{ telecaller.name }} ({{ telecaller.username }})</span>
             </ng-template>
             <!-- The template for customizing selected callers chips -->
             <ng-template #selecteditems let-selectedTelecallers let-placeholder="placeholder">
