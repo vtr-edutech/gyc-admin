@@ -50,7 +50,6 @@ export class TelecallerBookings implements OnInit {
   searchKey = '';
 
   hotMeta = {
-    areHotChangesMade: false,
     selectedRows: signal<number[]>([]),
   };
 
@@ -96,10 +95,11 @@ export class TelecallerBookings implements OnInit {
     manualRowMove: false,
     manualColumnMove: false,
     manualColumnResize: true,
+    autoColumnSize: false,
     headerClassName: 'font-semibold text-lg',
     columns: TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS,
     hiddenColumns: {
-      columns: [0],
+      columns: [0, 1],
       indicators: false,
     },
     filters: true,
@@ -113,10 +113,30 @@ export class TelecallerBookings implements OnInit {
     },
     allowRemoveRow: false,
     allowRemoveColumn: false,
+    afterOnCellMouseOver(event, coords, TD) {
+      event.preventDefault();
+      event.stopPropagation();
+    },
     beforeKeyDown: function (event) {
       if (event.key === 'Backspace' || event.key === 'Delete') {
         Handsontable.dom.stopImmediatePropagation(event);
       }
+    },
+    cells(this: Handsontable.CellProperties, row, column, prop) {
+      if (column <= 2) {
+        this.readOnly = false;
+        return this;
+      }
+
+      const isDeactivatedRow = this.instance.getDataAtRowProp(row, 'isDeactivated') as boolean;
+      if (isDeactivatedRow) {
+        this.readOnly = true;
+        this.className = '!bg-red-200';
+      } else {
+        this.readOnly = false;
+        this.className = '';
+      }
+      return this;
     },
   };
 
@@ -214,32 +234,6 @@ export class TelecallerBookings implements OnInit {
 
     hotInstance.removeHook('afterChange', this.afterChangeCallback);
     hotInstance.addHook('afterChange', this.afterChangeCallback);
-
-    // Boolean check to handle HotChanges only once
-    if (!this.hotMeta.areHotChangesMade) {
-      // Update settings to apply bg red to deactivated rows
-      hotInstance.updateSettings({
-        /**
-         * this function runs every time a change is made. i dont think this is very efficient.
-         * we shall see if an issue arises and if so, change to single column isdeactivated data
-         */
-        cells(this: Handsontable.CellProperties, row, column, prop) {
-          if (column <= 1) {
-            this.readOnly = false;
-            return this;
-          }
-
-          const isDeactivatedRow = bookingsData[row]?.isDeactivated;
-          if (isDeactivatedRow) {
-            this.readOnly = true;
-            this.className = '!bg-red-200';
-          }
-          return this;
-        },
-      });
-
-      this.hotMeta.areHotChangesMade = true;
-    }
   });
 
   onPageChange(event: Paginator['paginatorState']) {
@@ -349,7 +343,6 @@ export class TelecallerBookings implements OnInit {
           detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
         });
         this.rowUpdates.set([]);
-        this.hotMeta.areHotChangesMade = false;
         this.hotMeta.selectedRows.set([]);
         this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
       },
@@ -373,6 +366,7 @@ export class TelecallerBookings implements OnInit {
           detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
         });
         this.rowUpdates.set([]);
+        this.hotMeta.selectedRows.set([]);
         this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
       },
       (error) => {
