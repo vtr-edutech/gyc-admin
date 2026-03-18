@@ -131,12 +131,16 @@ export class TelecallerBookings implements OnInit {
       }
 
       const isDeactivatedRow = this.instance.getDataAtRowProp(row, 'isDeactivated') as boolean;
+      const assignedToColumnIndex = this.instance.propToCol('assignedTo');
       if (isDeactivatedRow) {
         this.readOnly = true;
         this.className = '!bg-red-200';
       } else {
         this.readOnly = false;
         this.className = '';
+      }
+      if (column === assignedToColumnIndex) {
+        this.readOnly = true;
       }
       return this;
     },

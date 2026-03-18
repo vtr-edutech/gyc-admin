@@ -35,37 +35,38 @@ export const API = {
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   { data: '_id', title: '_Id', width: 0 },
   { data: 'isDeactivated', title: 'Deactivated', width: 0 },
-  { title: 'Select', type: 'checkbox', data: 'select', width: 77 },
-  { data: 'refNo', title: 'Ref no', width: 80 },
+  { title: 'Select', type: 'checkbox', data: 'select', width: 85 },
+  { data: 'refNo', title: 'Ref no', width: 95 },
   { data: 'studentName', title: 'Student name', width: 173 },
   { data: 'parentName', title: 'Parent name', width: 196 },
   {
     data: 'assignedTo',
     title: 'Assigned To',
     valueFormatter: (value: AdminUser<'telecaller'>[]) => {
-      return value?.map((user) => user.name)?.join(', ') ?? '';
+      return value && Array.isArray(value) ? value.map((user) => user.name).join(', ') : '';
     },
     width: 283,
+    readOnly: true,
   },
   { data: 'fatherOccupation', title: 'Father occupation', width: 153 },
-  { data: 'mobile', title: 'Mobile', width: 94 },
+  { data: 'mobile', title: 'Mobile', width: 100 },
   { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
   { data: 'school', title: 'School', width: 253 },
-  { data: 'board', title: 'Board', width: 77 },
-  { data: 'schoolType', title: 'School Type', width: 116 },
+  { data: 'board', title: 'Board', width: 85 },
+  { data: 'schoolType', title: 'School Type', width: 125 },
   {
     data: 'subjects',
     title: 'Subjects',
     valueFormatter: (value: string[]) => {
-      return value?.join(', ') ?? '';
+      return value && Array.isArray(value) ? value.join(', ') : '';
     },
     width: 283,
   },
-  { data: 'community', title: 'Community', width: 113 },
+  { data: 'community', title: 'Community', width: 125 },
   { data: 'area', title: 'Area', width: 80 },
-  { data: 'district', title: 'District', width: 84 },
-  { data: 'domainInterest', title: 'Domain interest', width: 141 },
-  { data: 'courseInterest', title: 'Course interest', width: 135 },
+  { data: 'district', title: 'District', width: 100 },
+  { data: 'domainInterest', title: 'Domain interest', width: 155 },
+  { data: 'courseInterest', title: 'Course interest', width: 155 },
   {
     data: 'dataValidationStatus',
     title: 'Data validation status',
@@ -89,9 +90,9 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
       if (value === 'partial') td.classList.add('!bg-amber-200', '!text-amber-900');
       td.textContent = value ?? '';
     },
-    width: 177,
+    width: 190,
   },
-  { data: 'remarks', title: 'Remarks', width: 93 },
+  { data: 'remarks', title: 'Remarks', width: 100 },
   {
     data: 'createdAt',
     title: 'Created at',
