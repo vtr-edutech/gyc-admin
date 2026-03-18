@@ -64,6 +64,8 @@ export class TelecallerBookings implements OnInit {
       .filter(Boolean);
   });
 
+  selectedTelecallerIds = signal<string[]>([]);
+
   isAllSelectedActivated = computed(() => {
     const selected = this.selectedBookings();
     return selected.length > 0 && selected.every((booking) => !booking.isDeactivated);
@@ -359,6 +361,35 @@ export class TelecallerBookings implements OnInit {
   updateChanges() {
     this.telecallerBookingsService.updateTelecallerBooking(
       this.rowUpdates(),
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+        });
+        this.rowUpdates.set([]);
+        this.hotMeta.selectedRows.set([]);
+        this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+      },
+      (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error,
+        });
+      },
+    );
+  }
+
+  assignTelecallerBookings() {
+    this.telecallerBookingsService.assignTelecallerBookings(
+      this.hotMeta
+        .selectedRows()
+        .map(
+          (rowIndex) =>
+            this.telecallerBookingsService.telecallerBookings().data!.data!.at(rowIndex)!._id!,
+        ),
+      this.selectedTelecallerIds(),
       () => {
         this.messageService.add({
           severity: 'success',

@@ -179,7 +179,7 @@ export interface TelecallerAssignment extends Timestamps {
   courseInterest: string;
   remarks: string;
   fatherOccupation: string;
-  assignedTo: AdminUser<'telecaller'> | null;
+  assignedTo: AdminUser<'telecaller'>[] | null;
   assignedAt: string;
   isAdmissionComplete: boolean;
   isDeactivated: boolean;

@@ -81,6 +81,7 @@
             class="max-w-108"
             optionLabel="name"
             optionValue="_id"
+            [(ngModel)]="selectedTelecallerIds"
           >
             <ng-template let-telecaller #item>
               <span class="text-sm">{{ telecaller.name }} ({{ telecaller.username }})</span>
@@ -104,6 +105,16 @@
               : `Assign ${hotMeta.selectedRows().length} students to Telecaller`
           }}</label>
         </p-floatlabel>
+      }
+      @if (selectedTelecallerIds().length > 0) {
+        <p-button
+          label="Assign"
+          (onClick)="assignTelecallerBookings()"
+          [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
+          [icon]="'pi pi-user-plus'"
+          [severity]="'success'"
+          size="small"
+        />
       }
       <p-button
         label="Save Changes"

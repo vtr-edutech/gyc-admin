@@ -1,5 +1,6 @@
 import { ColumnSettings } from 'handsontable/settings';
 import { environment } from '../../environments/environment';
+import { AdminUser } from './types';
 
 const API_URL = environment.apiUrl;
 
@@ -28,6 +29,7 @@ export const API = {
   UPLOAD_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/upload',
   UPDATE_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/update',
   UPDATE_TELECALLER_BOOKINGS_ACTIVATION_STATUS: API_URL + '/admin/telecallers/bookings/activation',
+  ASSIGN_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/assign',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
@@ -37,6 +39,14 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'refNo', title: 'Ref no', width: 80 },
   { data: 'studentName', title: 'Student name', width: 173 },
   { data: 'parentName', title: 'Parent name', width: 196 },
+  {
+    data: 'assignedTo',
+    title: 'Assigned To',
+    valueFormatter: (value: AdminUser<'telecaller'>[]) => {
+      return value?.map((user) => user.name)?.join(', ') ?? '';
+    },
+    width: 283,
+  },
   { data: 'fatherOccupation', title: 'Father occupation', width: 153 },
   { data: 'mobile', title: 'Mobile', width: 94 },
   { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
@@ -46,13 +56,8 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   {
     data: 'subjects',
     title: 'Subjects',
-    renderer: (...renderObj) => {
-      const [, td, , , , value] = renderObj;
-      if (Array.isArray(value)) {
-        td.textContent = value.join(', ');
-      } else {
-        td.textContent = value ?? '';
-      }
+    valueFormatter: (value: string[]) => {
+      return value?.join(', ') ?? '';
     },
     width: 283,
   },

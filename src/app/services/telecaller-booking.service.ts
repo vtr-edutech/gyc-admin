@@ -137,30 +137,73 @@ export class TelecallerBookingService {
     });
   }
 
-  updateUsersActivationStatus(ids: string[], activate: boolean, onSuccess?: Function, onError?: ErrorFnCallback) {
+  updateUsersActivationStatus(
+    ids: string[],
+    activate: boolean,
+    onSuccess?: Function,
+    onError?: ErrorFnCallback,
+  ) {
     this.telecallerBookingsMutationMeta.set({
       isLoading: true,
       error: null,
       data: null,
     });
 
-    this.http.post<GenericResponse<string>>(API.UPDATE_TELECALLER_BOOKINGS_ACTIVATION_STATUS, {ids, activate }).subscribe({
-      next: (response) => {
-        this.telecallerBookingsMutationMeta.set({
-          isLoading: false,
-          error: null,
-          data: response,
-        });
-        onSuccess?.();
-      },
-      error: (error) => {
-        this.telecallerBookingsMutationMeta.set({
-          isLoading: false,
-          error: getErrorMessage(error),
-          data: null,
-        });
-        onError?.(getErrorMessage(error));
-      },
+    this.http
+      .post<
+        GenericResponse<string>
+      >(API.UPDATE_TELECALLER_BOOKINGS_ACTIVATION_STATUS, { ids, activate })
+      .subscribe({
+        next: (response) => {
+          this.telecallerBookingsMutationMeta.set({
+            isLoading: false,
+            error: null,
+            data: response,
+          });
+          onSuccess?.();
+        },
+        error: (error) => {
+          this.telecallerBookingsMutationMeta.set({
+            isLoading: false,
+            error: getErrorMessage(error),
+            data: null,
+          });
+          onError?.(getErrorMessage(error));
+        },
+      });
+  }
+
+  assignTelecallerBookings(
+    bookingIds: string[],
+    telecallerIds: string[],
+    onSuccess?: Function,
+    onError?: ErrorFnCallback,
+  ) {
+    this.telecallerBookingsMutationMeta.set({
+      isLoading: true,
+      error: null,
+      data: null,
     });
+
+    this.http
+      .post<GenericResponse<string>>(API.ASSIGN_TELECALLER_BOOKINGS, { bookingIds, telecallerIds })
+      .subscribe({
+        next: (response) => {
+          this.telecallerBookingsMutationMeta.set({
+            isLoading: false,
+            error: null,
+            data: response,
+          });
+          onSuccess?.();
+        },
+        error: (error) => {
+          this.telecallerBookingsMutationMeta.set({
+            isLoading: false,
+            error: getErrorMessage(error),
+            data: null,
+          });
+          onError?.(getErrorMessage(error));
+        },
+      });
   }
 }
