@@ -29,7 +29,9 @@ export class AuthService {
     const fullName = this.authState().data?.data?.name;
     if (!fullName) return '';
     return (
-      fullName.split(' ')[0]?.[0]?.toUpperCase() + '' + fullName.split(' ')[1]?.[0]?.toUpperCase()
+      fullName.split(' ')[0]?.[0]?.toUpperCase() +
+      '' +
+      (fullName.split(' ')[1]?.[0]?.toUpperCase() ?? '')
     );
   });
 

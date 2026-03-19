@@ -92,6 +92,7 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
     },
     width: 190,
   },
+  { data: 'isAdmissionComplete', title: 'Admission Complete', width: 150, type: 'checkbox' },
   { data: 'remarks', title: 'Remarks', width: 100 },
   {
     data: 'createdAt',
