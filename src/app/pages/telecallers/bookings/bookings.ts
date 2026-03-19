@@ -155,6 +155,22 @@ export class TelecallerBookings implements OnInit {
       const [rowIndex, , , newValue] = change;
       if (newValue === true) {
         this.hotMeta.selectedRows.update((rows) => Array.from(new Set([...rows, rowIndex])));
+        /**
+         * when selecting one / more rows with assignedTo not empty, then prepare the control signal for multiselect with values
+         * only if the multiselect is empty
+         */
+        if (this.selectedTelecallerIds().length === 0) {
+          this.selectedTelecallerIds.set(
+            this.bookingsData()
+              ?.filter(
+                (booking, index) =>
+                  index === rowIndex && booking.assignedTo && booking.assignedTo.length !== 0,
+              )
+              .flatMap(
+                (booking) => booking.assignedTo?.map((telecaller) => telecaller._id) ?? [],
+              ) ?? [],
+          );
+        }
       } else {
         this.hotMeta.selectedRows.update((rows) => rows.filter((row) => row !== rowIndex));
       }
@@ -334,13 +350,35 @@ export class TelecallerBookings implements OnInit {
   }
 
   updateUserActivationStatus(activate: boolean) {
+    const selectedStudentRecords = this.hotMeta
+      .selectedRows()
+      .map((rowIndex) =>
+        this.telecallerBookingsService.telecallerBookings().data!.data!.at(rowIndex),
+      )
+      .filter(Boolean);
+    if (selectedStudentRecords.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No students selected',
+      });
+      return;
+    }
+    /**
+     * Check if deactivating users, if so check if any of the selected users are assigned to telecallers
+     */
+    if (!activate && selectedStudentRecords.some((record) => record!.assignedTo?.length !== 0)) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Cannot deactivate users who are assigned to telecallers',
+      });
+      return;
+    }
+
+    const selectedStudentIds = selectedStudentRecords.map((record) => record!._id!);
     this.telecallerBookingsService.updateUsersActivationStatus(
-      this.hotMeta
-        .selectedRows()
-        .map(
-          (rowIndex) =>
-            this.telecallerBookingsService.telecallerBookings().data!.data!.at(rowIndex)!._id!,
-        ),
+      selectedStudentIds,
       activate,
       () => {
         this.messageService.add({
@@ -386,13 +424,14 @@ export class TelecallerBookings implements OnInit {
   }
 
   assignTelecallerBookings() {
+    const selectedStudentIds = this.hotMeta
+      .selectedRows()
+      .map(
+        (rowIndex) =>
+          this.telecallerBookingsService.telecallerBookings().data!.data!.at(rowIndex)!._id!,
+      );
     this.telecallerBookingsService.assignTelecallerBookings(
-      this.hotMeta
-        .selectedRows()
-        .map(
-          (rowIndex) =>
-            this.telecallerBookingsService.telecallerBookings().data!.data!.at(rowIndex)!._id!,
-        ),
+      selectedStudentIds,
       this.selectedTelecallerIds(),
       () => {
         this.messageService.add({
@@ -402,6 +441,7 @@ export class TelecallerBookings implements OnInit {
         });
         this.rowUpdates.set([]);
         this.hotMeta.selectedRows.set([]);
+        this.selectedTelecallerIds.set([]);
         this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
       },
       (error) => {

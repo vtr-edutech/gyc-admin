@@ -80,6 +80,7 @@
             showClear="true"
             class="max-w-108"
             optionLabel="name"
+            (onClear)="this.selectedTelecallerIds.set([])"
             optionValue="_id"
             [(ngModel)]="selectedTelecallerIds"
           >

@@ -42,7 +42,7 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   {
     data: 'assignedTo',
     title: 'Assigned To',
-    valueFormatter: (value: AdminUser<'telecaller'>[]) => {
+    valueGetter(value, row, column, cellProperties) {
       return value && Array.isArray(value) ? value.map((user) => user.name).join(', ') : '';
     },
     width: 283,
