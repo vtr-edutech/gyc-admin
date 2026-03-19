@@ -107,7 +107,7 @@
           }}</label>
         </p-floatlabel>
       }
-      @if (selectedTelecallerIds().length > 0) {
+      @if (selectedTelecallerIds().length > 0 && hotMeta.selectedRows().length > 0) {
         <p-button
           label="Assign"
           (onClick)="assignTelecallerBookings()"

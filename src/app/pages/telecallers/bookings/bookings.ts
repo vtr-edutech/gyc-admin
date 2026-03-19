@@ -159,6 +159,10 @@ export class TelecallerBookings implements OnInit {
          * when selecting one / more rows with assignedTo not empty, then prepare the control signal for multiselect with values
          * only if the multiselect is empty
          */
+        if (this.bookingsData()?.at(rowIndex)?.isDeactivated) {
+          this.selectedTelecallerIds.set([]);
+          return;
+        }
         if (this.selectedTelecallerIds().length === 0) {
           this.selectedTelecallerIds.set(
             this.bookingsData()
@@ -361,17 +365,6 @@ export class TelecallerBookings implements OnInit {
         severity: 'error',
         summary: 'Error',
         detail: 'No students selected',
-      });
-      return;
-    }
-    /**
-     * Check if deactivating users, if so check if any of the selected users are assigned to telecallers
-     */
-    if (!activate && selectedStudentRecords.some((record) => record!.assignedTo?.length !== 0)) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Cannot deactivate users who are assigned to telecallers',
       });
       return;
     }
