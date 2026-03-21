@@ -1,6 +1,6 @@
 import { ColumnSettings } from 'handsontable/settings';
 import { environment } from '../../environments/environment';
-import { AdminUser } from './types';
+import { customValidationDropdownRenderer, formatDates } from './utils';
 
 const API_URL = environment.apiUrl;
 
@@ -74,22 +74,7 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
     allowInvalid: false,
     allowEmpty: false,
     source: ['correct', 'incorrect', 'partial'],
-    renderer: (...renderObj) => {
-      const [, td, , , , value] = renderObj;
-      // Always reset before re-applying so stale classes don't accumulate on data refresh.
-      td.classList.remove(
-        'bg-green-200',
-        '!text-green-900',
-        'bg-red-200',
-        '!text-red-900',
-        'bg-amber-200',
-        '!text-amber-900',
-      );
-      if (value === 'correct') td.classList.add('!bg-green-200', '!text-green-900');
-      if (value === 'incorrect') td.classList.add('!bg-red-200', '!text-red-900');
-      if (value === 'partial') td.classList.add('!bg-amber-200', '!text-amber-900');
-      td.textContent = value ?? '';
-    },
+    renderer: customValidationDropdownRenderer,
     width: 190,
   },
   { data: 'isAdmissionComplete', title: 'Admission Complete', width: 150, type: 'checkbox' },
@@ -99,11 +84,65 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
     title: 'Created at',
     readOnly: true,
     width: 150,
+    valueFormatter(value: string) {
+      return formatDates(value);
+    },
   },
   {
     data: 'updatedAt',
     title: 'Updated at',
     readOnly: true,
     width: 150,
+    valueFormatter(value: string) {
+      return formatDates(value);
+    },
+  },
+];
+
+export const TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS: ColumnSettings[] = [
+  { data: '_id', title: '_Id', width: 0 },
+  { data: 'isDeactivated', title: 'Deactivated', width: 0 },
+  { title: 'Select', type: 'checkbox', data: 'select', width: 85 },
+  { data: 'refNo', title: 'Ref no', width: 95 },
+  { data: 'studentName', title: 'Student name', width: 173 },
+  { data: 'parentName', title: 'Parent name', width: 196 },
+  { data: 'fatherOccupation', title: 'Father occupation', width: 153 },
+  { data: 'mobile', title: 'Mobile', width: 100 },
+  { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
+  { data: 'school', title: 'School', width: 253 },
+  { data: 'board', title: 'Board', width: 85 },
+  { data: 'schoolType', title: 'School Type', width: 125 },
+  {
+    data: 'subjects',
+    title: 'Subjects',
+    valueFormatter: (value: string[]) => {
+      return value && Array.isArray(value) ? value.join(', ') : '';
+    },
+    width: 283,
+  },
+  { data: 'community', title: 'Community', width: 125 },
+  { data: 'area', title: 'Area', width: 80 },
+  { data: 'district', title: 'District', width: 100 },
+  { data: 'domainInterest', title: 'Domain interest', width: 155 },
+  { data: 'courseInterest', title: 'Course interest', width: 155 },
+  {
+    data: 'dataValidationStatus',
+    title: 'Data validation status',
+    type: 'dropdown',
+    allowInvalid: false,
+    allowEmpty: false,
+    source: ['correct', 'incorrect', 'partial'],
+    renderer: customValidationDropdownRenderer,
+    width: 190,
+  },
+  { data: 'remarks', title: 'Remarks', width: 100 },
+  {
+    data: 'assignedAt',
+    title: 'Assigned at',
+    width: 150,
+    readOnly: true,
+    valueFormatter(value: string) {
+      return formatDates(value);
+    },
   },
 ];

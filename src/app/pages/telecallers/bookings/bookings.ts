@@ -15,6 +15,7 @@ import { TelecallerAssignment, TelecallerAssignmentUpdate } from '../../../lib/t
 import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
 import { TelecallerService } from '../../../services/telecaller.service';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { customValidationDropdownRenderer } from '../../../lib/utils';
 
 @Component({
   selector: 'app-telecaller-bookings',
@@ -125,6 +126,12 @@ export class TelecallerBookings implements OnInit {
       }
     },
     cells(this: Handsontable.CellProperties, row, column, prop) {
+      // NOTES:3 set custom renderer for dataValidationStatus column once again to avoid default renderer forced
+      if (prop === 'dataValidationStatus') {
+        this.renderer = customValidationDropdownRenderer;
+        return this;
+      }
+
       if (column <= 2) {
         this.readOnly = false;
         return this;
@@ -256,7 +263,7 @@ export class TelecallerBookings implements OnInit {
         } as TelecallerAssignment;
       }
     });
-    hotInstance.updateData(bookingsData);
+    hotInstance.updateData(bookingsData.length > 0 ? bookingsData : this.data);
 
     hotInstance.removeHook('afterChange', this.afterChangeCallback);
     hotInstance.addHook('afterChange', this.afterChangeCallback);
@@ -381,7 +388,11 @@ export class TelecallerBookings implements OnInit {
         });
         this.rowUpdates.set([]);
         this.hotMeta.selectedRows.set([]);
-        this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+        this.telecallerBookingsService.fetchTelecallerBookings(
+          1,
+          this.pagination.limit,
+          this.searchKey,
+        );
       },
       (error) => {
         this.messageService.add({
@@ -404,7 +415,11 @@ export class TelecallerBookings implements OnInit {
         });
         this.rowUpdates.set([]);
         this.hotMeta.selectedRows.set([]);
-        this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+        this.telecallerBookingsService.fetchTelecallerBookings(
+          1,
+          this.pagination.limit,
+          this.searchKey,
+        );
       },
       (error) => {
         this.messageService.add({

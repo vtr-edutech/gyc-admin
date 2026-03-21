@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
 import {
@@ -33,6 +33,7 @@ export class TelecallerBookingService {
     page: number = 1,
     limit: number = 50,
     searchKey: string = '',
+    telecallerIds?: string[],
     onError?: ErrorFnCallback,
   ): void {
     this.telecallerBookings.set({
@@ -41,13 +42,21 @@ export class TelecallerBookingService {
       data: null,
     });
 
+    const params: HttpParams = new HttpParams({
+      fromObject: {
+        page: page.toString(),
+        limit: limit.toString(),
+        search: searchKey,
+      },
+    });
+
+    if (telecallerIds) {
+      params.set('telecallerIds', telecallerIds.join(','));
+    }
+
     this.http
       .get<GenericResponse<TelecallerAssignment[]>>(API.GET_TELECALLER_BOOKINGS, {
-        params: {
-          page: page.toString(),
-          limit: limit.toString(),
-          search: searchKey,
-        },
+        params,
       })
       .subscribe({
         next: (response) => {
@@ -56,12 +65,7 @@ export class TelecallerBookingService {
             error: null,
             data: {
               ...response,
-              data:
-                response!.data?.map((response) => ({
-                  ...response,
-                  createdAt: formatDates(response.createdAt),
-                  updatedAt: formatDates(response.updatedAt),
-                })) || [],
+              data: response!.data || [],
             },
           });
         },
