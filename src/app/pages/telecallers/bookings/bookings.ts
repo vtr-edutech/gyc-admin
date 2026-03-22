@@ -115,6 +115,7 @@ export class TelecallerBookings implements OnInit {
       sortEmptyCells: false,
     },
     allowRemoveRow: false,
+    preventOverflow: 'horizontal',
     allowRemoveColumn: false,
     afterOnCellMouseOver(event, coords, TD) {
       event.preventDefault();
