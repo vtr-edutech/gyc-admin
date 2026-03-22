@@ -5,7 +5,12 @@
       <p>View and manage all telecaller bookings</p>
     </div>
     <div class="flex gap-3">
-      <p-button icon="pi pi-plus" [size]="'small'" label="Follow-up" />
+      <p-button
+        icon="pi pi-plus"
+        [size]="'small'"
+        label="Follow-up"
+        (onClick)="toggleFollowUpModal(true)"
+      />
     </div>
   </div>
   <div class="h-[80vh] max-w-[80vw] overflow-x-auto relative">
@@ -22,14 +27,21 @@
   (onPageChange)="onPageChange($event)"
   [first]="pagination.first"
   [rows]="pagination.limit"
-  [totalRecords]="
-    (this.searchKey !== ''
-      ? telecallerBookingsService.telecallerBookings().data?.totalDocsForFilter
-      : telecallerBookingsService.telecallerBookings().data?.totalDocs) ?? 0
-  "
+  [totalRecords]="telecallerBookingsService.telecallerBookings().data?.totalDocsForFilter"
   [rowsPerPageOptions]="[10, 20, 50, 100, 500]"
   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
   showCurrentPageReport="true"
 />
 <p-toast></p-toast>
 <p-confirmpopup></p-confirmpopup>
+
+<p-dialog
+  [visible]="isFollowUpModalOpen()"
+  (onHide)="toggleFollowUpModal(false)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '60%' }"
+>
+  <app-follow-up-form />
+</p-dialog>

@@ -1,17 +1,28 @@
-import { Component, computed, effect, inject, OnInit, ViewChild } from '@angular/core';
-import { Toast } from 'primeng/toast';
-import { ConfirmPopup } from 'primeng/confirmpopup';
+import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
-import { TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS } from '../../../lib/constants';
 import Handsontable from 'handsontable';
 import { Button } from 'primeng/button';
-import { ProgressSpinner } from 'primeng/progressspinner';
-import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
+import { ConfirmPopup } from 'primeng/confirmpopup';
+import { DialogModule } from 'primeng/dialog';
 import { Paginator } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { Toast } from 'primeng/toast';
+import { TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS } from '../../../lib/constants';
+import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
+import { FollowUpForm } from './components/follow-up-form/follow-up-form';
 
 @Component({
   selector: 'app-bookings-telecaller',
-  imports: [Toast, ConfirmPopup, HotTableModule, Button, ProgressSpinner, Paginator],
+  imports: [
+    Toast,
+    ConfirmPopup,
+    HotTableModule,
+    Button,
+    ProgressSpinner,
+    Paginator,
+    DialogModule,
+    FollowUpForm,
+  ],
   templateUrl: './telecaller.html',
   styleUrl: './telecaller.css',
 })
@@ -20,8 +31,10 @@ export class TelecallerBooking implements OnInit {
 
   telecallerBookingsService = inject(TelecallerBookingService);
 
+  isFollowUpModalOpen = signal<boolean>(false);
+
   pagination = {
-    first: 1,
+    first: 0,
     limit: 50,
   };
 
@@ -96,5 +109,9 @@ export class TelecallerBooking implements OnInit {
       this.pagination.limit,
       this.searchKey,
     );
+  }
+
+  toggleFollowUpModal(open: boolean) {
+    this.isFollowUpModalOpen.set(open);
   }
 }

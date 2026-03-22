@@ -1,0 +1,24 @@
+<form [formGroup]="followUpFormGroup">
+  <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-2">
+      <label for="college">College</label>
+      <input type="text" id="college" formControlName="college" />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label for="remarks">Remarks</label>
+      <input type="text" id="remarks" formControlName="remarks" />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label for="calledDate">Called Date</label>
+      <input type="date" id="calledDate" formControlName="calledDate" />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label for="followUpDate">Follow-up Date</label>
+      <input type="date" id="followUpDate" formControlName="followUpDate" />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label for="extraFields">Extra Fields</label>
+      <input type="text" id="extraFields" formControlName="extraFields" />
+    </div>
+  </div>
+</form>

@@ -187,9 +187,20 @@ export interface TelecallerAssignment extends Timestamps {
 
 export interface TelecallerServiceHistory extends Timestamps {
   college: string;
+  bookingId: Pick<TelecallerAssignment, '_id' | 'studentName' | 'mobile'>;
   remarks: string;
   calledDate: string;
   followUpDate: string;
   attendedBy: AdminUser<'telecaller'> | null;
   attendedAt: string;
+  extraFields: Record<string, string>;
+}
+
+export interface FollowUpFormPayload {
+  college: string;
+  bookingId: string[];
+  remarks: string;
+  calledDate: string;
+  followUpDate: string | null;
+  extraFields: Record<string, string>;
 }
