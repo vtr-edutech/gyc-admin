@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Textarea } from 'primeng/textarea';
+import { InputText } from 'primeng/inputtext';
+import { DatePicker } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-follow-up-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Textarea, InputText, DatePicker],
   templateUrl: './follow-up-form.html',
   styleUrl: './follow-up-form.css',
 })
@@ -15,8 +18,14 @@ export class FollowUpForm {
       [Validators.required, Validators.minLength(1)],
     ),
     remarks: new FormControl<string>('', Validators.required),
-    calledDate: new FormControl<string>(new Date().toISOString(), Validators.required),
-    followUpDate: new FormControl<string | null>(null),
+    calledDate: new FormControl<Date>(new Date(), Validators.required),
+    followUpDate: new FormControl<Date | null>(null),
     extraFields: new FormControl<Record<string, string>>({}),
   });
+
+  constructor() {
+    this.followUpFormGroup.valueChanges.subscribe((value) => {
+      console.log(value);
+    });
+  }
 }

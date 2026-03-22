@@ -1,23 +1,48 @@
 <form [formGroup]="followUpFormGroup">
-  <div class="flex flex-col gap-5">
-    <div class="flex flex-col gap-2">
-      <label for="college">College</label>
-      <input type="text" id="college" formControlName="college" />
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1">
+      <label class="font-semibold" for="college">College</label>
+      <input
+        type="text"
+        id="college"
+        placeholder="Provide a college name..."
+        pInputText
+        formControlName="college"
+      />
     </div>
-    <div class="flex flex-col gap-2">
-      <label for="remarks">Remarks</label>
-      <input type="text" id="remarks" formControlName="remarks" />
+    <div class="flex flex-col gap-1">
+      <label class="font-semibold" for="remarks">Remarks</label>
+      <textarea
+        id="remarks"
+        placeholder="Provide remarks..."
+        pInputTextarea
+        formControlName="remarks"
+      ></textarea>
     </div>
-    <div class="flex flex-col gap-2">
-      <label for="calledDate">Called Date</label>
-      <input type="date" id="calledDate" formControlName="calledDate" />
+    <div class="grid grid-cols-2 gap-1 gap-x-4">
+      <label class="font-semibold order-1" for="calledDate">Called Date</label>
+      <p-datepicker
+        size="small"
+        appendTo="body"
+        class="order-3"
+        formControlName="calledDate"
+        dateFormat="dd/mm/yy"
+        [showTime]="true"
+        hourFormat="12"
+      />
+      <label class="font-semibold order-2" for="followUpDate">Follow-up Date</label>
+      <p-datepicker
+        size="small"
+        appendTo="body"
+        class="order-4"
+        formControlName="followUpDate"
+        placeholder="Enter follow-up date"
+        [showTime]="true"
+        hourFormat="12"
+      />
     </div>
-    <div class="flex flex-col gap-2">
-      <label for="followUpDate">Follow-up Date</label>
-      <input type="date" id="followUpDate" formControlName="followUpDate" />
-    </div>
-    <div class="flex flex-col gap-2">
-      <label for="extraFields">Extra Fields</label>
+    <div class="flex flex-col gap-1">
+      <label class="font-semibold" for="extraFields">Extra Fields</label>
       <input type="text" id="extraFields" formControlName="extraFields" />
     </div>
   </div>
