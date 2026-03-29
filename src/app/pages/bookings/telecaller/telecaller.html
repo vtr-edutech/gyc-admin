@@ -9,6 +9,7 @@
         icon="pi pi-plus"
         [size]="'small'"
         label="Follow-up"
+        [disabled]="hotMeta.selectedRows().length === 0"
         (onClick)="toggleFollowUpModal(true)"
       />
     </div>

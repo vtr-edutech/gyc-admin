@@ -22,6 +22,11 @@ export const routes: Routes = [
         title: 'Users - GYC Admin',
       },
       {
+        path: 'referrers',
+        loadComponent: () => import('./pages/referrers/referrers').then((m) => m.Referrers),
+        title: 'Referrers - GYC Admin',
+      },
+      {
         path: 'announcements',
         loadComponent: () =>
           import('./pages/notifications/notifications').then((m) => m.Notifications),

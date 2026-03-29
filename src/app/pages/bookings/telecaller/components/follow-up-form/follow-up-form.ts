@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Textarea } from 'primeng/textarea';
-import { InputText } from 'primeng/inputtext';
 import { DatePicker } from 'primeng/datepicker';
+import { InputText } from 'primeng/inputtext';
+import { Textarea } from 'primeng/textarea';
 
 @Component({
   selector: 'app-follow-up-form',
@@ -27,5 +27,9 @@ export class FollowUpForm {
     this.followUpFormGroup.valueChanges.subscribe((value) => {
       console.log(value);
     });
+  }
+
+  submitFollowUp() {
+    console.log(this.followUpFormGroup.value);
   }
 }

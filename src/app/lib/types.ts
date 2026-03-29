@@ -148,14 +148,16 @@ export interface SlotBooking extends Timestamps {
   attendedAt: string;
 }
 
-export interface AdminUser<T = AdminUserRoles> extends Timestamps {
+export interface AdminUser<T extends AdminUserRoles> extends Timestamps {
   name: string;
   username: string;
   mobile?: string;
   email?: string;
   role: T;
-  createdAt: string;
-  updatedAt: string;
+  isMobileVerified: boolean;
+  district?: string;
+  deactivatedAt?: string;
+  deactivatedBy?: Pick<AdminUser<'admin' | 'superadmin'>, '_id' | 'name'>;
 }
 
 export interface TelecallerAssignment extends Timestamps {
@@ -203,4 +205,13 @@ export interface FollowUpFormPayload {
   calledDate: string;
   followUpDate: string | null;
   extraFields: Record<string, string>;
+}
+
+export interface Referral extends Timestamps {
+  name: string;
+  mobile: string;
+  email: string;
+  district: string;
+  area: string;
+  referredBy: Pick<AdminUser<'admin' | 'superadmin'>, '_id' | 'name'>;
 }

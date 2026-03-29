@@ -38,6 +38,10 @@ export class TelecallerBooking implements OnInit {
     limit: 50,
   };
 
+  hotMeta = {
+    selectedRows: signal<number[]>([]),
+  };
+
   searchKey = '';
 
   data = Array.from({ length: 50 }, (_, i) =>
@@ -84,6 +88,33 @@ export class TelecallerBooking implements OnInit {
   // Computed signal bookingsData to simplify access to the data array
   bookingsData = computed(() => this.telecallerBookingsService.telecallerBookings().data?.data);
 
+  handleSelectRows = (changes: Handsontable.CellChange[]) => {
+    changes.forEach((change) => {
+      const [rowIndex, , , newValue] = change;
+      if (newValue === true) {
+        this.hotMeta.selectedRows.update((rows) => Array.from(new Set([...rows, rowIndex])));
+      } else {
+        this.hotMeta.selectedRows.update((rows) => rows.filter((row) => row !== rowIndex));
+      }
+    });
+  };
+
+  afterChangeCallback: Handsontable.GridSettings['afterChange'] = (changes, source) => {
+    const validChangeSources: Handsontable.ChangeSource[] = [
+      'UndoRedo.redo',
+      'UndoRedo.undo',
+      'edit',
+      'Autofill.fill',
+    ];
+    if (!validChangeSources.includes(source) || !changes) return;
+
+    // check select column change
+    if (changes.every((change) => change[1] === 'select')) {
+      this.handleSelectRows(changes);
+      return;
+    }
+  };
+
   hotModifierWatch = effect(() => {
     const bookingsData = this.bookingsData();
     if (!bookingsData) return;
@@ -92,6 +123,9 @@ export class TelecallerBooking implements OnInit {
     if (!hotInstance) return;
 
     hotInstance.updateData(bookingsData.length > 0 ? bookingsData : this.data);
+
+    hotInstance.removeHook('afterChange', this.afterChangeCallback);
+    hotInstance.addHook('afterChange', this.afterChangeCallback);
   });
 
   ngOnInit(): void {
