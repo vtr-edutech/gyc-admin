@@ -42,6 +42,13 @@ export class Referrers {
 
   formatDates = formatDates;
 
+  isSearchActive(): boolean {
+    return (
+      this.referrersService.referrers().data?.totalDocsForFilter !==
+      this.referrersService.referrers().data?.totalDocs
+    );
+  }
+
   loadReferrers(event: TableLazyLoadEvent) {
     const page = (event.first || 0) / (event.rows || 10) + 1;
     const limit = event.rows || 10;

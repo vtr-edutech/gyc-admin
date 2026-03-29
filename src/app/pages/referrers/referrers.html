@@ -12,6 +12,7 @@
       placeholder="Search by name, username, email, or phone..."
       pInputText
       (keydown.enter)="search()"
+      (search)="search()"
       pSize="small"
     />
     <p-button
@@ -30,7 +31,11 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     [lazy]="true"
     (onLazyLoad)="loadReferrers($event)"
-    [totalRecords]="referrersService.referrers().data?.totalDocs || 0"
+    [totalRecords]="
+      isSearchActive()
+        ? referrersService.referrers().data?.totalDocsForFilter || 0
+        : referrersService.referrers().data?.totalDocs || 0
+    "
     [value]="referrersService.referrers().data?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
