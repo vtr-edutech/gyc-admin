@@ -9,7 +9,10 @@ interface Referrer extends AdminUser<'referrer'> {
 }
 
 interface ReferrerById extends AdminUser<'referrer'> {
-  referrals: Pick<User, '_id' | 'firstName' | 'lastName' | 'registerNo' | 'mobile' | 'createdAt'>[];
+  referrals?: (Pick<
+    User,
+    '_id' | 'firstName' | 'lastName' | 'registerNo' | 'mobile' | 'createdAt'
+  > & { index: number })[];
 }
 
 @Injectable({
@@ -89,7 +92,10 @@ export class ReferrersService {
         this.referrerById.set({
           isLoading: false,
           error: null,
-          data: response,
+          data: {
+            ...response,
+            data: response.data,
+          },
         });
       },
       error: (error) => {

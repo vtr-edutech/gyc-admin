@@ -4,10 +4,11 @@ import { MessageService } from 'primeng/api';
 import { InfoTile } from '../../../components/info-tile/info-tile';
 import { Skeleton } from 'primeng/skeleton';
 import { formatDates } from '../../../lib/utils';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-referrer-details',
-  imports: [InfoTile, Skeleton],
+  imports: [InfoTile, Skeleton, TableModule],
   templateUrl: './referrer-details.html',
   styleUrl: './referrer-details.css',
 })
