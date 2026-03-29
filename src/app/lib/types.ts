@@ -37,7 +37,7 @@ export type TelecallerAssignmentUpdate = { _id: string } & Partial<
   Record<keyof TelecallerAssignment, string>
 >;
 
-type AdminUserRoles = 'admin' | 'superadmin' | 'telecaller' | 'editor';
+type AdminUserRoles = 'admin' | 'superadmin' | 'telecaller' | 'editor' | 'referrer';
 
 export interface LoginResponse {
   token: string;
