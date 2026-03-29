@@ -1,11 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
-import { AdminUser, ErrorFnCallback, FetchState, GenericResponse } from '../lib/types';
-import { formatDates, generateNumbers, getErrorMessage } from '../lib/utils';
+import { AdminUser, ErrorFnCallback, FetchState, GenericResponse, User } from '../lib/types';
+import { generateNumbers, getErrorMessage } from '../lib/utils';
 
 interface Referrer extends AdminUser<'referrer'> {
   referrals: number;
+}
+
+interface ReferrerById extends AdminUser<'referrer'> {
+  referrals: Pick<User, '_id' | 'firstName' | 'lastName' | 'registerNo' | 'mobile' | 'createdAt'>[];
 }
 
 @Injectable({
@@ -13,6 +17,14 @@ interface Referrer extends AdminUser<'referrer'> {
 })
 export class ReferrersService {
   referrers: WritableSignal<FetchState<Referrer[]>> = signal<FetchState<Referrer[]>>({
+    isLoading: false,
+    error: null,
+    data: null,
+  });
+
+  referrerById: WritableSignal<FetchState<ReferrerById | null>> = signal<
+    FetchState<ReferrerById | null>
+  >({
     isLoading: false,
     error: null,
     data: null,
@@ -64,5 +76,30 @@ export class ReferrersService {
           onError?.(getErrorMessage(error));
         },
       });
+  }
+
+  fetchReferrerById(referrerId: string, onError?: ErrorFnCallback) {
+    this.referrerById.set({
+      isLoading: true,
+      error: null,
+      data: null,
+    });
+    this.http.get<GenericResponse<ReferrerById>>(API.GET_REFERRER_BY_ID(referrerId)).subscribe({
+      next: (response) => {
+        this.referrerById.set({
+          isLoading: false,
+          error: null,
+          data: response,
+        });
+      },
+      error: (error) => {
+        this.referrerById.set({
+          isLoading: false,
+          error: getErrorMessage(error),
+          data: null,
+        });
+        onError?.(getErrorMessage(error));
+      },
+    });
   }
 }

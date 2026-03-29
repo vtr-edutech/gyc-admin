@@ -1,0 +1,46 @@
+@if (referrer().isLoading) {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <p-skeleton height="1.5rem" />
+    <p-skeleton height="1.5rem" />
+    <p-skeleton height="1.5rem" />
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <p-skeleton height="1.5rem" />
+    <p-skeleton height="1.5rem" />
+    <p-skeleton height="1.5rem" />
+  </div>
+} @else {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile title="Name" [value]="referrer().data?.data?.name"></app-info-tile>
+    <app-info-tile title="Username" [value]="referrer().data?.data?.username"></app-info-tile>
+    <app-info-tile title="Mobile" [value]="referrer().data?.data?.mobile"></app-info-tile>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile title="Email" [value]="referrer().data?.data?.email"></app-info-tile>
+    <app-info-tile
+      title="Mobile Verified"
+      [value]="referrer().data?.data?.isMobileVerified ? 'Yes' : 'No'"
+    ></app-info-tile>
+    <app-info-tile title="District" [value]="referrer().data?.data?.district"></app-info-tile>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+    <app-info-tile
+      title="Referrals"
+      [value]="referrer().data?.data?.referrals?.length"
+    ></app-info-tile>
+    <app-info-tile
+      title="Joined at"
+      [value]="formatDates(referrer().data?.data?.createdAt || '')"
+    ></app-info-tile>
+    <app-info-tile
+      title="Deactivated By"
+      [value]="
+        referrer().data?.data?.deactivatedBy?.name
+          ? referrer().data?.data?.deactivatedBy?.name +
+            ' on ' +
+            formatDates(referrer().data?.data?.deactivatedAt || '')
+          : 'No'
+      "
+    ></app-info-tile>
+  </div>
+}
