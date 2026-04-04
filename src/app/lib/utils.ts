@@ -32,3 +32,7 @@ export const customValidationDropdownRenderer: BaseRenderer = (...args) => {
   if (value === 'partial') td.classList.add('!bg-amber-200', '!text-amber-900');
   td.textContent = value ?? '';
 };
+
+export function titleCase(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}

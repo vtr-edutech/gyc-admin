@@ -13,12 +13,13 @@ import { LoadingOverlay } from './components/loading-overlay/loading-overlay';
 import { AuthService } from './services/auth.service';
 import Handsontable from 'handsontable/base';
 import { registerAllModules } from 'handsontable/registry';
+import { FormFieldError } from './directives/form-field-error';
 
 registerAllModules();
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastModule, LoadingOverlay],
+  imports: [RouterOutlet, ToastModule, LoadingOverlay, FormFieldError],
   templateUrl: './app.html',
   styleUrl: './app.css',
   providers: [MessageService],

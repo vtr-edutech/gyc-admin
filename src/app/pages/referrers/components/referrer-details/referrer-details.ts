@@ -1,10 +1,10 @@
 import { Component, inject, input, OnInit } from '@angular/core';
-import { ReferrersService } from '../../../services/referrers.service';
 import { MessageService } from 'primeng/api';
-import { InfoTile } from '../../../components/info-tile/info-tile';
 import { Skeleton } from 'primeng/skeleton';
-import { formatDates } from '../../../lib/utils';
 import { TableModule } from 'primeng/table';
+import { InfoTile } from '../../../../components/info-tile/info-tile';
+import { formatDates } from '../../../../lib/utils';
+import { ReferrersService } from '../../../../services/referrers.service';
 
 @Component({
   selector: 'app-referrer-details',

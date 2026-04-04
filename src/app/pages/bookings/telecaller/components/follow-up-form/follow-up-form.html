@@ -1,66 +1,106 @@
-<form [formGroup]="followUpFormGroup" (ngSubmit)="submitFollowUp()">
-  <div class="flex flex-col gap-3">
-    <div class="flex flex-col gap-1">
-      <label class="font-semibold" for="college">College</label>
-      <input
-        type="text"
-        id="college"
-        placeholder="Provide a college name..."
-        pInputText
-        formControlName="college"
-      />
-    </div>
-    <div class="flex flex-col gap-1">
-      <label class="font-semibold" for="remarks">Remarks</label>
-      <textarea
-        id="remarks"
-        placeholder="Provide remarks..."
-        pInputTextarea
-        formControlName="remarks"
-      ></textarea>
-    </div>
-    <div class="grid grid-cols-2 gap-1 gap-x-4">
-      <label class="font-semibold order-1" for="calledDate">Called Date</label>
-      <p-datepicker
-        size="small"
-        appendTo="body"
-        class="order-3"
-        formControlName="calledDate"
-        dateFormat="dd/mm/yy"
-        [showTime]="true"
-        hourFormat="12"
-      />
-      <label class="font-semibold order-2" for="followUpDate">Follow-up Date</label>
-      <p-datepicker
-        size="small"
-        appendTo="body"
-        class="order-4"
-        formControlName="followUpDate"
-        placeholder="Enter follow-up date"
-        [showTime]="true"
-        hourFormat="12"
-      />
-    </div>
-    <div class="flex flex-col gap-1">
-      <label class="font-semibold" for="extraFields">Extra Fields</label>
-      <table>
-        <thead>
-          <tr>
-            <th>Field</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <input type="text" pInputText />
-            </td>
-            <td>
-              <input type="text" pInputText />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<form [formGroup]="followUpFormGroup" class="flex flex-col gap-3" (ngSubmit)="submitFollowUp()">
+  <div class="flex flex-col gap-1">
+    <label class="font-semibold" for="college">College</label>
+    <input
+      type="text"
+      id="college"
+      placeholder="Provide a college name..."
+      pInputText
+      formControlName="college"
+    />
+    <app-field-error [control]="followUpFormGroup.controls.college" />
   </div>
+  <div class="flex flex-col gap-1">
+    <label class="font-semibold" for="remarks">Remarks</label>
+    <textarea
+      id="remarks"
+      placeholder="Provide remarks..."
+      pInputTextarea
+      formControlName="remarks"
+    ></textarea>
+    <app-field-error [control]="followUpFormGroup.controls.remarks" />
+  </div>
+  <div class="grid grid-cols-2 gap-1 gap-x-4">
+    <label class="font-semibold order-1" for="calledDate">Called Date</label>
+    <p-datepicker
+      size="small"
+      appendTo="body"
+      class="order-3"
+      formControlName="calledDate"
+      dateFormat="dd/mm/yy"
+      [showTime]="true"
+      hourFormat="12"
+    />
+    <app-field-error
+      class="order-5"
+      fieldName="Called Date"
+      [control]="followUpFormGroup.controls.calledDate"
+    />
+    <label class="font-semibold order-2" for="followUpDate">Follow-up Date</label>
+    <p-datepicker
+      size="small"
+      appendTo="body"
+      class="order-4"
+      formControlName="followUpDate"
+      placeholder="Enter follow-up date"
+      [showTime]="true"
+      hourFormat="12"
+    />
+    <app-field-error
+      class="order-6"
+      fieldName="Follow up date"
+      [control]="followUpFormGroup.controls.followUpDate"
+    />
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="font-semibold" for="extraFields">Extra Fields</label>
+    <table class="border-spacing-1 border-separate">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Field</th>
+          <th>Value</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (
+          entry of followUpFormGroup.controls.extraFields.controls;
+          track $index;
+          let total = $count
+        ) {
+          <tr>
+            <td>
+              @if ($index === total - 1) {
+                <p-button
+                  (onClick)="addExtraField()"
+                  icon="pi pi-plus"
+                  [size]="'small'"
+                  [text]="true"
+                />
+              }
+            </td>
+            <td>
+              <input type="text" fluid="true" pInputText [formControl]="entry.controls.key" />
+            </td>
+            <td>
+              <input type="text" fluid="true" pInputText [formControl]="entry.controls.value" />
+            </td>
+            <td>
+              @if ($index !== 0) {
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [size]="'small'"
+                  [text]="true"
+                  (onClick)="removeExtraField(entry.controls.key.value)"
+                />
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p-button class="ml-auto" type="submit" label="Submit" />
 </form>

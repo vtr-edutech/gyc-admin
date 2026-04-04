@@ -11,7 +11,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { InputText } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
-import { ReferrerDetails } from './referrer-details/referrer-details';
+import { ReferrerDetails } from './components/referrer-details/referrer-details';
 
 @Component({
   selector: 'app-referrers',
