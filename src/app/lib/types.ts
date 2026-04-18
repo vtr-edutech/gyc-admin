@@ -118,7 +118,7 @@ export interface Blog extends Timestamps {
 
 export interface HomeData extends Timestamps {
   totalUsers: number;
-  totalAdmins: number;
+  totalAttendees: number;
   totalAnnouncements: number;
   totalAdmissions: number;
   totalColleges: number;
@@ -133,6 +133,8 @@ export interface HomeData extends Timestamps {
       tension: number;
     }[];
   };
+  totalReferrers: number;
+  totalSlotBookings: number;
 }
 
 export interface SlotBooking extends Timestamps {

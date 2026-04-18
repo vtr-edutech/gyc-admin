@@ -6,7 +6,7 @@
     BG_FG_COLOR_MAP[color].border
   "
 >
-  <h1 class="text-lg font-bold {{ BG_FG_COLOR_MAP[color].fg }}">{{ title }}</h1>
+  <h1 class="text-center font-bold {{ BG_FG_COLOR_MAP[color].fg }}">{{ title }}</h1>
   @if (isLoading) {
     <p-skeleton height="1.5rem"></p-skeleton>
   } @else {

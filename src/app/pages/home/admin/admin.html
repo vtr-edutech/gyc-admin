@@ -1,4 +1,4 @@
-<div class="grid grid-cols-6 mt-4 gap-4">
+<div class="grid grid-cols-4 mt-4 gap-4">
   <app-value-card
     title="Users"
     [isLoading]="isLoading()"
@@ -6,10 +6,22 @@
     color="green"
   ></app-value-card>
   <app-value-card
-    title="Admins"
+    title="Attendees"
     [isLoading]="isLoading()"
-    [value]="homeService.homeData().data?.data?.totalAdmins"
+    [value]="homeService.homeData().data?.data?.totalAttendees"
     color="blue"
+  ></app-value-card>
+  <app-value-card
+    title="Referrers"
+    [isLoading]="isLoading()"
+    [value]="homeService.homeData().data?.data?.totalReferrers"
+    color="orange"
+  ></app-value-card>
+  <app-value-card
+    title="Slot Bookings"
+    [isLoading]="isLoading()"
+    [value]="homeService.homeData().data?.data?.totalSlotBookings"
+    color="pink"
   ></app-value-card>
   <app-value-card
     title="Announcements"

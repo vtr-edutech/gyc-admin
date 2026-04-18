@@ -24,6 +24,16 @@ export class ValueCard {
       fg: 'text-red-500',
       border: 'border-red-500',
     },
+    orange: {
+      bg: 'bg-orange-50',
+      fg: 'text-orange-500',
+      border: 'border-orange-500',
+    },
+    pink: {
+      bg: 'bg-pink-50',
+      fg: 'text-pink-500',
+      border: 'border-pink-500',
+    },
     gray: {
       bg: 'bg-gray-50',
       fg: 'text-gray-500',
