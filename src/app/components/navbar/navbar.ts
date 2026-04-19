@@ -32,6 +32,12 @@ export class Navbar {
       accessRoles: ['admin', 'superadmin'],
     },
     {
+      label: 'Attendees',
+      path: '/attendees',
+      icon: 'pi pi-users',
+      accessRoles: ['admin', 'superadmin'],
+    },
+    {
       label: 'Referrers',
       path: '/referrers',
       icon: 'pi pi-user-plus',

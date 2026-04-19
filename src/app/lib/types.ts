@@ -217,3 +217,20 @@ export interface Referral extends Timestamps {
   area: string;
   referredBy: Pick<AdminUser<'admin' | 'superadmin'>, '_id' | 'name'>;
 }
+
+export interface Attendee extends Timestamps {
+  name: string;
+  mobile: string;
+  email?: string;
+  cutoff: string;
+  remarks?: string;
+  preferredCollege?: string;
+  counsellingNeeded: boolean;
+  attendedBy:
+    | ({
+        _id: string;
+        name: string;
+      } & MongooseSchema)
+    | null;
+  attendedAt: string;
+}

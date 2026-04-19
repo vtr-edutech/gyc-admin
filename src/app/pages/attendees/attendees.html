@@ -1,0 +1,86 @@
+<div class="flex flex-col gap-3">
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-semibold">Attendees</h1>
+      <p>View all Attendees</p>
+    </div>
+  </div>
+  <p-table
+    [size]="'large'"
+    [stripedRows]="true"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [lazy]="true"
+    (onLazyLoad)="loadAttendees($event)"
+    [totalRecords]="this.attendeeService.attendees().data?.totalDocs || 0"
+    [value]="this.attendeeService.attendees().data?.data || []"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="w-[80px]">S.No.</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Cutoff</th>
+        <th>Preferred Colleges</th>
+        <th>Counselling Needed</th>
+        <th>Attended By</th>
+        <th>Registered At</th>
+      </tr>
+    </ng-template>
+    @if (this.attendeeService.attendees().isLoading) {
+      <ng-template #body let-rowData>
+        <tr>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+        </tr>
+      </ng-template>
+    } @else {
+      <ng-template #body let-rowData>
+        <tr>
+          <td>
+            {{ rowData.index }}
+          </td>
+          <td>
+            {{ rowData.name }}
+          </td>
+          <td>
+            {{ rowData.mobile }} <br />
+            {{ rowData.email ? `(${rowData.email})` : '' }}
+          </td>
+          <td>
+            {{ rowData.cutoff }}
+          </td>
+          <td>
+            {{ rowData.preferredCollege }}
+          </td>
+          <td>
+            {{ rowData.counsellingNeeded ? 'Yes' : 'No' }}
+          </td>
+          <td>
+            {{ rowData.attendedBy?.name || 'Not Attended' }}
+          </td>
+          <td>
+            {{ rowData.createdAt | date: "EE, MMM dd, y 'at' h:mm a" }}
+          </td>
+        </tr>
+      </ng-template>
+    }
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6" class="text-center">
+          <div class="w-full grid content-center">
+            <p class="text-lg font-semibold">No Attendees Found</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

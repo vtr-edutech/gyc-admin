@@ -32,6 +32,7 @@ export const API = {
   ASSIGN_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/assign',
   GET_REFERRERS: API_URL + '/admin/referrers',
   GET_REFERRER_BY_ID: (id: string) => API_URL + '/admin/referrers/' + id,
+  GET_ATTENDEES: API_URL + '/admin/attendees',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
