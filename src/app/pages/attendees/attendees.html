@@ -4,6 +4,13 @@
       <h1 class="text-3xl font-semibold">Attendees</h1>
       <p>View all Attendees</p>
     </div>
+    <p-button
+      label="Download"
+      icon="pi pi-download"
+      severity="primary"
+      size="small"
+      (click)="download()"
+    />
   </div>
   <p-table
     [size]="'large'"

@@ -54,4 +54,23 @@ export class AttendeeService {
         },
       });
   }
+
+  downloadAttendees(onError?: ErrorFnCallback): void {
+    this.http.get(API.DOWNLOAD_ATTENDEES, { responseType: 'blob' }).subscribe({
+      next: (response) => {
+        const blob = new Blob([response], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'attendee-registrations.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        onError?.(getErrorMessage(error));
+      },
+    });
+  }
 }

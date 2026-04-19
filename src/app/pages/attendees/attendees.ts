@@ -4,10 +4,11 @@ import { AttendeeService } from '../../services/attendee.service';
 import { MessageService } from 'primeng/api';
 import { Skeleton } from 'primeng/skeleton';
 import { DatePipe } from '@angular/common';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-attendees',
-  imports: [TableModule, Skeleton, DatePipe],
+  imports: [TableModule, Skeleton, DatePipe, Button],
   templateUrl: './attendees.html',
   styleUrl: './attendees.css',
 })
@@ -20,6 +21,12 @@ export class Attendees {
     const limit = event.rows || 10;
 
     this.attendeeService.fetchAttendees(page, limit, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+    });
+  }
+
+  download() {
+    this.attendeeService.downloadAttendees((error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
     });
   }

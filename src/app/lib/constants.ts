@@ -33,6 +33,7 @@ export const API = {
   GET_REFERRERS: API_URL + '/admin/referrers',
   GET_REFERRER_BY_ID: (id: string) => API_URL + '/admin/referrers/' + id,
   GET_ATTENDEES: API_URL + '/admin/attendees',
+  DOWNLOAD_ATTENDEES: API_URL + '/admin/attendees/download',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
