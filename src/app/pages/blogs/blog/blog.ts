@@ -20,6 +20,8 @@ export class Blog implements OnInit {
 
   isBlogLoading = computed(() => this.blogService.blog().isLoading);
 
+  blog = computed(() => this.blogService.blog().data?.data);
+
   ngOnInit() {
     const blogId = this.router.url.split('/').pop();
     if (!blogId) {

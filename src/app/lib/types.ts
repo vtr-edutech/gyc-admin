@@ -114,6 +114,9 @@ export interface Blog extends Timestamps {
   } & MongooseSchema;
   slug: string;
   createdAt: string;
+  likes?: number;
+  views?: number;
+  shares?: number;
 }
 
 export interface HomeData extends Timestamps {

@@ -1,24 +1,40 @@
 <p-button label="Back" size="small" icon="pi pi-arrow-left" routerLink="/blogs" />
 <article class="flex p-8 bg-white shadow mt-8 rounded-lg flex-col gap-4 w-[75vw] mx-auto">
-  <h2 class="text-2xl font-semibold text-center">{{ blogService.blog().data?.data?.title }}</h2>
-  @if (blogService.blog().data?.data?.thumbnailUrl) {
-    <img [src]="blogService.blog().data?.data?.thumbnailUrl" alt="Image thumbnail" class="h-auto" />
+  <h2 class="text-2xl font-semibold text-center">{{ blog()?.title }}</h2>
+  @if (blog()?.thumbnailUrl) {
+    <img [src]="blog()?.thumbnailUrl" alt="Image thumbnail" class="h-auto" />
   }
   <div class="ql-bubble">
-    <div class="ql-editor" [innerHTML]="blogService.blog().data?.data?.content"></div>
+    <div class="ql-editor" [innerHTML]="blog()?.content"></div>
   </div>
-  <div class="flex flex-col gap-1">
-    <i class="text-gray-600">Written by</i>
-    <div class="flex gap-1 items-center">
-      <p-avatar
-        icon="pi pi-user"
-        class="mr-2"
-        size="large"
-        shape="circle"
-        [label]="this.authService.userNameLabel()"
-      />
-      <span>{{ this.authService.authState().data?.data?.name }}</span>
+  <div class="flex justify-between items-center">
+    <div class="flex flex-col gap-1">
+      <i class="text-gray-600">Written by</i>
+      <div class="flex gap-1 items-center">
+        <p-avatar
+          icon="pi pi-user"
+          class="mr-2"
+          size="large"
+          shape="circle"
+          [label]="this.authService.userNameLabel()"
+        />
+        <span>{{ this.authService.authState().data?.data?.name }}</span>
+      </div>
+      <p class="text-gray-500">on {{ blog()?.createdAt }}</p>
     </div>
-    <p class="text-gray-500">on {{ blogService.blog().data?.data?.createdAt }}</p>
+    <div class="flex items-start gap-1">
+      <div class="flex items-center gap-1">
+        <i class="pi pi-eye text-sm"></i>
+        <span>{{ blog()?.views || 0 }}</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <i class="pi pi-heart text-sm"></i>
+        <span>{{ blog()?.likes || 0 }}</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <i class="pi pi-share-alt text-sm"></i>
+        <span>{{ blog()?.shares || 0 }}</span>
+      </div>
+    </div>
   </div>
 </article>

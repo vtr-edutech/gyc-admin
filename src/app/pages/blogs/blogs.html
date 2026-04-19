@@ -29,6 +29,7 @@
         <th>Title</th>
         <th>Content Preview</th>
         <th>Author</th>
+        <th>Stats</th>
         <th>Created At</th>
         <th>Actions</th>
       </tr>
@@ -36,6 +37,7 @@
     @if (this.blogService.blogs().isLoading) {
       <ng-template #body let-rowData>
         <tr>
+          <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
@@ -53,13 +55,29 @@
               {{ blog.title }}
             </a>
           </td>
-          <td class="w-36">
+          <td class="w-32">
             <div
               class="text-sm truncate"
-              [innerHTML]="blog.content?.substring(0, 100) + '...'"
+              [innerHTML]="blog.content?.trim()?.substring(0, 80) + '...'"
             ></div>
           </td>
           <td>{{ blog.createdBy?.name }}</td>
+          <td>
+            <div class="flex flex-col items-start gap-1">
+              <div class="flex items-center gap-1">
+                <i class="pi pi-eye text-sm"></i>
+                <span>{{ blog.views || 0 }}</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <i class="pi pi-heart text-sm"></i>
+                <span>{{ blog.likes || 0 }}</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <i class="pi pi-share-alt text-sm"></i>
+                <span>{{ blog.shares || 0 }}</span>
+              </div>
+            </div>
+          </td>
           <td>{{ blog.createdAt }}</td>
           <td>
             <div class="flex gap-2">
