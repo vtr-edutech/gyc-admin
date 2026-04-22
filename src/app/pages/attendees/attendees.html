@@ -27,18 +27,22 @@
     <ng-template #header>
       <tr>
         <th class="w-[80px]">S.No.</th>
-        <th>Name</th>
-        <th>Mobile</th>
-        <th>Cutoff</th>
-        <th>Preferred Colleges</th>
-        <th>Counselling Needed</th>
-        <th>Attended By</th>
-        <th>Registered At</th>
+        <th [noWrap]="true">Name</th>
+        <th [noWrap]="true">Mobile</th>
+        <th [noWrap]="true">Cutoff</th>
+        <th [noWrap]="true">Preferred Colleges</th>
+        <th [noWrap]="true">Community</th>
+        <th [noWrap]="true">Counselling Needed</th>
+        <th [noWrap]="true">Remarks</th>
+        <th [noWrap]="true">Attended By</th>
+        <th [noWrap]="true">Registered At</th>
       </tr>
     </ng-template>
     @if (this.attendeeService.attendees().isLoading) {
       <ng-template #body let-rowData>
         <tr>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
@@ -69,12 +73,22 @@
             {{ rowData.preferredCollege }}
           </td>
           <td>
+            {{ rowData.community }}
+          </td>
+          <td>
             {{ rowData.counsellingNeeded ? 'Yes' : 'No' }}
+          </td>
+          <td pTooltip="{{ rowData.remarks }}" class="max-w-[200px] truncate">
+            {{
+              rowData.remarks?.length > 25
+                ? rowData.remarks.substring(0, 25) + '...'
+                : rowData.remarks
+            }}
           </td>
           <td>
             {{ rowData.attendedBy?.name || 'Not Attended' }}
           </td>
-          <td>
+          <td class="shrink-0 flex">
             {{ rowData.createdAt | date: "EE, MMM dd, y 'at' h:mm a" }}
           </td>
         </tr>
@@ -82,7 +96,7 @@
     }
     <ng-template #emptymessage>
       <tr>
-        <td colspan="6" class="text-center">
+        <td colspan="10" class="text-center">
           <div class="w-full grid content-center">
             <p class="text-lg font-semibold">No Attendees Found</p>
           </div>

@@ -27,6 +27,12 @@ export const routes: Routes = [
         title: 'Attendees - GYC Admin',
       },
       {
+        path: 'admission-queries',
+        loadComponent: () =>
+          import('./pages/admission-queries/admission-queries').then((m) => m.AdmissionQueries),
+        title: 'Admission Queries - GYC Admin',
+      },
+      {
         path: 'referrers',
         loadComponent: () => import('./pages/referrers/referrers').then((m) => m.Referrers),
         title: 'Referrers - GYC Admin',

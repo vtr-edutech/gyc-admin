@@ -5,10 +5,11 @@ import { MessageService } from 'primeng/api';
 import { Skeleton } from 'primeng/skeleton';
 import { DatePipe } from '@angular/common';
 import { Button } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-attendees',
-  imports: [TableModule, Skeleton, DatePipe, Button],
+  imports: [TableModule, Skeleton, DatePipe, Button, TooltipModule],
   templateUrl: './attendees.html',
   styleUrl: './attendees.css',
 })

@@ -38,6 +38,12 @@ export class Navbar {
       accessRoles: ['admin', 'superadmin'],
     },
     {
+      label: 'Admission Queries',
+      path: '/admission-queries',
+      icon: 'pi pi-question-circle',
+      accessRoles: ['admin', 'superadmin'],
+    },
+    {
       label: 'Referrers',
       path: '/referrers',
       icon: 'pi pi-user-plus',

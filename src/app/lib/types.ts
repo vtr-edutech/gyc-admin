@@ -228,6 +228,7 @@ export interface Attendee extends Timestamps {
   cutoff: string;
   remarks?: string;
   preferredCollege?: string;
+  community?: string;
   counsellingNeeded: boolean;
   attendedBy:
     | ({
