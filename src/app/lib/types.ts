@@ -238,3 +238,20 @@ export interface Attendee extends Timestamps {
     | null;
   attendedAt: string;
 }
+
+export interface AdmissionQuery extends Timestamps {
+  name: string;
+  mobile: string;
+  email?: string;
+  state?: string;
+  program?: string;
+  college?: string;
+  message?: string;
+  attendedBy:
+    | ({
+        _id: string;
+        name: string;
+      } & MongooseSchema)
+    | null;
+  attendedAt: string;
+}

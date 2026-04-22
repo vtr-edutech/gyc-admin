@@ -34,6 +34,8 @@ export const API = {
   GET_REFERRER_BY_ID: (id: string) => API_URL + '/admin/referrers/' + id,
   GET_ATTENDEES: API_URL + '/admin/attendees',
   DOWNLOAD_ATTENDEES: API_URL + '/admin/attendees/download',
+  GET_ADMISSIONS_QUERIES: API_URL + '/admin/admission-query',
+  DOWNLOAD_ADMISSIONS_QUERIES: API_URL + '/admin/admission-query/download',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [

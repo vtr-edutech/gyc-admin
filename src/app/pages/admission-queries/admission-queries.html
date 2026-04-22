@@ -1,1 +1,97 @@
-<p>admission-queries works!</p>
+<div class="flex flex-col gap-3">
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-semibold">Admission Queries</h1>
+      <p>View all Admission Queries</p>
+    </div>
+    <p-button
+      label="Download"
+      icon="pi pi-download"
+      severity="primary"
+      size="small"
+      (click)="download()"
+    />
+  </div>
+  <p-table
+    [size]="'large'"
+    [stripedRows]="true"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [lazy]="true"
+    (onLazyLoad)="loadAdmissionQueries($event)"
+    [totalRecords]="this.admissionQueryService.admissionQueries().data?.totalDocs || 0"
+    [value]="this.admissionQueryService.admissionQueries().data?.data || []"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="w-[80px]">S.No.</th>
+        <th [noWrap]="true">Name</th>
+        <th [noWrap]="true">Mobile</th>
+        <th [noWrap]="true">State</th>
+        <th [noWrap]="true">Program</th>
+        <th [noWrap]="true">Message</th>
+        <th [noWrap]="true">Attended By</th>
+        <th [noWrap]="true">Registered At</th>
+      </tr>
+    </ng-template>
+    @if (this.admissionQueryService.admissionQueries().isLoading) {
+      <ng-template #body let-rowData>
+        <tr>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+        </tr>
+      </ng-template>
+    } @else {
+      <ng-template #body let-rowData>
+        <tr>
+          <td>
+            {{ rowData.index }}
+          </td>
+          <td>
+            {{ rowData.name }}
+          </td>
+          <td>
+            {{ rowData.mobile }} <br />
+            {{ rowData.email ? '(' + rowData.email + ')' : '' }}
+          </td>
+          <td [noWrap]="true">
+            {{ rowData.state || 'Not Mentioned' }}
+          </td>
+          <td>
+            {{ rowData.program || 'Not Mentioned' }}
+          </td>
+          <td pTooltip="{{ rowData.message }}" class="max-w-[200px] truncate">
+            {{
+              rowData.message?.length > 25
+                ? rowData.message.substring(0, 25) + '...'
+                : rowData.message
+            }}
+          </td>
+          <td>
+            {{ rowData.attendedBy?.name || 'Not Attended' }}
+          </td>
+          <td class="shrink-0 flex">
+            {{ rowData.createdAt | date: "EE, MMM dd, y 'at' h:mm a" }}
+          </td>
+        </tr>
+      </ng-template>
+    }
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="8" class="text-center">
+          <div class="w-full grid content-center">
+            <p class="text-lg font-semibold">No Admission Queries Found</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
