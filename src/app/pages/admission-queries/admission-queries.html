@@ -4,13 +4,23 @@
       <h1 class="text-3xl font-semibold">Admission Queries</h1>
       <p>View all Admission Queries</p>
     </div>
-    <p-button
-      label="Download"
-      icon="pi pi-download"
-      severity="primary"
-      size="small"
-      (click)="download()"
-    />
+    <div class="flex gap-2">
+      <p-datepicker
+        placeholder="Select start and end dates"
+        [(ngModel)]="dateRange"
+        [showIcon]="true"
+        selectionMode="range"
+        size="small"
+        showClear="true"
+      />
+      <p-button
+        label="Download"
+        icon="pi pi-download"
+        severity="primary"
+        size="small"
+        (click)="download()"
+      />
+    </div>
   </div>
   <p-table
     [size]="'large'"
@@ -30,6 +40,7 @@
         <th [noWrap]="true">Name</th>
         <th [noWrap]="true">Mobile</th>
         <th [noWrap]="true">State</th>
+        <th [noWrap]="true">College</th>
         <th [noWrap]="true">Program</th>
         <th [noWrap]="true">Message</th>
         <th [noWrap]="true">Attended By</th>
@@ -39,6 +50,7 @@
     @if (this.admissionQueryService.admissionQueries().isLoading) {
       <ng-template #body let-rowData>
         <tr>
+          <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
@@ -65,8 +77,18 @@
           <td [noWrap]="true">
             {{ rowData.state || 'Not Mentioned' }}
           </td>
-          <td>
-            {{ rowData.program || 'Not Mentioned' }}
+          <td [noWrap]="true">
+            {{ rowData.college || 'Not Mentioned' }}
+          </td>
+          <td
+            [pTooltip]="rowData.program?.length > 15 ? rowData.program : undefined"
+            class="max-w-[200px] truncate"
+          >
+            {{
+              rowData.program?.length > 25
+                ? rowData.program.substring(0, 25) + '...'
+                : rowData.program || 'Not Mentioned'
+            }}
           </td>
           <td pTooltip="{{ rowData.message }}" class="max-w-[200px] truncate">
             {{

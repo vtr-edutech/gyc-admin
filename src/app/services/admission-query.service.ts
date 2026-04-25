@@ -8,7 +8,9 @@ import { generateNumbers, getErrorMessage } from '../lib/utils';
   providedIn: 'root',
 })
 export class AdmissionQueryService {
-  admissionQueries: WritableSignal<FetchState<AdmissionQuery[]>> = signal<FetchState<AdmissionQuery[]>>({
+  admissionQueries: WritableSignal<FetchState<AdmissionQuery[]>> = signal<
+    FetchState<AdmissionQuery[]>
+  >({
     isLoading: false,
     error: null,
     data: null,
@@ -55,22 +57,24 @@ export class AdmissionQueryService {
       });
   }
 
-  downloadAdmissionQueries(onError?: ErrorFnCallback): void {
-    this.http.get(API.DOWNLOAD_ADMISSIONS_QUERIES, { responseType: 'blob' }).subscribe({
-      next: (response) => {
-        const blob = new Blob([response], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'admission-queries.xlsx';
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: (error) => {
-        onError?.(getErrorMessage(error));
-      },
-    });
+  downloadAdmissionQueries(dateRange: [Date?, Date?], onError?: ErrorFnCallback): void {
+    this.http
+      .post(API.DOWNLOAD_ADMISSIONS_QUERIES, dateRange ?? [], { responseType: 'blob' })
+      .subscribe({
+        next: (response) => {
+          const blob = new Blob([response], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `admission-queries_${dateRange?.[0]?.toISOString().split('T')[0] ?? 'all'} to ${dateRange?.[1]?.toISOString().split('T')[0] ?? 'all'}.xlsx`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (error) => {
+          onError?.(getErrorMessage(error));
+        },
+      });
   }
 }
