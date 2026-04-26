@@ -18,18 +18,31 @@ export class AdmissionQueryService {
 
   private http = inject(HttpClient);
 
-  fetchAdmissionQueries(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
+  fetchAdmissionQueries(
+    page: number = 1,
+    limit: number = 10,
+    search: string = '',
+    dateRange?: [Date?, Date?],
+    onError?: ErrorFnCallback,
+  ): void {
     this.admissionQueries.set({
       isLoading: true,
       error: null,
       data: { data: generateNumbers(limit) as unknown as AdmissionQuery[] },
     });
 
+    // Adjust dates for start and end since the DB is in IST
+    dateRange?.[0]?.setHours(0, 0, 0, 0);
+    dateRange?.[1]?.setHours(23, 59, 59, 999);
+
     this.http
       .get<GenericResponse<AdmissionQuery[]>>(API.GET_ADMISSIONS_QUERIES, {
         params: {
           page: page.toString(),
           limit: limit.toString(),
+          search,
+          startDate: dateRange?.[0]?.toISOString() ?? '',
+          endDate: dateRange?.[1]?.toISOString() ?? '',
         },
       })
       .subscribe({
@@ -58,6 +71,8 @@ export class AdmissionQueryService {
   }
 
   downloadAdmissionQueries(dateRange: [Date?, Date?], onError?: ErrorFnCallback): void {
+    dateRange?.[0]?.setHours(0, 0, 0, 0);
+    dateRange?.[1]?.setHours(23, 59, 59, 999);
     this.http
       .post(API.DOWNLOAD_ADMISSIONS_QUERIES, dateRange ?? [], { responseType: 'blob' })
       .subscribe({

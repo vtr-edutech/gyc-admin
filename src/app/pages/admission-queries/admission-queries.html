@@ -7,7 +7,7 @@
     <div class="flex gap-2">
       <p-datepicker
         placeholder="Select start and end dates"
-        [(ngModel)]="dateRange"
+        [(ngModel)]="downloadDateRange"
         [showIcon]="true"
         selectionMode="range"
         size="small"
@@ -22,6 +22,30 @@
       />
     </div>
   </div>
+  <div class="flex gap-2 items-center p-1">
+    <p-datepicker
+      placeholder="Select start and end dates"
+      [(ngModel)]="viewDateRange"
+      [showIcon]="true"
+      selectionMode="range"
+      (onClear)="loadAdmissionQueries()"
+      (onClose)="loadAdmissionQueries()"
+      showClear="true"
+      [size]="'small'"
+    />
+    <input
+      type="search"
+      name="search"
+      pInputText
+      [(ngModel)]="search"
+      placeholder="Search admission queries by name, college, district, etc."
+      pInputText
+      (search)="loadAdmissionQueries()"
+      [pSize]="'small'"
+      class="w-[50%]"
+    />
+    <p-button label="Search" (onClick)="loadAdmissionQueries()" size="small" icon="pi pi-search" />
+  </div>
   <p-table
     [size]="'large'"
     [stripedRows]="true"
@@ -30,7 +54,7 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     [lazy]="true"
     (onLazyLoad)="loadAdmissionQueries($event)"
-    [totalRecords]="this.admissionQueryService.admissionQueries().data?.totalDocs || 0"
+    [totalRecords]="totalRecords"
     [value]="this.admissionQueryService.admissionQueries().data?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >

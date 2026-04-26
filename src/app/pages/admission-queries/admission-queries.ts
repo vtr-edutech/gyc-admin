@@ -8,10 +8,20 @@ import { Button } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DatePicker } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-admission-queries',
-  imports: [TableModule, Skeleton, DatePipe, Button, TooltipModule, DatePicker, FormsModule],
+  imports: [
+    TableModule,
+    Skeleton,
+    DatePipe,
+    Button,
+    TooltipModule,
+    DatePicker,
+    FormsModule,
+    InputText,
+  ],
   templateUrl: './admission-queries.html',
   styleUrl: './admission-queries.css',
 })
@@ -19,19 +29,33 @@ export class AdmissionQueries {
   messageService = inject(MessageService);
   admissionQueryService = inject(AdmissionQueryService);
 
-  dateRange: [Date?, Date?] = [];
+  downloadDateRange: [Date?, Date?] = [];
+  viewDateRange: [Date?, Date?] = [];
+  search: string = '';
 
-  loadAdmissionQueries(event: TableLazyLoadEvent): void {
-    const page = (event.first || 0) / (event.rows || 10) + 1;
-    const limit = event.rows || 10;
+  get totalRecords() {
+    const data = this.admissionQueryService.admissionQueries().data;
+    if (!data || !data.totalDocsForFilter) return 0;
+    return data.totalDocsForFilter === data.totalDocs ? data.totalDocs : data.totalDocsForFilter;
+  }
 
-    this.admissionQueryService.fetchAdmissionQueries(page, limit, (error) => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
-    });
+  loadAdmissionQueries(event?: TableLazyLoadEvent): void {
+    const page = event ? (event.first || 0) / (event.rows || 10) + 1 : 1;
+    const limit = event ? event.rows || 10 : 10;
+
+    this.admissionQueryService.fetchAdmissionQueries(
+      page,
+      limit,
+      this.search,
+      this.viewDateRange,
+      (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+      },
+    );
   }
 
   download() {
-    this.admissionQueryService.downloadAdmissionQueries(this.dateRange, (error) => {
+    this.admissionQueryService.downloadAdmissionQueries(this.downloadDateRange, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
     });
   }
