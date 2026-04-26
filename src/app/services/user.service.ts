@@ -1,9 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { Router } from '@angular/router';
 import { API } from '../lib/constants';
 import { ErrorFnCallback, FetchState, GenericResponse, User } from '../lib/types';
 import { formatDates, generateNumbers, getErrorMessage } from '../lib/utils';
+
+export type SearchFilters = {
+  name?: string;
+  email?: string;
+  mobile?: string;
+  date?: Date | null;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +25,7 @@ export class UserService {
   fetchUsers(
     page: number = 1,
     limit: number = 10,
-    filters: any = {},
+    filters: SearchFilters = {},
     onError?: ErrorFnCallback,
   ): void {
     this.users.set({
@@ -27,11 +33,15 @@ export class UserService {
       error: null,
       data: { data: generateNumbers(limit) as unknown as User[] },
     });
+    filters.date?.setHours(0, 0, 0, 0);
 
     this.http
       .post<GenericResponse<User[]>>(
         API.GET_USERS,
-        { ...filters },
+        {
+          ...filters,
+          date: filters.date?.toISOString(),
+        },
         {
           params: {
             page: page.toString(),

@@ -37,7 +37,7 @@
     id="name"
     pInputText
     placeholder="Name"
-    size="small"
+    pSize="small"
   />
   <input
     type="search"
@@ -46,7 +46,7 @@
     id="mobile"
     pInputText
     placeholder="Mobile"
-    size="small"
+    pSize="small"
   />
   <input
     type="search"
@@ -55,15 +55,23 @@
     id="email"
     pInputText
     placeholder="Email"
-    size="small"
+    pSize="small"
   />
   <p-datepicker
     placeholder="Date"
     [(ngModel)]="searchModel.date"
     [showIcon]="true"
     showClear="true"
+    size="small"
   />
-  <p-button label="Search" (click)="search()" icon="pi pi-search" severity="primary" size="small" />
+  <p-button
+    label="Search"
+    (click)="search()"
+    [loading]="this.usersService.users().isLoading"
+    icon="pi pi-search"
+    severity="primary"
+    size="small"
+  />
 </div>
 
 <div class="flex flex-col gap-3">

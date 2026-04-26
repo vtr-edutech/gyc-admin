@@ -44,7 +44,13 @@
       [pSize]="'small'"
       class="w-[50%]"
     />
-    <p-button label="Search" (onClick)="loadAdmissionQueries()" size="small" icon="pi pi-search" />
+    <p-button
+      label="Search"
+      (onClick)="loadAdmissionQueries()"
+      size="small"
+      icon="pi pi-search"
+      [loading]="this.admissionQueryService.admissionQueries().isLoading"
+    />
   </div>
   <p-table
     [size]="'large'"
@@ -64,6 +70,7 @@
         <th [noWrap]="true">Name</th>
         <th [noWrap]="true">Mobile</th>
         <th [noWrap]="true">State</th>
+        <th [noWrap]="true">District</th>
         <th [noWrap]="true">College</th>
         <th [noWrap]="true">Program</th>
         <th [noWrap]="true">Message</th>
@@ -74,6 +81,7 @@
     @if (this.admissionQueryService.admissionQueries().isLoading) {
       <ng-template #body let-rowData>
         <tr>
+          <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
@@ -100,6 +108,9 @@
           </td>
           <td [noWrap]="true">
             {{ rowData.state || 'Not Mentioned' }}
+          </td>
+          <td [noWrap]="true">
+            {{ rowData.district || 'Not Mentioned' }}
           </td>
           <td [noWrap]="true">
             {{ rowData.college || 'Not Mentioned' }}

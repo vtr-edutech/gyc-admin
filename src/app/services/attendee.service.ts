@@ -16,7 +16,15 @@ export class AttendeeService {
 
   private http = inject(HttpClient);
 
-  fetchAttendees(page: number = 1, limit: number = 10, onError?: ErrorFnCallback): void {
+  fetchAttendees(
+    page: number = 1,
+    limit: number = 10,
+    params?: { search?: string; startDate?: Date; endDate?: Date },
+    onError?: ErrorFnCallback,
+  ): void {
+    params?.startDate?.setHours(0, 0, 0, 0);
+    params?.endDate?.setHours(23, 59, 59, 999);
+
     this.attendees.set({
       isLoading: true,
       error: null,
@@ -28,6 +36,9 @@ export class AttendeeService {
         params: {
           page: page.toString(),
           limit: limit.toString(),
+          search: params?.search || '',
+          startDate: params?.startDate?.toISOString() || '',
+          endDate: params?.endDate?.toISOString() || '',
         },
       })
       .subscribe({

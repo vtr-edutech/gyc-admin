@@ -2,7 +2,7 @@ import { Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { UserService } from '../../services/user.service';
+import { SearchFilters, UserService } from '../../services/user.service';
 import { Skeleton } from 'primeng/skeleton';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -38,7 +38,7 @@ export class Users {
 
   @ViewChild('dt') dt!: Table;
 
-  searchModel = {
+  searchModel: SearchFilters = {
     name: '',
     email: '',
     mobile: '',
