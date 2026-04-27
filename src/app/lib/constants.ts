@@ -35,6 +35,7 @@ export const API = {
   TOGGLE_ACTIVATION: (id: string) => API_URL + '/admin/referrers/' + id + '/toggle-activation',
   GET_ATTENDEES: API_URL + '/admin/attendees',
   DOWNLOAD_ATTENDEES: API_URL + '/admin/attendees/download',
+  MARK_ATTENDANCE_ATTENDEE: (id: string) => API_URL + '/admin/attendees/' + id + '/attendance',
   GET_ADMISSIONS_QUERIES: API_URL + '/admin/admission-query',
   DOWNLOAD_ADMISSIONS_QUERIES: API_URL + '/admin/admission-query/download',
   MARK_ATTENDANCE_ADMISSION_QUERY: (id: string) =>

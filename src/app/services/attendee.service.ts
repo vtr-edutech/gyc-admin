@@ -84,4 +84,15 @@ export class AttendeeService {
       },
     });
   }
+
+  markAsAttended(id: string, onSuccess?: () => void, onError?: ErrorFnCallback): void {
+    this.http.post(API.MARK_ATTENDANCE_ATTENDEE(id), null).subscribe({
+      next: () => {
+        onSuccess?.();
+      },
+      error: (error) => {
+        onError?.(getErrorMessage(error));
+      },
+    });
+  }
 }
