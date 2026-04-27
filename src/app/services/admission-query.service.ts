@@ -92,4 +92,15 @@ export class AdmissionQueryService {
         },
       });
   }
+
+  markAttendanceAdmissionQuery(id: string, onSuccess?: Function, onError?: ErrorFnCallback): void {
+    this.http.post(API.MARK_ATTENDANCE_ADMISSION_QUERY(id), null).subscribe({
+      next: () => {
+        onSuccess?.();
+      },
+      error: (error) => {
+        onError?.(getErrorMessage(error));
+      },
+    });
+  }
 }

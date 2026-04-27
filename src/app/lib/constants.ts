@@ -37,6 +37,8 @@ export const API = {
   DOWNLOAD_ATTENDEES: API_URL + '/admin/attendees/download',
   GET_ADMISSIONS_QUERIES: API_URL + '/admin/admission-query',
   DOWNLOAD_ADMISSIONS_QUERIES: API_URL + '/admin/admission-query/download',
+  MARK_ATTENDANCE_ADMISSION_QUERY: (id: string) =>
+    API_URL + '/admin/admission-query/' + id + '/attendance',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { AdmissionQueryService } from '../../services/admission-query.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Skeleton } from 'primeng/skeleton';
 import { DatePipe } from '@angular/common';
 import { Button } from 'primeng/button';
@@ -9,6 +9,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DatePicker } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
+import { ConfirmPopup } from 'primeng/confirmpopup';
+import { formatDates } from '../../lib/utils';
 
 @Component({
   selector: 'app-admission-queries',
@@ -21,17 +23,22 @@ import { InputText } from 'primeng/inputtext';
     DatePicker,
     FormsModule,
     InputText,
+    ConfirmPopup,
   ],
   templateUrl: './admission-queries.html',
   styleUrl: './admission-queries.css',
+  providers: [ConfirmationService],
 })
 export class AdmissionQueries {
   messageService = inject(MessageService);
   admissionQueryService = inject(AdmissionQueryService);
+  confirmationService = inject(ConfirmationService);
 
   downloadDateRange: [Date?, Date?] = [];
   viewDateRange: [Date?, Date?] = [];
   search: string = '';
+
+  formatDate = formatDates;
 
   get totalRecords() {
     const data = this.admissionQueryService.admissionQueries().data;
@@ -58,5 +65,34 @@ export class AdmissionQueries {
     this.admissionQueryService.downloadAdmissionQueries(this.downloadDateRange, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
     });
+  }
+
+  confirmMarkAsAttended(event: Event, id: string) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure you want to mark this admission query as attended?',
+      header: 'Mark as attended',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.markAsAttended(id);
+      },
+    });
+  }
+
+  markAsAttended(id: string) {
+    this.admissionQueryService.markAttendanceAdmissionQuery(
+      id,
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Admission query marked as attended',
+        });
+        this.loadAdmissionQueries();
+      },
+      (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error });
+      },
+    );
   }
 }
