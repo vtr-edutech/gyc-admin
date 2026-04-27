@@ -113,14 +113,26 @@
                 size="small"
                 [outlined]="true"
               />
-              <p-button
-                [label]="'Deactivate'"
-                icon="pi pi-trash"
-                size="small"
-                [severity]="'danger'"
-                [outlined]="true"
-              />
-              <p-confirmpopup />
+              @if (!rowData.deactivatedAt) {
+                <p-button
+                  [label]="'Deactivate'"
+                  icon="pi pi-trash"
+                  size="small"
+                  [severity]="'danger'"
+                  [outlined]="true"
+                  (click)="showActivationPopup($event, rowData._id, true)"
+                />
+              } @else {
+                <p-button
+                  [label]="'Activate'"
+                  icon="pi pi-trash"
+                  size="small"
+                  [severity]="'success'"
+                  [outlined]="true"
+                  (click)="showActivationPopup($event, rowData._id, false)"
+                />
+              }
+              <p-confirmpopup appendTo="body" />
             </div>
           </td>
         </tr>
@@ -144,12 +156,10 @@
   [modal]="true"
   [draggable]="false"
   [resizable]="false"
-  [style]="{ width: '50vw' }"
+  [header]="'Referrer Details'"
+  [style]="{ width: '70vw' }"
   (onHide)="toggleReferrerDetailsModal(null)"
 >
-  <ng-template #header>
-    <h3>Referrer Details</h3>
-  </ng-template>
   <ng-template #content>
     @if (selectedReferrer) {
       <app-referrer-details [referrerId]="selectedReferrer"></app-referrer-details>

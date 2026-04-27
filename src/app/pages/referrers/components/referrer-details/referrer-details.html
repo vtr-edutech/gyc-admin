@@ -44,7 +44,7 @@
       [value]="
         referrer().data?.data?.deactivatedBy?.name
           ? referrer().data?.data?.deactivatedBy?.name +
-            ' on ' +
+            ' on \n' +
             formatDates(referrer().data?.data?.deactivatedAt || '')
           : 'No'
       "

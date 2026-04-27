@@ -34,6 +34,7 @@ import { ReferrerDetails } from './components/referrer-details/referrer-details'
 export class Referrers {
   referrersService = inject(ReferrersService);
   messageService = inject(MessageService);
+  confirmationService = inject(ConfirmationService);
 
   searchKey = '';
 
@@ -74,5 +75,35 @@ export class Referrers {
   toggleReferrerDetailsModal(referrerId: string | null) {
     this.selectedReferrer = referrerId;
     this.isReferrerDetailsModalOpen = !this.isReferrerDetailsModalOpen;
+  }
+
+  showActivationPopup(event: Event, referrerId: string, isDeactivate: boolean) {
+    const message = isDeactivate
+      ? 'Are you sure you want to deactivate this referrer?'
+      : 'Are you sure you want to activate this referrer?';
+    this.confirmationService.confirm({
+      target: event.target || undefined,
+      message,
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.referrersService.toggleActivation(
+          referrerId,
+          (response) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: response?.message,
+            });
+          },
+          (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error,
+            });
+          },
+        );
+      },
+    });
   }
 }

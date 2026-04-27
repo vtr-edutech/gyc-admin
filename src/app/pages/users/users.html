@@ -35,6 +35,7 @@
     name="name"
     [(ngModel)]="searchModel.name"
     id="name"
+    (search)="search()"
     pInputText
     placeholder="Name"
     pSize="small"
@@ -44,6 +45,7 @@
     name="mobile"
     [(ngModel)]="searchModel.mobile"
     id="mobile"
+    (search)="search()"
     pInputText
     placeholder="Mobile"
     pSize="small"
@@ -53,6 +55,7 @@
     name="email"
     [(ngModel)]="searchModel.email"
     id="email"
+    (search)="search()"
     pInputText
     placeholder="Email"
     pSize="small"
@@ -60,6 +63,7 @@
   <p-datepicker
     placeholder="Date"
     [(ngModel)]="searchModel.date"
+    (onClose)="search()"
     [showIcon]="true"
     showClear="true"
     size="small"

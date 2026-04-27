@@ -108,4 +108,22 @@ export class ReferrersService {
       },
     });
   }
+
+  toggleActivation(
+    referrerId: string,
+    onSuccess?: (response: GenericResponse<string>) => void,
+    onError?: ErrorFnCallback,
+  ) {
+    this.http
+      .post<GenericResponse<string>>(API.TOGGLE_ACTIVATION(referrerId), null)
+      .subscribe({
+        next: (response) => {
+          onSuccess?.(response);
+          this.fetchReferrers();
+        },
+        error: (error) => {
+          onError?.(getErrorMessage(error));
+        },
+      });
+  }
 }

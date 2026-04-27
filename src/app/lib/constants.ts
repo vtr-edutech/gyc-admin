@@ -32,6 +32,7 @@ export const API = {
   ASSIGN_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/assign',
   GET_REFERRERS: API_URL + '/admin/referrers',
   GET_REFERRER_BY_ID: (id: string) => API_URL + '/admin/referrers/' + id,
+  TOGGLE_ACTIVATION: (id: string) => API_URL + '/admin/referrers/' + id + '/toggle-activation',
   GET_ATTENDEES: API_URL + '/admin/attendees',
   DOWNLOAD_ATTENDEES: API_URL + '/admin/attendees/download',
   GET_ADMISSIONS_QUERIES: API_URL + '/admin/admission-query',
