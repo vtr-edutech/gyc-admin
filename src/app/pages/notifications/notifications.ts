@@ -13,6 +13,7 @@ import { Textarea } from 'primeng/textarea';
 import { DatePicker } from 'primeng/datepicker';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-notifications',
@@ -29,6 +30,7 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
     DatePicker,
     FormsModule,
     ConfirmPopup,
+    Tooltip,
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',

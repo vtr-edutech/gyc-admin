@@ -31,7 +31,7 @@
         <th>Description</th>
         <th>Type</th>
         <th>Link</th>
-        <th>Created At</th>
+        <th [noWrap]="true">Created At</th>
         <th>Actions</th>
       </tr>
     </ng-template>
@@ -53,19 +53,30 @@
           <td>
             {{ rowData.index }}
           </td>
-          <td>
-            {{ rowData.title }}
+          <td [noWrap]="true" [pTooltip]="rowData.title?.length > 25 ? rowData.title : undefined">
+            {{
+              rowData.title?.length > 25 ? rowData.title.substring(0, 25) + '...' : rowData.title
+            }}
           </td>
-          <td>
-            {{ rowData.description }}
+          <td
+            [noWrap]="true"
+            [pTooltip]="rowData.description?.length > 25 ? rowData.description : undefined"
+          >
+            {{
+              rowData.description?.length > 25
+                ? rowData.description.substring(0, 25) + '...'
+                : rowData.description
+            }}
           </td>
           <td>
             {{ rowData.type }}
           </td>
-          <td>
-            {{ rowData.link }}
+          <td [noWrap]="true" [pTooltip]="rowData.link?.length > 25 ? rowData.link : undefined">
+            <a class="text-blue-600 underline" href="{{ rowData.link }}" target="_blank">
+              {{ rowData.link?.length > 25 ? rowData.link.substring(0, 25) + '...' : rowData.link }}
+            </a>
           </td>
-          <td>
+          <td [noWrap]="true">
             {{ rowData.createdAt }}
           </td>
           <td>
