@@ -69,7 +69,7 @@
           track $index;
           let total = $count
         ) {
-          <tr>
+          <tr style="vertical-align: top">
             <td>
               @if ($index === total - 1) {
                 <p-button
@@ -77,6 +77,12 @@
                   icon="pi pi-plus"
                   [size]="'small'"
                   [text]="true"
+                  [pTooltip]="
+                    isAddKeyValuePairDisabled()
+                      ? 'You need to fill key and value before adding new extra field'
+                      : 'Add extra field'
+                  "
+                  [disabled]="isAddKeyValuePairDisabled()"
                 />
               }
             </td>
@@ -89,7 +95,7 @@
               <app-field-error fieldName="Value" [control]="entry.controls.value" />
             </td>
             <td>
-              @if ($index !== 0) {
+              @if (total > 1) {
                 <p-button
                   icon="pi pi-trash"
                   severity="danger"

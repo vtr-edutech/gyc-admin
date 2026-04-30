@@ -24,15 +24,14 @@ export class FollowUpFormService {
     value: FormControl<string | null>;
   }> {
     return new FormGroup({
-      key: new FormControl<string | null>(null, Validators.required),
-      value: new FormControl<string | null>(null, Validators.required),
+      key: new FormControl<string | null>(null),
+      value: new FormControl<string | null>(null),
     });
   }
 
   addExtraField() {
     const extraFields = this.followUpFormGroup.controls.extraFields;
-    const newExtraField = this.getNewKeyValuePair();
-    extraFields.push(newExtraField);
+    extraFields.push(this.getNewKeyValuePair());
   }
 
   removeExtraField(key: string) {
@@ -45,17 +44,6 @@ export class FollowUpFormService {
     bookingIdArray.clear();
     ids.forEach((id) => {
       bookingIdArray.push(new FormControl(id, Validators.required));
-    });
-  }
-
-  constructor() {
-    this.followUpFormGroup.controls.extraFields.controls.forEach((pair) => {
-      pair.controls.key.valueChanges.subscribe((key) => {
-        console.log('key changed', key);
-      });
-      pair.controls.value.valueChanges.subscribe((value) => {
-        console.log('value changed', value);
-      });
     });
   }
 }
