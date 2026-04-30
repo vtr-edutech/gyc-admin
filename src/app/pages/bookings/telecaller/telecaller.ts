@@ -10,6 +10,8 @@ import { Toast } from 'primeng/toast';
 import { TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS } from '../../../lib/constants';
 import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
 import { FollowUpForm } from './components/follow-up-form/follow-up-form';
+import { FollowUpFormService } from '../../../services/followup-form.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-bookings-telecaller',
@@ -30,6 +32,7 @@ export class TelecallerBooking implements OnInit {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
 
   telecallerBookingsService = inject(TelecallerBookingService);
+  followUpFormService = inject(FollowUpFormService);
 
   isFollowUpModalOpen = signal<boolean>(false);
 
@@ -89,14 +92,24 @@ export class TelecallerBooking implements OnInit {
   bookingsData = computed(() => this.telecallerBookingsService.telecallerBookings().data?.data);
 
   handleSelectRows = (changes: Handsontable.CellChange[]) => {
-    changes.forEach((change) => {
-      const [rowIndex, , , newValue] = change;
-      if (newValue === true) {
-        this.hotMeta.selectedRows.update((rows) => Array.from(new Set([...rows, rowIndex])));
-      } else {
-        this.hotMeta.selectedRows.update((rows) => rows.filter((row) => row !== rowIndex));
-      }
+    this.hotMeta.selectedRows.update((rows) => {
+      let updatedRows = [...rows];
+      changes.forEach(([rowIndex, , , newValue]) => {
+        if (newValue === true) {
+          updatedRows.push(rowIndex);
+        } else {
+          updatedRows = updatedRows.filter((r) => r !== rowIndex);
+        }
+      });
+      return Array.from(new Set(updatedRows));
     });
+
+    const bookingIds =
+      this.bookingsData()
+        ?.filter((_, index) => this.hotMeta.selectedRows().includes(index))
+        .map((row) => row._id) ?? [];
+
+    this.followUpFormService.setBookingIds(bookingIds);
   };
 
   afterChangeCallback: Handsontable.GridSettings['afterChange'] = (changes, source) => {
@@ -148,5 +161,6 @@ export class TelecallerBooking implements OnInit {
 
   toggleFollowUpModal(open: boolean) {
     this.isFollowUpModalOpen.set(open);
+    if (!open) this.followUpFormService.followUpFormGroup.reset();
   }
 }

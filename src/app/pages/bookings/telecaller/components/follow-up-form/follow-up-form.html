@@ -82,9 +82,11 @@
             </td>
             <td>
               <input type="text" fluid="true" pInputText [formControl]="entry.controls.key" />
+              <app-field-error fieldName="Key" [control]="entry.controls.key" />
             </td>
             <td>
               <input type="text" fluid="true" pInputText [formControl]="entry.controls.value" />
+              <app-field-error fieldName="Value" [control]="entry.controls.value" />
             </td>
             <td>
               @if ($index !== 0) {
@@ -93,7 +95,7 @@
                   severity="danger"
                   [size]="'small'"
                   [text]="true"
-                  (onClick)="removeExtraField(entry.controls.key.value)"
+                  (onClick)="removeExtraField(entry.controls.key.value!)"
                 />
               }
             </td>
