@@ -60,8 +60,11 @@
         <th [noWrap]="true">Mobile</th>
         <th [noWrap]="true">Cutoff</th>
         <th [noWrap]="true">Preferred Colleges</th>
+        <th [noWrap]="true">Preferred Courses</th>
         <th [noWrap]="true">Community</th>
+        <th [noWrap]="true">Zone</th>
         <th>Counselling Needed</th>
+        <th [noWrap]="true">TNEA Number</th>
         <th [noWrap]="true">Remarks</th>
         <th [noWrap]="true">Attended By</th>
         <th [noWrap]="true">Registered At</th>
@@ -70,6 +73,9 @@
     @if (this.attendeeService.attendees().isLoading) {
       <ng-template #body let-rowData>
         <tr>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
@@ -101,11 +107,26 @@
           <td>
             {{ rowData.preferredCollege }}
           </td>
+          <td [noWrap]="true">
+            <div class="w-[400px] h-full flex flex-wrap gap-1 overflow-x-auto">
+              @for (course of rowData.preferredCourses | courseCodeName; track $index) {
+                <p class="text-xs bg-gray-100 rounded-full px-2 py-1 w-fit">
+                  {{ course }}
+                </p>
+              }
+            </div>
+          </td>
           <td>
             {{ rowData.community }}
           </td>
           <td>
+            {{ rowData.zone }}
+          </td>
+          <td>
             {{ rowData.counsellingNeeded ? 'Yes' : 'No' }}
+          </td>
+          <td>
+            {{ rowData.tneaNumber ?? '—' }}
           </td>
           <td pTooltip="{{ rowData.remarks }}" class="max-w-[200px] truncate">
             {{

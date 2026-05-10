@@ -1,16 +1,17 @@
-import { Component, inject } from '@angular/core';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { AttendeeService } from '../../services/attendee.service';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { Skeleton } from 'primeng/skeleton';
 import { DatePipe } from '@angular/common';
-import { Button } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { DatePicker } from 'primeng/datepicker';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InputText } from 'primeng/inputtext';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { DatePicker } from 'primeng/datepicker';
+import { InputText } from 'primeng/inputtext';
+import { Skeleton } from 'primeng/skeleton';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
 import { formatDates } from '../../lib/utils';
+import { CourseCodeNamePipe } from '../../pipes/course-code-name-pipe';
+import { AttendeeService } from '../../services/attendee.service';
 
 @Component({
   selector: 'app-attendees',
@@ -24,6 +25,7 @@ import { formatDates } from '../../lib/utils';
     FormsModule,
     InputText,
     ConfirmPopup,
+    CourseCodeNamePipe,
   ],
   templateUrl: './attendees.html',
   styleUrl: './attendees.css',
