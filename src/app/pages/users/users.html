@@ -5,7 +5,7 @@
   </div>
   <div class="flex gap-2 items-center">
     <p-datepicker placeholder="Select start and end dates" [(ngModel)]="downloadModel" [showIcon]="true"
-      selectionMode="range" size="small" showClear="true" />
+      [maxDate]="today" selectionMode="range" size="small" showClear="true" />
     <p-button label="Download" icon="pi pi-download" severity="primary" size="small" (click)="download()" />
   </div>
 </div>

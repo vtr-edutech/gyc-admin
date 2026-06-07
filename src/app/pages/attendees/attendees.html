@@ -4,58 +4,24 @@
       <h1 class="text-3xl font-semibold">Attendees</h1>
       <p>View all Attendees</p>
     </div>
-    <p-button
-      label="Download"
-      icon="pi pi-download"
-      severity="primary"
-      size="small"
-      (click)="download()"
-    />
+    <p-button label="Download" icon="pi pi-download" severity="primary" size="small" (click)="download()" />
   </div>
   <div class="flex gap-2 items-center p-1">
-    <p-datepicker
-      placeholder="Select start and end dates"
-      [(ngModel)]="viewDateRange"
-      [showIcon]="true"
-      selectionMode="range"
-      (onClear)="loadAttendees()"
-      (onClose)="loadAttendees()"
-      showClear="true"
-      [size]="'small'"
-    />
-    <input
-      type="search"
-      name="search"
-      [(ngModel)]="search"
-      placeholder="Search attendees by name, cutoff, community, etc."
-      pInputText
-      (search)="loadAttendees()"
-      [pSize]="'small'"
-      class="w-[50%]"
-    />
-    <p-button
-      label="Search"
-      (onClick)="loadAttendees()"
-      size="small"
-      icon="pi pi-search"
-      [loading]="this.attendeeService.attendees().isLoading"
-    />
+    <p-datepicker placeholder="Select start and end dates" [(ngModel)]="viewDateRange" [showIcon]="true"
+      [maxDate]="today" selectionMode="range" (onClear)="loadAttendees()" (onClose)="loadAttendees()" showClear="true"
+      [size]="'small'" />
+    <input type="search" name="search" [(ngModel)]="search"
+      placeholder="Search attendees by name, cutoff, community, etc." pInputText (search)="loadAttendees()"
+      [pSize]="'small'" class="w-[50%]" />
+    <p-button label="Search" (onClick)="loadAttendees()" size="small" icon="pi pi-search"
+      [loading]="this.attendeeService.attendees().isLoading" />
   </div>
-  <p-table
-    [size]="'large'"
-    [stripedRows]="true"
-    [paginator]="true"
-    [rows]="10"
-    [rowsPerPageOptions]="[10, 25, 50]"
-    [lazy]="true"
-    (onLazyLoad)="loadAttendees($event)"
-    [totalRecords]="totalRecords"
-    [value]="this.attendeeService.attendees().data?.data || []"
-    [tableStyle]="{ 'min-width': '50rem' }"
-  >
+  <p-table [size]="'large'" [stripedRows]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+    [lazy]="true" (onLazyLoad)="loadAttendees($event)" [totalRecords]="totalRecords"
+    [value]="this.attendeeService.attendees().data?.data || []" [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template #header>
       <tr>
-        <th class="w-[80px]">S.No.</th>
+        <th class="w-20">S.No.</th>
         <th [noWrap]="true">Name</th>
         <th [noWrap]="true">Mobile</th>
         <th [noWrap]="true">Cutoff</th>
@@ -71,104 +37,90 @@
       </tr>
     </ng-template>
     @if (this.attendeeService.attendees().isLoading) {
-      <ng-template #body let-rowData>
-        <tr>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-          <td><p-skeleton height="1.5rem" /></td>
-        </tr>
-      </ng-template>
+    <ng-template #body let-rowData>
+      <tr>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+        <td><p-skeleton height="1.5rem" /></td>
+      </tr>
+    </ng-template>
     } @else {
-      <ng-template #body let-rowData>
-        <tr>
-          <td>
-            {{ rowData.index }}
-          </td>
-          <td>
-            {{ rowData.name }}
-          </td>
-          <td>
-            {{ rowData.mobile }} <br />
-            {{ rowData.email ? `(${rowData.email})` : '' }}
-          </td>
-          <td>
-            {{ rowData.cutoff }}
-          </td>
-          <td>
-            {{ rowData.preferredCollege }}
-          </td>
-          <td [noWrap]="true">
-            <div class="w-[400px] h-full flex flex-wrap gap-1 overflow-x-auto">
-              @for (course of rowData.preferredCourses | courseCodeName; track $index) {
-                <p class="text-xs bg-gray-100 rounded-full px-2 py-1 w-fit">
-                  {{ course }}
-                </p>
-              }
+    <ng-template #body let-rowData>
+      <tr>
+        <td>
+          {{ rowData.index }}
+        </td>
+        <td>
+          {{ rowData.name }}
+        </td>
+        <td>
+          {{ rowData.mobile }} <br />
+          {{ rowData.email ? `(${rowData.email})` : '' }}
+        </td>
+        <td>
+          {{ rowData.cutoff }}
+        </td>
+        <td>
+          {{ rowData.preferredCollege }}
+        </td>
+        <td [noWrap]="true">
+          <div class="w-100 h-full flex flex-wrap gap-1 overflow-x-auto">
+            @for (course of rowData.preferredCourses | courseCodeName; track $index) {
+            <p class="text-xs bg-gray-100 rounded-full px-2 py-1 w-fit">
+              {{ course }}
+            </p>
+            }
+          </div>
+        </td>
+        <td>
+          {{ rowData.community }}
+        </td>
+        <td>
+          {{ rowData.zone }}
+        </td>
+        <td>
+          {{ rowData.counsellingNeeded ? 'Yes' : 'No' }}
+        </td>
+        <td>
+          {{ rowData.tneaNumber ?? '—' }}
+        </td>
+        <td pTooltip="{{ rowData.remarks }}" class="max-w-50 truncate">
+          {{
+          rowData.remarks?.length > 25
+          ? rowData.remarks.substring(0, 25) + '...'
+          : rowData.remarks
+          }}
+        </td>
+        <td [noWrap]="true">
+          <div class="flex gap-2">
+            @if (!rowData.attendedBy) {
+            <p-button [label]="'Mark as attended'" icon="pi pi-check" size="small" [severity]="'success'"
+              [outlined]="true" (onClick)="confirmMarkAsAttended($event, rowData._id)" />
+            <p-confirmpopup />
+            } @else {
+            <div class="flex flex-col gap-2">
+              <p-button disabled label="Already attended" icon="pi pi-check" size="small" [severity]="'success'"
+                [outlined]="true" />
+              <span class="text-sm">{{ formatDate(rowData.attendedAt) }} by {{ rowData.attendedBy?.name }}</span>
             </div>
-          </td>
-          <td>
-            {{ rowData.community }}
-          </td>
-          <td>
-            {{ rowData.zone }}
-          </td>
-          <td>
-            {{ rowData.counsellingNeeded ? 'Yes' : 'No' }}
-          </td>
-          <td>
-            {{ rowData.tneaNumber ?? '—' }}
-          </td>
-          <td pTooltip="{{ rowData.remarks }}" class="max-w-[200px] truncate">
-            {{
-              rowData.remarks?.length > 25
-                ? rowData.remarks.substring(0, 25) + '...'
-                : rowData.remarks
-            }}
-          </td>
-          <td [noWrap]="true">
-            <div class="flex gap-2">
-              @if (!rowData.attendedBy) {
-                <p-button
-                  [label]="'Mark as attended'"
-                  icon="pi pi-check"
-                  size="small"
-                  [severity]="'success'"
-                  [outlined]="true"
-                  (onClick)="confirmMarkAsAttended($event, rowData._id)"
-                />
-                <p-confirmpopup />
-              } @else {
-                <div class="flex flex-col gap-2">
-                  <p-button
-                    disabled
-                    label="Already attended"
-                    icon="pi pi-check"
-                    size="small"
-                    [severity]="'success'"
-                    [outlined]="true"
-                  />
-                  <span class="text-sm"
-                    >{{ formatDate(rowData.attendedAt) }} by {{ rowData.attendedBy?.name }}</span
-                  >
-                </div>
-              }
-            </div>
-          </td>
-          <td class="shrink-0 flex">
-            {{ rowData.createdAt | date: "EE, MMM dd, y 'at' h:mm a" }}
-          </td>
-        </tr>
-      </ng-template>
+            }
+          </div>
+        </td>
+        <td class="shrink-0 flex">
+          {{ rowData.createdAt | date: "EE, MMM dd, y 'at' h:mm a" }}
+        </td>
+      </tr>
+    </ng-template>
     }
     <ng-template #emptymessage>
       <tr>

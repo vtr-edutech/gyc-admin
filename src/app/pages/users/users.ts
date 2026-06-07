@@ -46,6 +46,7 @@ export class Users {
   };
 
   downloadModel = [];
+  today = new Date();
 
   loadUsers(event: TableLazyLoadEvent): void {
     const page = (event.first || 0) / (event.rows || 10) + 1;
