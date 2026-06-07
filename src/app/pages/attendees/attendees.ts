@@ -39,6 +39,8 @@ export class Attendees {
   viewDateRange?: [Date?, Date?] = [];
   search = '';
 
+  today = new Date();
+
   formatDate = formatDates;
 
   get totalRecords() {
