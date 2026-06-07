@@ -15,4 +15,9 @@ export class UserDetails {
   formatDate(date: Date | string) {
     return formatDates(date);
   }
+
+  // Setting this as a getter to avoid having to repeat the optional chaining and also direct variable assignment does NOT reflect changes to the user object
+  get cutoff() {
+    return this.user?.cutoff?.[0];
+  }
 }

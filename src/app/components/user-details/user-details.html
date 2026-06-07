@@ -1,6 +1,6 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-  <app-info-tile title="Name" [value]="user?.firstName"></app-info-tile>
-  <app-info-tile title="Name" [value]="user?.lastName"></app-info-tile>
+  <app-info-tile title="First name" [value]="user?.firstName"></app-info-tile>
+  <app-info-tile title="Last name" [value]="user?.lastName"></app-info-tile>
   <app-info-tile title="Mobile" [value]="user?.mobile"></app-info-tile>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -20,13 +20,12 @@
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
   <app-info-tile title="Pincode" [value]="user?.pincode"></app-info-tile>
-  <app-info-tile
-    title="DOB"
-    [value]="user?.dob ? formatDate(user?.dob!) : undefined"
-  ></app-info-tile>
-  <app-info-tile title="User Plan" [value]="user?.userPlan"></app-info-tile>
+  <app-info-tile title="DOB" [value]="user?.dob ? formatDate(user?.dob!) : undefined"></app-info-tile>
+  <app-info-tile title="Cutoff"
+    [value]="cutoff?.physics + ' | ' + cutoff?.chemistry + ' | ' + cutoff?.maths"></app-info-tile>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+  <app-info-tile title="User Plan" [value]="user?.userPlan"></app-info-tile>
   <app-info-tile title="Email" [value]="user?.email"></app-info-tile>
   <app-info-tile title="Created At" [value]="formatDate(user?.createdAt!)"></app-info-tile>
 </div>
