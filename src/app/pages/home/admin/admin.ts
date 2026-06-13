@@ -2,6 +2,8 @@ import { Component, computed, inject } from '@angular/core';
 import { ValueCard } from '../../../components/value-card/value-card';
 import { HomeService } from '../../../services/home.service';
 import { UIChart } from 'primeng/chart';
+import { ChartOptions } from 'chart.js';
+import { hoverLinePlugin } from '../../../lib/ui';
 
 @Component({
   selector: 'app-home-admin',
@@ -16,4 +18,13 @@ export class HomeAdmin {
   ngOnInit() {
     this.homeService.getHomeData();
   }
+
+  readonly chartOptions: ChartOptions = {
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+  };
+
+  readonly plugins = [hoverLinePlugin];
 }
