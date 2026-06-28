@@ -37,6 +37,10 @@ export type TelecallerAssignmentUpdate = { _id: string } & Partial<
   Record<keyof TelecallerAssignment, string>
 >;
 
+export type TelecallerBookingsPayload = TelecallerAssignment & {
+  followUps: Omit<TelecallerServiceHistory, 'bookingId' | 'attendedBy' | 'attendedAt'>[];
+};
+
 type AdminUserRoles = 'admin' | 'superadmin' | 'telecaller' | 'editor' | 'referrer';
 
 export interface LoginResponse {
@@ -205,7 +209,7 @@ export interface TelecallerServiceHistory extends Timestamps {
 
 export interface FollowUpFormPayload {
   college: string;
-  bookingId: string[];
+  bookingIds: string[];
   remarks: string;
   calledDate: string;
   followUpDate: string | null;

@@ -1,39 +1,98 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FieldError } from '@/app/components/field-error/field-error';
+import { TelecallerBookingsPayload } from '@/app/lib/types';
+import { FollowUpFormService } from '@/app/services/followup-form.service';
+import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
+import { Component, inject, output, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Chip } from 'primeng/chip';
 import { DatePicker } from 'primeng/datepicker';
 import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
-import { Button } from 'primeng/button';
-import { FieldError } from '../../../../../components/field-error/field-error';
-import { FollowUpFormService } from '../../../../../services/followup-form.service';
 import { Tooltip } from 'primeng/tooltip';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-follow-up-form',
-  imports: [ReactiveFormsModule, Textarea, InputText, DatePicker, Button, FieldError, Tooltip],
+  imports: [
+    ReactiveFormsModule,
+    Textarea,
+    InputText,
+    DatePicker,
+    Button,
+    FieldError,
+    Tooltip,
+    Chip,
+  ],
   templateUrl: './follow-up-form.html',
   styleUrl: './follow-up-form.css',
 })
 export class FollowUpForm {
   followUpFormService = inject(FollowUpFormService);
+  messageService = inject(MessageService);
+  telecallerBookingsService = inject(TelecallerBookingService);
   followUpFormGroup = this.followUpFormService.followUpFormGroup;
+
   isAddKeyValuePairDisabled = signal<boolean>(true);
+  isSubmitting = signal<boolean>(false);
+
+  closeModal = output<void>();
+
+  /**
+   * Contains the details name (mobile) to display under modal title
+   */
+  telecallerBookingDetails = toSignal<TelecallerBookingsPayload[]>(
+    this.followUpFormGroup.controls.bookingIds.valueChanges.pipe(
+      map(
+        (bookingIds) =>
+          this.telecallerBookingsService
+            .telecallerBookings()
+            .data?.data?.filter((booking) => bookingIds.includes(booking._id)) || [],
+      ),
+    ),
+  );
 
   submitFollowUp() {
-    if (this.followUpFormGroup.invalid) return;
-    this.followUpFormGroup.controls.extraFields.controls.forEach((pair) => {
-      const keyField = pair.controls.key;
-      const valueField = pair.controls.value;
-      if (keyField.value?.trim() !== '' && !valueField.value) {
-        valueField.setErrors({ required: true });
-      } else if (valueField.value?.trim() !== '' && !keyField.value) {
-        keyField.setErrors({ required: true });
-      } else {
-        keyField.setErrors(null);
-        valueField.setErrors(null);
-      }
-    });
-    console.log(this.followUpFormGroup.value);
+    this.isSubmitting.set(true);
+    try {
+      if (this.followUpFormGroup.invalid) throw new Error();
+      this.followUpFormGroup.controls.extraFields.controls.forEach((pair) => {
+        const keyField = pair.controls.key;
+        const valueField = pair.controls.value;
+        const isEmptyKey = keyField.value === null || keyField.value.trim() === '';
+        const isEmptyValue = valueField.value === null || valueField.value.trim() === '';
+        if (isEmptyKey && isEmptyValue) {
+          keyField.setErrors(null);
+          valueField.setErrors(null);
+        } else if (isEmptyKey && !isEmptyValue) {
+          keyField.setErrors({ required: true });
+          throw new Error('Validation error caught!');
+        } else if (!isEmptyKey && isEmptyValue) {
+          valueField.setErrors({ required: true });
+          throw new Error('Validation error caught!');
+        } else {
+          keyField.setErrors(null);
+          valueField.setErrors(null);
+        }
+      });
+      this.followUpFormService.submitFollowUp(
+        (response) => {
+          this.messageService.add({ severity: 'success', summary: response.message });
+        },
+        (err) => {
+          this.messageService.add({ severity: 'error', summary: 'An error occurred', detail: err });
+        },
+        () => {
+          this.isSubmitting.set(false);
+          this.closeModal.emit();
+        },
+      );
+    } catch (err) {
+      console.log(err);
+      this.isSubmitting.set(false);
+    }
   }
 
   addExtraField() {

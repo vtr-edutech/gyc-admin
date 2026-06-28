@@ -1,4 +1,10 @@
 <form [formGroup]="followUpFormGroup" class="flex flex-col gap-3" (ngSubmit)="submitFollowUp()">
+  <p>You are creating follow ups for</p>
+  <div class="flex flex-wrap overflow-auto gap-2">
+    @for (detail of telecallerBookingDetails(); track $index) {
+      <p-chip class="text-xs text-gray-600">{{ detail.studentName }} ({{ detail.mobile }})</p-chip>
+    }
+  </div>
   <div class="flex flex-col gap-1">
     <label class="font-semibold" for="college">College</label>
     <input
@@ -110,5 +116,5 @@
       </tbody>
     </table>
   </div>
-  <p-button class="ml-auto" type="submit" label="Submit" />
+  <p-button class="ml-auto" type="submit" label="Submit" [disabled]="isSubmitting()" />
 </form>

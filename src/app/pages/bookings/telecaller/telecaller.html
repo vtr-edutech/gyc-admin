@@ -10,7 +10,7 @@
         [size]="'small'"
         label="Follow-up"
         [disabled]="hotMeta.selectedRows().length === 0"
-        (onClick)="toggleFollowUpModal(true)"
+        (onClick)="toggleCreateFollowUpModal(true)"
       />
     </div>
   </div>
@@ -37,13 +37,25 @@
 <p-confirmpopup></p-confirmpopup>
 
 <p-dialog
-  [visible]="isFollowUpModalOpen()"
-  (onHide)="toggleFollowUpModal(false)"
+  [visible]="isCreateFollowUpModalOpen()"
+  (onHide)="toggleCreateFollowUpModal(false)"
   [modal]="true"
   [draggable]="false"
   header="Add follow-up"
   [resizable]="false"
   [style]="{ width: '50%' }"
 >
-  <app-follow-up-form />
+  <app-follow-up-form (closeModal)="onCloseModal()" />
+</p-dialog>
+
+<p-dialog
+  [visible]="isViewFollowUpModalOpen()"
+  (onHide)="toggleViewFollowUpModal(false)"
+  [modal]="true"
+  [draggable]="false"
+  [header]="viewFollowUpModalTitle"
+  [resizable]="false"
+  [style]="{ minWidth: '50%' }"
+>
+  <app-follow-up-table [bookingId]="activeFollowUpBookingId()" />
 </p-dialog>

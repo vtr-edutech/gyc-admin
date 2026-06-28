@@ -4,7 +4,6 @@ export const hoverLinePlugin: Plugin = {
   id: 'intersectDataVerticalLine',
   beforeDraw: (chart) => {
     if (chart.getActiveElements().length) {
-      console.log(chart.data);
       const activePoint = chart.getActiveElements()[0];
       const chartArea = chart.chartArea;
       const ctx = chart.ctx;

@@ -31,7 +31,8 @@ export class FieldError {
     if (control.hasError('pattern')) {
       return `${fieldName} is invalid`;
     }
-    return '';
+    // Return first custom error or empty error
+    return control.errors ? (control.errors[Object.keys(control.errors)[0]] ?? '') : '';
   }
 
   getControlName(control: AbstractControl): string | null {

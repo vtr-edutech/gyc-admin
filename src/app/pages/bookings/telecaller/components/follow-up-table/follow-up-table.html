@@ -1,0 +1,52 @@
+<p-table
+  [size]="'large'"
+  [stripedRows]="true"
+  [value]="followUps()"
+  [tableStyle]="{ 'min-width': '50rem' }"
+>
+  <ng-template #header>
+    <tr>
+      <th class="w-20">S.No.</th>
+      <th>College</th>
+      <th>Remarks</th>
+      <th>Called Date</th>
+      <th>Follow-up date</th>
+      <th [noWrap]="true">Created At</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-rowData>
+    <tr>
+      <td>
+        {{ rowData.index }}
+      </td>
+      <td [noWrap]="true" [pTooltip]="rowData.college?.length > 25 ? rowData.college : undefined">
+        {{
+          rowData.college?.length > 25 ? rowData.college.substring(0, 25) + '...' : rowData.college
+        }}
+      </td>
+      <td [noWrap]="true" [pTooltip]="rowData.remarks?.length > 25 ? rowData.remarks : undefined">
+        {{
+          rowData.remarks?.length > 25 ? rowData.remarks.substring(0, 25) + '...' : rowData.remarks
+        }}
+      </td>
+      <td>
+        {{ rowData.calledDate | formatDate: true }}
+      </td>
+      <td>
+        {{ rowData.followUpDate | formatDate: true }}
+      </td>
+      <td [noWrap]="true">
+        {{ rowData.createdAt | formatDate: true }}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="6" class="text-center">
+        <div class="w-full grid content-center">
+          <p class="text-lg font-semibold">No Follow-ups created</p>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

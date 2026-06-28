@@ -1,5 +1,10 @@
 import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
+import {
+  ColumnSettings,
+  GridSettings,
+  HotTableComponent,
+  HotTableModule,
+} from '@handsontable/angular-wrapper';
 import Handsontable from 'handsontable';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
@@ -7,11 +12,13 @@ import { DialogModule } from 'primeng/dialog';
 import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Toast } from 'primeng/toast';
-import { TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS } from '../../../lib/constants';
-import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
+import { TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS } from '@/app/lib/constants';
+import { FollowUpFormService } from '@/app/services/followup-form.service';
 import { FollowUpForm } from './components/follow-up-form/follow-up-form';
-import { FollowUpFormService } from '../../../services/followup-form.service';
-import { FormControl } from '@angular/forms';
+import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
+import { MessageService } from 'primeng/api';
+import { FollowUpTable } from './components/follow-up-table/follow-up-table';
+import { HotViewButton } from './components/hot-view-button/hot-view-button';
 
 @Component({
   selector: 'app-bookings-telecaller',
@@ -24,6 +31,7 @@ import { FormControl } from '@angular/forms';
     Paginator,
     DialogModule,
     FollowUpForm,
+    FollowUpTable,
   ],
   templateUrl: './telecaller.html',
   styleUrl: './telecaller.css',
@@ -31,10 +39,28 @@ import { FormControl } from '@angular/forms';
 export class TelecallerBooking implements OnInit {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
 
+  COLUMN_CONFIG = [
+    ...TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS,
+    {
+      data: '_id',
+      title: 'Actions',
+      width: 100,
+      readOnly: true,
+      renderer: HotViewButton,
+      rendererProps: {
+        action: (bookingId: string) => this.afterBookingChoose(bookingId),
+      },
+    },
+  ];
+
   telecallerBookingsService = inject(TelecallerBookingService);
   followUpFormService = inject(FollowUpFormService);
+  messageService = inject(MessageService);
 
-  isFollowUpModalOpen = signal<boolean>(false);
+  isCreateFollowUpModalOpen = signal<boolean>(false);
+  isViewFollowUpModalOpen = signal<boolean>(false);
+
+  activeFollowUpBookingId = signal<string | null>(null);
 
   pagination = {
     first: 0,
@@ -47,8 +73,8 @@ export class TelecallerBooking implements OnInit {
 
   searchKey = '';
 
-  data = Array.from({ length: 50 }, (_, i) =>
-    Array.from({ length: TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS.length }, (_, j) => ''),
+  data = Array.from({ length: 50 }, () =>
+    Array.from({ length: this.COLUMN_CONFIG.length }, () => ''),
   );
 
   gridSettings: GridSettings = {
@@ -60,7 +86,7 @@ export class TelecallerBooking implements OnInit {
     manualColumnResize: true,
     autoColumnSize: false,
     headerClassName: 'font-semibold text-lg',
-    columns: TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS,
+    columns: this.COLUMN_CONFIG,
     hiddenColumns: {
       columns: [0, 1],
       indicators: false,
@@ -104,10 +130,7 @@ export class TelecallerBooking implements OnInit {
       return Array.from(new Set(updatedRows));
     });
 
-    const bookingIds =
-      this.bookingsData()
-        ?.filter((_, index) => this.hotMeta.selectedRows().includes(index))
-        .map((row) => row._id) ?? [];
+    const bookingIds = this.getBookingIdsFromSelectedRows();
 
     this.followUpFormService.setBookingIds(bookingIds);
   };
@@ -156,11 +179,58 @@ export class TelecallerBooking implements OnInit {
       this.pagination.first,
       this.pagination.limit,
       this.searchKey,
+      undefined,
+      () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'There was an error while fetching telecaller bookings',
+        });
+      },
     );
   }
 
-  toggleFollowUpModal(open: boolean) {
-    this.isFollowUpModalOpen.set(open);
-    if (!open) this.followUpFormService.followUpFormGroup.reset();
+  /**
+   * Helper function to set modal control signal and reset form without touching
+   * - bookingIds
+   * - calledDate
+   * @param open Boolean value to control opening or closing
+   */
+  toggleCreateFollowUpModal(open: boolean) {
+    this.isCreateFollowUpModalOpen.set(open);
+    if (!open)
+      this.followUpFormService.followUpFormGroup.reset({
+        bookingIds: this.getBookingIdsFromSelectedRows(),
+        calledDate: new Date(),
+      });
+  }
+
+  toggleViewFollowUpModal(open: boolean) {
+    this.isViewFollowUpModalOpen.set(open);
+  }
+
+  afterBookingChoose(bookingId: string) {
+    this.activeFollowUpBookingId.set(bookingId);
+    this.toggleViewFollowUpModal(true);
+  }
+
+  getBookingIdsFromSelectedRows() {
+    return (
+      this.bookingsData()
+        ?.filter((_, index) => this.hotMeta.selectedRows().includes(index))
+        .map((row) => row._id) ?? []
+    );
+  }
+
+  onCloseModal() {
+    this.toggleCreateFollowUpModal(false);
+    this.hotMeta.selectedRows.set([]);
+    this.fetchTelecallerBookings();
+  }
+
+  get viewFollowUpModalTitle() {
+    const currentBooking = this.telecallerBookingsService
+      .telecallerBookings()
+      .data?.data?.find((d) => d._id === this.activeFollowUpBookingId());
+    return `View follow ups for ${currentBooking?.studentName} (${currentBooking?.mobile})`;
   }
 }

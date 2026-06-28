@@ -10,7 +10,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { formatDates } from '../../lib/utils';
-import { CourseCodeNamePipe } from '../../pipes/course-code-name-pipe';
+import { CourseCodeNamePipe } from '../../pipes/course-code-name.pipe';
 import { AttendeeService } from '../../services/attendee.service';
 
 @Component({

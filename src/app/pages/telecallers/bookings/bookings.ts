@@ -4,18 +4,18 @@ import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/a
 import Handsontable from 'handsontable';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ConfirmPopup } from 'primeng/confirmpopup';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
+import { MultiSelect } from 'primeng/multiselect';
 import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
-import { MultiSelect } from 'primeng/multiselect';
 import { Toast } from 'primeng/toast';
-import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '../../../lib/constants';
-import { TelecallerAssignment, TelecallerAssignmentUpdate } from '../../../lib/types';
-import { TelecallerBookingService } from '../../../services/telecaller-booking.service';
-import { TelecallerService } from '../../../services/telecaller.service';
-import { ConfirmPopup } from 'primeng/confirmpopup';
-import { customValidationDropdownRenderer } from '../../../lib/utils';
+import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '@/app/lib/constants';
+import { TelecallerAssignmentUpdate, TelecallerBookingsPayload } from '@/app/lib/types';
+import { customValidationDropdownRenderer } from '@/app/lib/utils';
+import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
+import { TelecallerService } from '@/app/services/telecaller.service';
 
 @Component({
   selector: 'app-telecaller-bookings',
@@ -261,7 +261,7 @@ export class TelecallerBookings implements OnInit {
           ...bookingsData[rowIndex],
           ...update,
           subjects: updatedSubjects,
-        } as TelecallerAssignment;
+        } as TelecallerBookingsPayload;
       }
     });
     hotInstance.updateData(bookingsData.length > 0 ? bookingsData : this.data);

@@ -1,4 +1,4 @@
-import { CourseCodeNamePipe } from './course-code-name-pipe';
+import { CourseCodeNamePipe } from './course-code-name.pipe';
 
 describe('CourseCodeNamePipe', () => {
   it('create an instance', () => {

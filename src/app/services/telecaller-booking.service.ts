@@ -1,21 +1,21 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { API } from '../lib/constants';
+import { API } from '@/app/lib/constants';
 import {
   ErrorFnCallback,
   FetchState,
   GenericResponse,
-  TelecallerAssignment,
   TelecallerAssignmentUpdate,
-} from '../lib/types';
-import { formatDates, getErrorMessage } from '../lib/utils';
+  TelecallerBookingsPayload,
+} from '@/app/lib/types';
+import { getErrorMessage } from '@/app/lib/utils';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TelecallerBookingService {
-  telecallerBookings: WritableSignal<FetchState<TelecallerAssignment[]>> = signal<
-    FetchState<TelecallerAssignment[]>
+  telecallerBookings: WritableSignal<FetchState<TelecallerBookingsPayload[]>> = signal<
+    FetchState<TelecallerBookingsPayload[]>
   >({
     isLoading: false,
     error: null,
@@ -55,7 +55,7 @@ export class TelecallerBookingService {
     }
 
     this.http
-      .get<GenericResponse<TelecallerAssignment[]>>(API.GET_TELECALLER_BOOKINGS, {
+      .get<GenericResponse<TelecallerBookingsPayload[]>>(API.GET_TELECALLER_BOOKINGS, {
         params,
       })
       .subscribe({
