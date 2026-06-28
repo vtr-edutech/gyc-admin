@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
 import { ErrorFnCallback, FetchState, GenericResponse, User } from '../lib/types';
-import { formatDates, generateNumbers, getErrorMessage } from '../lib/utils';
+import { generateNumbers, getErrorMessage } from '../lib/utils';
 
 export type SearchFilters = {
   name?: string;
@@ -60,8 +60,6 @@ export class UserService {
                 response!.data?.map((user, i) => ({
                   ...user,
                   index: (page - 1) * limit + i + 1,
-                  createdAt: formatDates(user.createdAt),
-                  updatedAt: formatDates(user.updatedAt),
                 })) || [],
             },
           });

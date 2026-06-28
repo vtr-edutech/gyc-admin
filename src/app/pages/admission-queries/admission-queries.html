@@ -66,7 +66,7 @@
   >
     <ng-template #header>
       <tr>
-        <th class="w-[80px]">S.No.</th>
+        <th class="w-20">S.No.</th>
         <th [noWrap]="true">Name</th>
         <th [noWrap]="true">Mobile</th>
         <th [noWrap]="true">State</th>
@@ -117,7 +117,7 @@
           </td>
           <td
             [pTooltip]="rowData.program?.length > 15 ? rowData.program : undefined"
-            class="max-w-[200px] truncate"
+            class="max-w-50 truncate"
           >
             {{
               rowData.program?.length > 25
@@ -125,7 +125,7 @@
                 : rowData.program || 'Not Mentioned'
             }}
           </td>
-          <td pTooltip="{{ rowData.message }}" class="max-w-[200px] truncate">
+          <td pTooltip="{{ rowData.message }}" class="max-w-50 truncate">
             {{
               rowData.message?.length > 25
                 ? rowData.message.substring(0, 25) + '...'
@@ -162,7 +162,7 @@
             </div>
           </td>
           <td class="shrink-0 flex">
-            {{ rowData.createdAt | date: "EE, MMM dd, y 'at' h:mm a" }}
+            {{ rowData.createdAt | formatDate }}
           </td>
         </tr>
       </ng-template>

@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
 import { ErrorFnCallback, FetchState, GenericResponse, SlotBooking } from '../lib/types';
-import { formatDates, generateNumbers, getErrorMessage } from '../lib/utils';
+import { generateNumbers, getErrorMessage } from '../lib/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -58,9 +58,6 @@ export class SlotBookingService {
                         ...booking.attendedBy,
                       }
                     : null,
-                  attendedAt: formatDates(booking.attendedAt),
-                  createdAt: formatDates(booking.createdAt, true),
-                  updatedAt: formatDates(booking.updatedAt, true),
                 })) || [],
             },
           });

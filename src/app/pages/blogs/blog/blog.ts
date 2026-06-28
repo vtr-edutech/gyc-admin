@@ -1,14 +1,15 @@
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { AuthService } from '@/app/services/auth.service';
+import { BlogService } from '@/app/services/blog.service';
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Avatar } from 'primeng/avatar';
 import { Button } from 'primeng/button';
-import { AuthService } from '../../../services/auth.service';
-import { BlogService } from '../../../services/blog.service';
 
 @Component({
   selector: 'app-blog',
-  imports: [Button, RouterLink, Avatar],
+  imports: [Button, RouterLink, Avatar, FormatDatePipe],
   templateUrl: './blog.html',
   styleUrl: './blog.css',
 })

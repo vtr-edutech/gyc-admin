@@ -69,7 +69,7 @@
           {{ rowData.district }}
         </td>
         <td>
-          {{ rowData.createdAt }}
+          {{ rowData.createdAt | formatDate }}
         </td>
         <td>
           <p-button icon="pi pi-eye" [size]="'small'" [variant]="'outlined'" (click)="toggleUserDetailsModal(rowData)"

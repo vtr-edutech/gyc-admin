@@ -1,15 +1,16 @@
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { Component, inject, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { Skeleton } from 'primeng/skeleton';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { BlogService } from '../../services/blog.service';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { Skeleton } from 'primeng/skeleton';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 @Component({
   selector: 'app-blogs',
-  imports: [Button, RouterLink, TableModule, Skeleton, ConfirmPopupModule],
+  imports: [Button, RouterLink, TableModule, Skeleton, ConfirmPopupModule, FormatDatePipe],
   templateUrl: './blogs.html',
   styleUrl: './blogs.css',
   providers: [ConfirmationService],

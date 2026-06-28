@@ -1,29 +1,29 @@
+import { formatDates } from '@/app/lib/utils';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { AdmissionQueryService } from '@/app/services/admission-query.service';
 import { Component, inject } from '@angular/core';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { AdmissionQueryService } from '../../services/admission-query.service';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { Skeleton } from 'primeng/skeleton';
-import { DatePipe } from '@angular/common';
-import { Button } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { DatePicker } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
-import { InputText } from 'primeng/inputtext';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
-import { formatDates } from '../../lib/utils';
+import { DatePicker } from 'primeng/datepicker';
+import { InputText } from 'primeng/inputtext';
+import { Skeleton } from 'primeng/skeleton';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-admission-queries',
   imports: [
     TableModule,
     Skeleton,
-    DatePipe,
     Button,
     TooltipModule,
     DatePicker,
     FormsModule,
     InputText,
     ConfirmPopup,
+    FormatDatePipe,
   ],
   templateUrl: './admission-queries.html',
   styleUrl: './admission-queries.css',

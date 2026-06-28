@@ -1,17 +1,18 @@
+import { LoadingOverlay } from '@/app/components/loading-overlay/loading-overlay';
+import { formatDates } from '@/app/lib/utils';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { BlogService } from '@/app/services/blog.service';
 import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Button } from 'primeng/button';
-import { BlogService } from '../../../services/blog.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { LoadingOverlay } from '../../../components/loading-overlay/loading-overlay';
-import { InputText } from 'primeng/inputtext';
+import { Button } from 'primeng/button';
 import { Editor } from 'primeng/editor';
-import { formatDates } from '../../../lib/utils';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-blog-edit',
-  imports: [Button, FormsModule, LoadingOverlay, InputText, Editor, RouterLink],
+  imports: [Button, FormsModule, LoadingOverlay, InputText, Editor, RouterLink, FormatDatePipe],
   templateUrl: './edit.html',
   styleUrl: './edit.css',
 })

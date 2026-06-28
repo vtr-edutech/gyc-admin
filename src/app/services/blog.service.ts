@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
-import { ErrorFnCallback, FetchState, GenericResponse, Blog } from '../lib/types';
-import { formatDates, generateNumbers, getErrorMessage } from '../lib/utils';
+import { Blog, ErrorFnCallback, FetchState, GenericResponse } from '@/app/lib/types';
+import { generateNumbers, getErrorMessage } from '@/app/lib/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -59,8 +59,6 @@ export class BlogService {
                 response!.data?.map((blog, i) => ({
                   ...blog,
                   index: (page - 1) * limit + i + 1,
-                  createdAt: formatDates(blog.createdAt),
-                  updatedAt: formatDates(blog.updatedAt),
                 })) || [],
             },
           });
@@ -83,12 +81,7 @@ export class BlogService {
         this.blog.set({
           isLoading: false,
           error: null,
-          data: {
-            data: {
-              ...response.data!,
-              createdAt: formatDates(response.data!.createdAt),
-            },
-          },
+          data: response,
         });
         onSuccess?.(response.data);
       },

@@ -1,16 +1,17 @@
+import { formatDates } from '@/app/lib/utils';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { ReferrersService } from '@/app/services/referrers.service';
 import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { Dialog } from 'primeng/dialog';
+import { InputText } from 'primeng/inputtext';
 import { Skeleton } from 'primeng/skeleton';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
-import { formatDates } from '../../lib/utils';
-import { ReferrersService } from '../../services/referrers.service';
 import { Tooltip } from 'primeng/tooltip';
-import { InputText } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
-import { Dialog } from 'primeng/dialog';
 import { ReferrerDetails } from './components/referrer-details/referrer-details';
 
 @Component({
@@ -26,6 +27,7 @@ import { ReferrerDetails } from './components/referrer-details/referrer-details'
     FormsModule,
     Dialog,
     ReferrerDetails,
+    FormatDatePipe,
   ],
   templateUrl: './referrers.html',
   styleUrl: './referrers.css',

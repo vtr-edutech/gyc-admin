@@ -1,18 +1,18 @@
-import { Component, computed, inject, ViewChild } from '@angular/core';
+import { InfoTile } from '@/app/components/info-tile/info-tile';
+import { UserDetails } from '@/app/components/user-details/user-details';
+import { User } from '@/app/lib/types';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { SearchFilters, UserService } from '@/app/services/user.service';
+import { Component, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
-import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { SearchFilters, UserService } from '../../services/user.service';
-import { Skeleton } from 'primeng/skeleton';
-import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { generateNumbers } from '../../lib/utils';
-import { User } from '../../lib/types';
-import { InfoTile } from '../../components/info-tile/info-tile';
-import { UserDetails } from '../../components/user-details/user-details';
+import { Button } from 'primeng/button';
+import { DatePicker } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
-import { DatePicker } from 'primeng/datepicker';
+import { Skeleton } from 'primeng/skeleton';
+import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-users',
@@ -27,6 +27,7 @@ import { DatePicker } from 'primeng/datepicker';
     InputText,
     DatePicker,
     FormsModule,
+    FormatDatePipe,
   ],
   templateUrl: './users.html',
   styleUrl: './users.css',

@@ -1,18 +1,19 @@
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { NgClass } from '@angular/common';
 import { Component, inject, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
+import { InputText } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { Skeleton } from 'primeng/skeleton';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
-import { TelecallerService } from '../../services/telecaller.service';
-import { InputText } from 'primeng/inputtext';
 import { AdminUser } from '../../lib/types';
-import { RouterLink } from '@angular/router';
 import { formatDates } from '../../lib/utils';
+import { TelecallerService } from '../../services/telecaller.service';
 
 type TModalControls = {
   isTelecallerModalOpen: boolean;
@@ -33,6 +34,7 @@ type TModalControls = {
     PasswordModule,
     InputText,
     RouterLink,
+    FormatDatePipe,
   ],
   templateUrl: './telecallers.html',
   styleUrl: './telecallers.css',

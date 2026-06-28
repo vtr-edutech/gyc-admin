@@ -1,4 +1,7 @@
-import { DatePipe } from '@angular/common';
+import { formatDates } from '@/app/lib/utils';
+import { CourseCodeNamePipe } from '@/app/pipes/course-code-name.pipe';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { AttendeeService } from '@/app/services/attendee.service';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -9,16 +12,12 @@ import { InputText } from 'primeng/inputtext';
 import { Skeleton } from 'primeng/skeleton';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { formatDates } from '../../lib/utils';
-import { CourseCodeNamePipe } from '../../pipes/course-code-name.pipe';
-import { AttendeeService } from '../../services/attendee.service';
 
 @Component({
   selector: 'app-attendees',
   imports: [
     TableModule,
     Skeleton,
-    DatePipe,
     Button,
     TooltipModule,
     DatePicker,
@@ -26,6 +25,7 @@ import { AttendeeService } from '../../services/attendee.service';
     InputText,
     ConfirmPopup,
     CourseCodeNamePipe,
+    FormatDatePipe,
   ],
   templateUrl: './attendees.html',
   styleUrl: './attendees.css',

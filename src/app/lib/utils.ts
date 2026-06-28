@@ -2,7 +2,7 @@ import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BaseRenderer } from 'handsontable/renderers';
 
-export function formatDates(date: string | Date, withTime: boolean = false) {
+export function formatDates(date: string | Date | undefined | null, withTime: boolean = false) {
   return !date || date.toString().trim() === ''
     ? 'N/A'
     : formatDate(date, `EE, MMM dd, y ${withTime ? "'at' h:mm a" : ''}`, 'en', 'Asia/Kolkata');

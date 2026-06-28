@@ -1,4 +1,4 @@
-import { FormatDatePipe } from '@/app/pipes/format-date.pipe-pipe';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
 import { Component, computed, inject, input } from '@angular/core';
 import { TableModule } from 'primeng/table';

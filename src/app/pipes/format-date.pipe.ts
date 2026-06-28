@@ -1,5 +1,5 @@
-import { formatDate } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
+import { formatDates } from '../lib/utils';
 
 @Pipe({
   name: 'formatDate',
@@ -17,8 +17,6 @@ export class FormatDatePipe implements PipeTransform {
     withTime: boolean = false,
     ...args: unknown[]
   ): string {
-    return !date || date.toString().trim() === ''
-      ? 'N/A'
-      : formatDate(date, `EE, MMM dd, y ${withTime ? "'at' h:mm a" : ''}`, 'en', 'Asia/Kolkata');
+    return formatDates(date, withTime);
   }
 }

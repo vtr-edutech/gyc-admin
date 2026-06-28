@@ -62,8 +62,6 @@ export class TelecallerService {
                 response!.data?.map((user, i) => ({
                   ...user,
                   index: (page - 1) * limit + i + 1,
-                  createdAt: formatDates(user.createdAt),
-                  updatedAt: formatDates(user.updatedAt),
                 })) || [],
             },
           });

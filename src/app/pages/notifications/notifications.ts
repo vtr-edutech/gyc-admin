@@ -1,18 +1,19 @@
-import { Component, inject } from '@angular/core';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { AnnouncementsService } from '@/app/services/announcements.service';
 import { CommonModule } from '@angular/common';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { Skeleton } from 'primeng/skeleton';
-import { AnnouncementsService } from '../../services/announcements.service';
+import { Component, inject } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { Toast } from 'primeng/toast';
-import { Dialog } from 'primeng/dialog';
-import { Select } from 'primeng/select';
-import { InputText } from 'primeng/inputtext';
-import { Textarea } from 'primeng/textarea';
-import { DatePicker } from 'primeng/datepicker';
-import { FormsModule, NgForm } from '@angular/forms';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { DatePicker } from 'primeng/datepicker';
+import { Dialog } from 'primeng/dialog';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { Skeleton } from 'primeng/skeleton';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { Textarea } from 'primeng/textarea';
+import { Toast } from 'primeng/toast';
 import { Tooltip } from 'primeng/tooltip';
 
 @Component({
@@ -31,6 +32,7 @@ import { Tooltip } from 'primeng/tooltip';
     FormsModule,
     ConfirmPopup,
     Tooltip,
+    FormatDatePipe,
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',

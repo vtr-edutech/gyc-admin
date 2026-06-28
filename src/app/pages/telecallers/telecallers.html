@@ -34,7 +34,7 @@
   >
     <ng-template #header>
       <tr>
-        <th class="w-[80px]">S.No.</th>
+        <th class="w-20">S.No.</th>
         <th>Name</th>
         <th>Username</th>
         <th>Email</th>
@@ -74,7 +74,7 @@
             {{ rowData.mobile }}
           </td>
           <td>
-            {{ rowData.createdAt }}
+            {{ rowData.createdAt | formatDate }}
           </td>
           <td>
             <p-button
@@ -261,7 +261,7 @@
     }
     @if (modalControls.isEdit) {
       <span class="text-sm text-gray-600"
-        >Last updated at {{ formatDates(modalControls.selectedTelecaller!.updatedAt) }}</span
+        >Last updated at {{ modalControls.selectedTelecaller!.updatedAt | formatDate }}</span
       >
     }
     <div class="flex justify-end gap-2 mt-4">

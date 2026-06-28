@@ -1,14 +1,15 @@
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { SlotBookingService } from '@/app/services/slot-booking.service';
 import { Component, inject } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { SlotBookingService } from '../../../services/slot-booking.service';
 import { Button } from 'primeng/button';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { Skeleton } from 'primeng/skeleton';
 import { ConfirmPopup } from 'primeng/confirmpopup';
+import { Skeleton } from 'primeng/skeleton';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-bookings-admin',
-  imports: [Button, TableModule, Skeleton, ConfirmPopup],
+  imports: [Button, TableModule, Skeleton, ConfirmPopup, FormatDatePipe],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })

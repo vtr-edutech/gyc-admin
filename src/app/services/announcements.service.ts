@@ -1,8 +1,8 @@
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { Announcement, ErrorFnCallback, FetchState, GenericResponse } from '../lib/types';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { formatDates, generateNumbers, getErrorMessage } from '../lib/utils';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { API } from '../lib/constants';
+import { Announcement, ErrorFnCallback, FetchState, GenericResponse } from '../lib/types';
+import { generateNumbers, getErrorMessage } from '../lib/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -53,8 +53,6 @@ export class AnnouncementsService {
                 response!.data?.map((user, i) => ({
                   ...user,
                   index: (page - 1) * limit + i + 1,
-                  createdAt: formatDates(user.createdAt),
-                  updatedAt: formatDates(user.updatedAt),
                 })) || [],
             },
           });

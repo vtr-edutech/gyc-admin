@@ -1,14 +1,15 @@
+import { InfoTile } from '@/app/components/info-tile/info-tile';
+import { formatDates } from '@/app/lib/utils';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { ReferrersService } from '@/app/services/referrers.service';
 import { Component, inject, input, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
-import { InfoTile } from '../../../../components/info-tile/info-tile';
-import { formatDates } from '../../../../lib/utils';
-import { ReferrersService } from '../../../../services/referrers.service';
 
 @Component({
   selector: 'app-referrer-details',
-  imports: [InfoTile, Skeleton, TableModule],
+  imports: [InfoTile, Skeleton, TableModule, FormatDatePipe],
   templateUrl: './referrer-details.html',
   styleUrl: './referrer-details.css',
 })

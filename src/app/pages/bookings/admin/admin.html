@@ -59,7 +59,7 @@
             {{ rowData.attendedBy?.name || 'Not Attended' }}
           </td>
           <td>
-            {{ rowData.createdAt }}
+            {{ rowData.createdAt | formatDate: true }}
           </td>
           <td>
             <div class="flex gap-2">
@@ -85,7 +85,7 @@
                     [outlined]="true"
                   />
                   <span class="text-sm"
-                    >{{ rowData.attendedAt }} by {{ rowData.attendedBy?.name }}</span
+                    >{{ rowData.attendedAt | formatDate }} by {{ rowData.attendedBy?.name }}</span
                   >
                 </div>
               }

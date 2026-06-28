@@ -20,7 +20,7 @@
         />
         <span>{{ this.authService.authState().data?.data?.name }}</span>
       </div>
-      <p class="text-gray-500">on {{ blog()?.createdAt }}</p>
+      <p class="text-gray-500">on {{ blog()?.createdAt | formatDate }}</p>
     </div>
     <div class="flex items-start gap-1">
       <div class="flex items-center gap-1">

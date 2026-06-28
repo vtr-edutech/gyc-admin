@@ -1,3 +1,8 @@
+import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '@/app/lib/constants';
+import { TelecallerAssignmentUpdate, TelecallerBookingsPayload } from '@/app/lib/types';
+import { customValidationDropdownRenderer } from '@/app/lib/utils';
+import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
+import { TelecallerService } from '@/app/services/telecaller.service';
 import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
@@ -11,11 +16,6 @@ import { MultiSelect } from 'primeng/multiselect';
 import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Toast } from 'primeng/toast';
-import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '@/app/lib/constants';
-import { TelecallerAssignmentUpdate, TelecallerBookingsPayload } from '@/app/lib/types';
-import { customValidationDropdownRenderer } from '@/app/lib/utils';
-import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
-import { TelecallerService } from '@/app/services/telecaller.service';
 
 @Component({
   selector: 'app-telecaller-bookings',
@@ -140,6 +140,8 @@ export class TelecallerBookings implements OnInit {
 
       const isDeactivatedRow = this.instance.getDataAtRowProp(row, 'isDeactivated') as boolean;
       const assignedToColumnIndex = this.instance.propToCol('assignedTo');
+      const createdAtColumnIndex = this.instance.propToCol('createdAt');
+      const updatedAtColumnIndex = this.instance.propToCol('updatedAt');
       if (isDeactivatedRow) {
         this.readOnly = true;
         this.className = '!bg-red-200';
@@ -147,7 +149,7 @@ export class TelecallerBookings implements OnInit {
         this.readOnly = false;
         this.className = '';
       }
-      if (column === assignedToColumnIndex) {
+      if ([assignedToColumnIndex, createdAtColumnIndex, updatedAtColumnIndex].includes(column)) {
         this.readOnly = true;
       }
       return this;

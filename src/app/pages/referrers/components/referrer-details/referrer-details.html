@@ -37,7 +37,7 @@
     ></app-info-tile>
     <app-info-tile
       title="Joined at"
-      [value]="formatDates(referrer().data?.data?.createdAt || '')"
+      [value]="referrer().data?.data?.createdAt | formatDate"
     ></app-info-tile>
     <app-info-tile
       title="Deactivated By"
@@ -76,7 +76,7 @@
         <td>{{ referrer.firstName + ' ' + (referrer.lastName ?? '') }}</td>
         <td>{{ referrer.mobile }}</td>
         <td>{{ referrer.registerNo }}</td>
-        <td>{{ formatDates(referrer.createdAt) }}</td>
+        <td>{{ referrer.createdAt | formatDate }}</td>
       </tr>
     </ng-template>
   </p-table>
