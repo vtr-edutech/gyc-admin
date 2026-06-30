@@ -8,4 +8,10 @@ import { Navbar } from '../components/navbar/navbar';
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
-export class Layout {}
+export class Layout {
+  isSidebarClosed = false;
+
+  toggleSidebar(open: boolean) {
+    this.isSidebarClosed = open;
+  }
+}

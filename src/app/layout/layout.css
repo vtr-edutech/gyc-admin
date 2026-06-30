@@ -1,5 +1,10 @@
-:host {
+main {
   display: grid;
   grid-template-columns: 300px auto;
   min-height: 100vh;
+  transition: grid-template-columns 0.3s;
+}
+
+main.closed {
+  grid-template-columns: 0 auto;
 }

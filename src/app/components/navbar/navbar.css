@@ -1,5 +1,10 @@
 @reference "tailwindcss";
 
 :host {
-  @apply flex w-[300px] bg-white h-full z-999 flex-col gap-2 p-8 pr-0 shadow-xl border border-gray-100 fixed top-0 left-0;
+  @apply flex w-[300px] bg-white h-[100vh] z-999 flex-col gap-2 p-6 pr-0 shadow-xl border border-gray-100 fixed top-0 left-0;
+  transition: transform 0.3s ease;
+}
+
+:host(.closed) {
+  transform: translateX(-100%);
 }

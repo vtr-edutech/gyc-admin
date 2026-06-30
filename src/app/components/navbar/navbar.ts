@@ -1,9 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { Ripple } from 'primeng/ripple';
-import { Button, ButtonIcon } from 'primeng/button';
 import { Avatar } from 'primeng/avatar';
-import { AuthService } from '../../services/auth.service';
+import { Button } from 'primeng/button';
+import { Ripple } from 'primeng/ripple';
+import { AuthService } from '@/app/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,6 +13,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Navbar {
   authService = inject(AuthService);
+
+  isSidebarClosed = input<boolean>();
+  onToggleSidebar = output<boolean>();
 
   logout() {
     this.authService.logout();
@@ -80,4 +83,8 @@ export class Navbar {
     if (!role) return [];
     return this.NAV_LINKS.filter((link) => link.accessRoles.includes(role));
   });
+
+  handleSidebarToggle(open: boolean) {
+    this.onToggleSidebar.emit(open);
+  }
 }
