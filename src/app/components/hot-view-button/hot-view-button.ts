@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { HotCellRendererComponent } from '@handsontable/angular-wrapper';
-import { Events } from 'handsontable';
 import { Button } from 'primeng/button';
 
 @Component({

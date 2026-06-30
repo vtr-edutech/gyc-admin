@@ -156,3 +156,15 @@
 
 <p-toast></p-toast>
 <p-confirmpopup></p-confirmpopup>
+
+<p-dialog
+  [visible]="isViewFollowUpModalOpen()"
+  (onHide)="toggleViewFollowUpModal(false)"
+  [modal]="true"
+  [draggable]="false"
+  [header]="viewFollowUpModalTitle"
+  [resizable]="false"
+  [style]="{ minWidth: '50%' }"
+>
+  <app-follow-up-table [bookingId]="activeFollowUpBookingId()" />
+</p-dialog>

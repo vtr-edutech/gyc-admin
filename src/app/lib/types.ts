@@ -38,7 +38,10 @@ export type TelecallerAssignmentUpdate = { _id: string } & Partial<
 >;
 
 export type TelecallerBookingsPayload = TelecallerAssignment & {
-  followUps: Omit<TelecallerServiceHistory, 'bookingId' | 'attendedBy' | 'attendedAt'>[];
+  followUps: Omit<
+    TelecallerServiceHistory & { attendedBy: Pick<AdminUser<'telecaller'>, '_id' | 'name'> },
+    'bookingId' | 'attendedAt'
+  >[];
 };
 
 type AdminUserRoles = 'admin' | 'superadmin' | 'telecaller' | 'editor' | 'referrer';

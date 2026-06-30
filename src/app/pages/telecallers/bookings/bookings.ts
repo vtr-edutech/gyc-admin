@@ -1,3 +1,4 @@
+import { HotViewButton } from '@/app/components/hot-view-button/hot-view-button';
 import { TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS } from '@/app/lib/constants';
 import { TelecallerAssignmentUpdate, TelecallerBookingsPayload } from '@/app/lib/types';
 import { customValidationDropdownRenderer } from '@/app/lib/utils';
@@ -16,6 +17,8 @@ import { MultiSelect } from 'primeng/multiselect';
 import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Toast } from 'primeng/toast';
+import { Dialog } from 'primeng/dialog';
+import { FollowUpTable } from '@/app/components/follow-up-table/follow-up-table';
 
 @Component({
   selector: 'app-telecaller-bookings',
@@ -30,6 +33,8 @@ import { Toast } from 'primeng/toast';
     MultiSelect,
     FloatLabelModule,
     ConfirmPopup,
+    Dialog,
+    FollowUpTable,
   ],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
@@ -43,6 +48,22 @@ export class TelecallerBookings implements OnInit {
   messageService = inject(MessageService);
   confirmationService = inject(ConfirmationService);
 
+  isViewFollowUpModalOpen = signal<boolean>(false);
+
+  COLUMN_CONFIG = [
+    ...TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS,
+    {
+      data: '_id',
+      title: 'Actions',
+      width: 100,
+      readOnly: true,
+      renderer: HotViewButton,
+      rendererProps: {
+        action: (bookingId: string) => this.afterBookingChoose(bookingId),
+      },
+    },
+  ];
+
   pagination = {
     first: 0,
     limit: 50,
@@ -53,6 +74,8 @@ export class TelecallerBookings implements OnInit {
   hotMeta = {
     selectedRows: signal<number[]>([]),
   };
+
+  activeFollowUpBookingId = signal<string | null>(null);
 
   rowUpdates = signal<TelecallerAssignmentUpdate[]>([]);
 
@@ -87,8 +110,8 @@ export class TelecallerBookings implements OnInit {
     else this.searchRecords();
   }
 
-  data = Array.from({ length: 50 }, (_, i) =>
-    Array.from({ length: TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS.length }, (_, j) => ''),
+  data = Array.from({ length: 50 }, () =>
+    Array.from({ length: this.COLUMN_CONFIG.length }, () => ''),
   );
 
   gridSettings: GridSettings = {
@@ -100,7 +123,7 @@ export class TelecallerBookings implements OnInit {
     manualColumnResize: true,
     autoColumnSize: false,
     headerClassName: 'font-semibold text-lg',
-    columns: TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS,
+    columns: this.COLUMN_CONFIG,
     hiddenColumns: {
       columns: [0, 1],
       indicators: false,
@@ -133,15 +156,28 @@ export class TelecallerBookings implements OnInit {
         return this;
       }
 
+      const actionsColumnsIndex = this.instance.countCols() - 1; // Reliable way to get last index
+      const assignedToColumnIndex = this.instance.propToCol('assignedTo');
+      const createdAtColumnIndex = this.instance.propToCol('createdAt');
+      const updatedAtColumnIndex = this.instance.propToCol('updatedAt');
+
+      if (column === actionsColumnsIndex) {
+        this.readOnly = true;
+        // Get the base configuration for this column to prevent it from resetting
+        const configs = this.instance.getSettings().columns;
+        const colConfig = Array.isArray(configs) ? configs[column] : null;
+        if (colConfig && colConfig.renderer) {
+          this.renderer = colConfig.renderer;
+        }
+        return this;
+      }
+
       if (column <= 2) {
         this.readOnly = false;
         return this;
       }
 
       const isDeactivatedRow = this.instance.getDataAtRowProp(row, 'isDeactivated') as boolean;
-      const assignedToColumnIndex = this.instance.propToCol('assignedTo');
-      const createdAtColumnIndex = this.instance.propToCol('createdAt');
-      const updatedAtColumnIndex = this.instance.propToCol('updatedAt');
       if (isDeactivatedRow) {
         this.readOnly = true;
         this.className = '!bg-red-200';
@@ -463,5 +499,21 @@ export class TelecallerBookings implements OnInit {
         });
       },
     );
+  }
+
+  toggleViewFollowUpModal(open: boolean) {
+    this.isViewFollowUpModalOpen.set(open);
+  }
+
+  afterBookingChoose(bookingId: string) {
+    this.activeFollowUpBookingId.set(bookingId);
+    this.toggleViewFollowUpModal(true);
+  }
+
+  get viewFollowUpModalTitle() {
+    const currentBooking = this.bookingsData()?.find(
+      (d) => d._id === this.activeFollowUpBookingId(),
+    );
+    return `View follow ups for ${currentBooking?.studentName} (${currentBooking?.mobile})`;
   }
 }

@@ -1,24 +1,19 @@
+import { HotViewButton } from '@/app/components/hot-view-button/hot-view-button';
+import { TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS } from '@/app/lib/constants';
+import { FollowUpFormService } from '@/app/services/followup-form.service';
+import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
 import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
-import {
-  ColumnSettings,
-  GridSettings,
-  HotTableComponent,
-  HotTableModule,
-} from '@handsontable/angular-wrapper';
+import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
 import Handsontable from 'handsontable';
+import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
 import { Paginator } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Toast } from 'primeng/toast';
-import { TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS } from '@/app/lib/constants';
-import { FollowUpFormService } from '@/app/services/followup-form.service';
 import { FollowUpForm } from './components/follow-up-form/follow-up-form';
-import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
-import { MessageService } from 'primeng/api';
-import { FollowUpTable } from './components/follow-up-table/follow-up-table';
-import { HotViewButton } from './components/hot-view-button/hot-view-button';
+import { FollowUpTable } from '@/app/components/follow-up-table/follow-up-table';
 
 @Component({
   selector: 'app-bookings-telecaller',
@@ -228,9 +223,9 @@ export class TelecallerBooking implements OnInit {
   }
 
   get viewFollowUpModalTitle() {
-    const currentBooking = this.telecallerBookingsService
-      .telecallerBookings()
-      .data?.data?.find((d) => d._id === this.activeFollowUpBookingId());
+    const currentBooking = this.bookingsData()?.find(
+      (d) => d._id === this.activeFollowUpBookingId(),
+    );
     return `View follow ups for ${currentBooking?.studentName} (${currentBooking?.mobile})`;
   }
 }

@@ -7,6 +7,7 @@
   <ng-template #header>
     <tr>
       <th class="w-20">S.No.</th>
+      <th>Attended By</th>
       <th>College</th>
       <th>Remarks</th>
       <th>Called Date</th>
@@ -18,6 +19,9 @@
     <tr>
       <td>
         {{ rowData.index }}
+      </td>
+      <td>
+        {{ rowData.attendedBy?.name || 'N/A' }}
       </td>
       <td [noWrap]="true" [pTooltip]="rowData.college?.length > 25 ? rowData.college : undefined">
         {{
@@ -42,7 +46,7 @@
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="6" class="text-center">
+      <td colspan="7" class="text-center">
         <div class="w-full grid content-center">
           <p class="text-lg font-semibold">No Follow-ups created</p>
         </div>
