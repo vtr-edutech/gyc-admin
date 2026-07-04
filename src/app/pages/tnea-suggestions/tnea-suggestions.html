@@ -1,0 +1,127 @@
+<div class="flex flex-col gap-3">
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-semibold">TNEA Rank Suggestion Usage</h1>
+      <p>View all TNEA Rank Suggestions usages</p>
+    </div>
+    <p-button
+      label="Download"
+      icon="pi pi-download"
+      severity="primary"
+      size="small"
+      (onClick)="download()"
+    />
+  </div>
+  <div class="flex gap-2 items-center p-1">
+    <p-datepicker
+      placeholder="Select start and end dates"
+      [(ngModel)]="viewDateRange"
+      [showIcon]="true"
+      [maxDate]="today"
+      selectionMode="range"
+      (onClear)="loadTneaSuggestions()"
+      (onClose)="loadTneaSuggestions()"
+      showClear="true"
+      [size]="'small'"
+    />
+  </div>
+  <p-table
+    [size]="'large'"
+    [stripedRows]="true"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [lazy]="true"
+    (onLazyLoad)="loadTneaSuggestions($event)"
+    [totalRecords]="totalRecords"
+    [value]="this.tneaSuggestionService.tneaSuggestions().data?.data || []"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="w-20">S.No.</th>
+        <th [noWrap]="true">Name</th>
+        <th [noWrap]="true">TNEA No.</th>
+        <th [noWrap]="true">Cutoff</th>
+        <th [noWrap]="true">Community</th>
+        <th [noWrap]="true">General Rank</th>
+        <th [noWrap]="true">Community Rank</th>
+        <th [noWrap]="true">Preferred Courses</th>
+        <th [noWrap]="true">Districts</th>
+        <th [noWrap]="true">Created At</th>
+      </tr>
+    </ng-template>
+    @if (this.tneaSuggestionService.tneaSuggestions().isLoading) {
+      <ng-template #body let-rowData>
+        <tr>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+        </tr>
+      </ng-template>
+    } @else {
+      <ng-template #body let-rowData>
+        <tr>
+          <td>
+            {{ rowData.index }}
+          </td>
+          <td>{{ rowData.name }} ({{ rowData.mobile }}) <br /></td>
+          <td>
+            {{ rowData.applicationNo }}
+          </td>
+          <td>
+            {{ rowData.aggregateMark }}
+          </td>
+          <td>
+            {{ rowData.community }}
+          </td>
+          <td>
+            {{ rowData.generalRank }}
+          </td>
+          <td>
+            {{ rowData.communityRank }}
+          </td>
+          <td>
+            <p class="text-xs">{{ rowData.courses.length }} courses</p>
+            <div class="w-100 max-h-50 flex flex-wrap gap-1 overflow-x-auto">
+              @for (course of rowData.courses | courseCodeName; track $index) {
+                <p class="text-xs bg-gray-100 rounded-full px-2 py-1 w-fit">
+                  {{ course }}
+                </p>
+              }
+            </div>
+          </td>
+          <td>
+            <p class="text-xs">{{ rowData.district.length }} districts</p>
+            <div class="w-100 max-h-50 flex flex-wrap gap-1 overflow-x-auto">
+              @for (district of rowData.district; track $index) {
+                <p class="text-xs bg-gray-100 rounded-full px-2 py-1 w-fit">
+                  {{ district }}
+                </p>
+              }
+            </div>
+          </td>
+          <td class="shrink-0 flex">
+            {{ rowData.createdAt | formatDate }}
+          </td>
+        </tr>
+      </ng-template>
+    }
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="10" class="text-center">
+          <div class="w-full grid content-center">
+            <p class="text-lg font-semibold">No TNEA Suggestions Found</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

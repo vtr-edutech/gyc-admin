@@ -47,6 +47,12 @@ export class Navbar {
       accessRoles: ['admin', 'superadmin'],
     },
     {
+      label: 'TNEA Suggestions',
+      path: '/tnea-suggestions',
+      icon: 'pi pi-list-check',
+      accessRoles: ['admin', 'superadmin'],
+    },
+    {
       label: 'Referrers',
       path: '/referrers',
       icon: 'pi pi-user-plus',

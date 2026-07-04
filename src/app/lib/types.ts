@@ -265,3 +265,22 @@ export interface AdmissionQuery extends Timestamps {
     | null;
   attendedAt: string;
 }
+
+export interface TneaSuggestion extends Timestamps {
+  userId: Pick<User, 'name' | 'mobile'>;
+  applicationNo: string;
+  courses: string[];
+  district: string[];
+}
+
+export interface TneaSuggestionUsage extends Timestamps {
+  applicationNo: string;
+  name: string;
+  mobile: string;
+  courses: string;
+  district: string;
+  aggregateMark: number;
+  generalRank: number;
+  community: string;
+  communityRank: number;
+}

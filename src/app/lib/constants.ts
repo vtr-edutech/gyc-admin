@@ -41,6 +41,8 @@ export const API = {
   MARK_ATTENDANCE_ADMISSION_QUERY: (id: string) =>
     API_URL + '/admin/admission-query/' + id + '/attendance',
   CREATE_FOLLOW_UP: API_URL + '/admin/telecallers/bookings/follow-up',
+  TNEA_SUGGESTIONS: API_URL + '/admin/tnea-suggestions',
+  TNEA_SUGGESTIONS_DOWNLOAD: API_URL + '/admin/tnea-suggestions/download',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [

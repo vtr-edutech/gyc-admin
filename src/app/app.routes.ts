@@ -33,6 +33,12 @@ export const routes: Routes = [
         title: 'Admission Queries - GYC Admin',
       },
       {
+        path: 'tnea-suggestions',
+        loadComponent: () =>
+          import('./pages/tnea-suggestions/tnea-suggestions').then((m) => m.TneaSuggestions),
+        title: 'TNEA Suggestions - GYC Admin',
+      },
+      {
         path: 'referrers',
         loadComponent: () => import('./pages/referrers/referrers').then((m) => m.Referrers),
         title: 'Referrers - GYC Admin',
