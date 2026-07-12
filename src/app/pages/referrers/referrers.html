@@ -5,6 +5,24 @@
       <p>View and manage all Referrers</p>
     </div>
   </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Referrers"
+      [isLoading]="isReferrersLoading()"
+      [value]="referrersData()?.totalDocs"
+    ></app-info-tile>
+    @if (
+      !isObjectEmpty({ search }) &&
+      referrersData()?.totalDocsForFilter !== referrersData()?.totalDocs
+    ) {
+      <app-info-tile
+        title="Search Referrers"
+        [isLoading]="isReferrersLoading()"
+        [value]="referrersData()?.totalDocsForFilter"
+        icon="search"
+      ></app-info-tile>
+    }
+  </div>
   <div class="flex items-center gap-1">
     <input
       type="search"
@@ -23,6 +41,7 @@
       size="small"
     />
   </div>
+
   <p-table
     [size]="'large'"
     [stripedRows]="true"
@@ -32,11 +51,9 @@
     [lazy]="true"
     (onLazyLoad)="loadReferrers($event)"
     [totalRecords]="
-      isSearchActive()
-        ? referrersService.referrers().data?.totalDocsForFilter || 0
-        : referrersService.referrers().data?.totalDocs || 0
+      isSearchActive() ? referrersData()?.totalDocsForFilter || 0 : referrersData()?.totalDocs || 0
     "
-    [value]="referrersService.referrers().data?.data || []"
+    [value]="referrersData()?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template #header>
@@ -52,7 +69,7 @@
         <th>Actions</th>
       </tr>
     </ng-template>
-    @if (referrersService.referrers().isLoading) {
+    @if (isReferrersLoading()) {
       <ng-template #body let-rowData>
         <tr>
           <td><p-skeleton height="1.5rem" /></td>
@@ -75,14 +92,32 @@
           <td>
             {{ rowData.name }}
           </td>
-          <td>
+          <td class="max-w-40 truncate" autoHide="false" [pTooltip]="userNameTooltipContent">
+            <ng-template #userNameTooltipContent class="text-nowrap w-50"
+              >{{ rowData.username }}
+              <p-button
+                [icon]="tooltipIcon()"
+                [size]="'small'"
+                [variant]="'outlined'"
+                severity="secondary"
+                (click)="copyToClipboard(rowData.username)"
+                rounded="true"
+              ></p-button
+            ></ng-template>
             {{ rowData.username }}
           </td>
-          <td
-            class="max-w-24 truncate"
-            pTooltip="{{ rowData.email }}"
-            [tooltipStyleClass]="'w-full'"
-          >
+          <td class="max-w-40 truncate" autoHide="false" [pTooltip]="emailTooltipContent">
+            <ng-template #emailTooltipContent class="text-nowrap w-50"
+              >{{ rowData.email }}
+              <p-button
+                [icon]="tooltipIcon()"
+                [size]="'small'"
+                [variant]="'outlined'"
+                severity="secondary"
+                (click)="copyToClipboard(rowData.email)"
+                rounded="true"
+              ></p-button
+            ></ng-template>
             {{ rowData.email }}
           </td>
           <td>
@@ -101,34 +136,34 @@
           <td class="max-w-12">
             {{ rowData.referrals }}
           </td>
-          <td>
-            {{ rowData.createdAt | formatDate }}
+          <td [noWrap]="true">
+            {{ rowData.createdAt | formatDate: true }}
           </td>
           <td>
-            <div class="grid grid-rows-2 grid-cols-1 gap-2">
+            <div class="grid grid-cols-2 gap-4">
               <p-button
-                [label]="'View'"
                 (click)="toggleReferrerDetailsModal(rowData._id)"
                 icon="pi pi-eye"
-                size="small"
-                [outlined]="true"
+                [size]="'small'"
+                [variant]="'outlined'"
+                rounded="true"
               />
               @if (!rowData.deactivatedAt) {
                 <p-button
-                  [label]="'Deactivate'"
-                  icon="pi pi-trash"
+                  icon="pi pi-user-minus"
                   size="small"
                   [severity]="'danger'"
-                  [outlined]="true"
+                  [variant]="'outlined'"
+                  rounded="true"
                   (click)="showActivationPopup($event, rowData._id, true)"
                 />
               } @else {
                 <p-button
-                  [label]="'Activate'"
-                  icon="pi pi-trash"
+                  icon="pi pi-user-plus"
                   size="small"
                   [severity]="'success'"
-                  [outlined]="true"
+                  [variant]="'outlined'"
+                  rounded="true"
                   (click)="showActivationPopup($event, rowData._id, false)"
                 />
               }

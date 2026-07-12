@@ -36,3 +36,21 @@ export const customValidationDropdownRenderer: BaseRenderer = (...args) => {
 export function titleCase(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
+
+export function isObjectEntriesEmpty(
+  object: Object,
+  includeEmptyObject = true,
+  includeEmptyArray = true,
+) {
+  return Object.entries(object).every(
+    ([, value]) =>
+      !value ||
+      (typeof value === 'number' && isNaN(value)) ||
+      (includeEmptyObject && typeof value === 'object' && Object.keys(value).length === 0) ||
+      (includeEmptyArray && Array.isArray(value) && value.length === 0),
+  );
+}
+
+export async function copyTextToClipboard(text: string) {
+  await navigator.clipboard.writeText(text);
+}

@@ -29,5 +29,5 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
   <app-info-tile title="User Plan" [value]="user?.userPlan"></app-info-tile>
   <app-info-tile title="Email" [value]="user?.email"></app-info-tile>
-  <app-info-tile title="Created At" [value]="user?.createdAt | formatDate"></app-info-tile>
+  <app-info-tile title="Created At" [value]="user?.createdAt | formatDate: true"></app-info-tile>
 </div>

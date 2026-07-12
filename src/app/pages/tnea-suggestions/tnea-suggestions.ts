@@ -1,14 +1,15 @@
+import { InfoTile } from '@/app/components/info-tile/info-tile';
+import { isObjectEntriesEmpty } from '@/app/lib/utils';
+import { CourseCodeNamePipe } from '@/app/pipes/course-code-name.pipe';
+import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { TneaSuggestionService } from '@/app/services/tnea-suggestions.service';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
-import { InputText } from 'primeng/inputtext';
 import { Skeleton } from 'primeng/skeleton';
-import { FormsModule } from '@angular/forms';
-import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
-import { CourseCodeNamePipe } from '@/app/pipes/course-code-name.pipe';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-tnea-suggestions',
@@ -20,6 +21,7 @@ import { CourseCodeNamePipe } from '@/app/pipes/course-code-name.pipe';
     FormsModule,
     FormatDatePipe,
     CourseCodeNamePipe,
+    InfoTile,
   ],
   templateUrl: './tnea-suggestions.html',
   styleUrl: './tnea-suggestions.css',
@@ -27,6 +29,11 @@ import { CourseCodeNamePipe } from '@/app/pipes/course-code-name.pipe';
 export class TneaSuggestions {
   messageService = inject(MessageService);
   tneaSuggestionService = inject(TneaSuggestionService);
+
+  tneaSuggestionsData = computed(() => this.tneaSuggestionService.tneaSuggestions().data);
+  isTneaSuggestionsLoading = computed(() => this.tneaSuggestionService.tneaSuggestions().isLoading);
+  isObjectEmpty = isObjectEntriesEmpty;
+
   viewDateRange?: [Date?, Date?] = [];
   search = '';
 

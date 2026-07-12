@@ -1,9 +1,10 @@
 import { InfoTile } from '@/app/components/info-tile/info-tile';
 import { UserDetails } from '@/app/components/user-details/user-details';
 import { User } from '@/app/lib/types';
+import { isObjectEntriesEmpty } from '@/app/lib/utils';
 import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { SearchFilters, UserService } from '@/app/services/user.service';
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -37,6 +38,9 @@ export class Users {
   usersService = inject(UserService);
   messageService = inject(MessageService);
 
+  userServiceData = computed(() => this.usersService.users().data);
+  isUsersLoading = computed(() => this.usersService.users().isLoading);
+
   @ViewChild('dt') dt!: Table;
 
   searchModel: SearchFilters = {
@@ -45,6 +49,8 @@ export class Users {
     mobile: '',
     date: null,
   };
+
+  isObjectEmpty = isObjectEntriesEmpty;
 
   downloadModel = [];
   today = new Date();

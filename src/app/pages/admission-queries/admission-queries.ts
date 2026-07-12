@@ -1,7 +1,8 @@
-import { formatDates } from '@/app/lib/utils';
+import { InfoTile } from '@/app/components/info-tile/info-tile';
+import { formatDates, isObjectEntriesEmpty } from '@/app/lib/utils';
 import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { AdmissionQueryService } from '@/app/services/admission-query.service';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -24,6 +25,7 @@ import { TooltipModule } from 'primeng/tooltip';
     InputText,
     ConfirmPopup,
     FormatDatePipe,
+    InfoTile,
   ],
   templateUrl: './admission-queries.html',
   styleUrl: './admission-queries.css',
@@ -34,11 +36,17 @@ export class AdmissionQueries {
   admissionQueryService = inject(AdmissionQueryService);
   confirmationService = inject(ConfirmationService);
 
+  admissionQueriesData = computed(() => this.admissionQueryService.admissionQueries().data);
+  isAdmissionQueriesLoading = computed(
+    () => this.admissionQueryService.admissionQueries().isLoading,
+  );
+
   downloadDateRange: [Date?, Date?] = [];
   viewDateRange: [Date?, Date?] = [];
   search: string = '';
 
   formatDate = formatDates;
+  isObjectEmpty = isObjectEntriesEmpty;
 
   get totalRecords() {
     const data = this.admissionQueryService.admissionQueries().data;

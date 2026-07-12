@@ -1,8 +1,9 @@
-import { formatDates } from '@/app/lib/utils';
+import { InfoTile } from '@/app/components/info-tile/info-tile';
+import { formatDates, isObjectEntriesEmpty } from '@/app/lib/utils';
 import { CourseCodeNamePipe } from '@/app/pipes/course-code-name.pipe';
 import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { AttendeeService } from '@/app/services/attendee.service';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -26,6 +27,7 @@ import { TooltipModule } from 'primeng/tooltip';
     ConfirmPopup,
     CourseCodeNamePipe,
     FormatDatePipe,
+    InfoTile,
   ],
   templateUrl: './attendees.html',
   styleUrl: './attendees.css',
@@ -35,6 +37,10 @@ export class Attendees {
   messageService = inject(MessageService);
   attendeeService = inject(AttendeeService);
   confirmationService = inject(ConfirmationService);
+
+  attendeesData = computed(() => this.attendeeService.attendees().data);
+  isAttendeesLoading = computed(() => this.attendeeService.attendees().isLoading);
+  isObjectEmpty = isObjectEntriesEmpty;
 
   viewDateRange?: [Date?, Date?] = [];
   search = '';

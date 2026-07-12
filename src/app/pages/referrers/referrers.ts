@@ -1,7 +1,8 @@
-import { formatDates } from '@/app/lib/utils';
+import { InfoTile } from '@/app/components/info-tile/info-tile';
+import { copyTextToClipboard, formatDates, isObjectEntriesEmpty } from '@/app/lib/utils';
 import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { ReferrersService } from '@/app/services/referrers.service';
-import { Component, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -28,6 +29,7 @@ import { ReferrerDetails } from './components/referrer-details/referrer-details'
     Dialog,
     ReferrerDetails,
     FormatDatePipe,
+    InfoTile,
   ],
   templateUrl: './referrers.html',
   styleUrl: './referrers.css',
@@ -38,12 +40,34 @@ export class Referrers {
   messageService = inject(MessageService);
   confirmationService = inject(ConfirmationService);
 
+  referrersData = computed(() => this.referrersService.referrers().data);
+  isReferrersLoading = computed(() => this.referrersService.referrers().isLoading);
+
   searchKey = '';
+  tooltipIcon = signal('pi pi-copy');
 
   isReferrerDetailsModalOpen = false;
   selectedReferrer: string | null = null;
 
   formatDates = formatDates;
+  copyToClipboard = async (text: string) => {
+    this.tooltipIcon.set('pi pi-check');
+    await copyTextToClipboard(text);
+  };
+  isObjectEmpty = isObjectEntriesEmpty;
+
+  constructor() {
+    effect((onCleanup) => {
+      let iconChangeTimeout = null;
+      if (this.tooltipIcon() === 'pi pi-check' && !iconChangeTimeout) {
+        iconChangeTimeout = setTimeout(() => this.tooltipIcon.set('pi pi-copy'), 1000);
+      }
+
+      onCleanup(() => {
+        if (iconChangeTimeout) clearTimeout(iconChangeTimeout);
+      });
+    });
+  }
 
   isSearchActive(): boolean {
     return (
@@ -80,13 +104,22 @@ export class Referrers {
   }
 
   showActivationPopup(event: Event, referrerId: string, isDeactivate: boolean) {
-    const message = isDeactivate
-      ? 'Are you sure you want to deactivate this referrer?'
-      : 'Are you sure you want to activate this referrer?';
+    const referrer = this.referrersData()?.data?.find((ref) => ref._id === referrerId);
+    const referrerDetail = referrer ? `${referrer?.name} (${referrer?.email})` : 'this referrer';
+    const message = `Are you sure you want to ${isDeactivate ? 'deactivate' : 'activate'} ${referrerDetail}?`;
     this.confirmationService.confirm({
       target: event.target || undefined,
       message,
       icon: 'pi pi-exclamation-triangle',
+      acceptButtonProps: {
+        label: 'Deactivate',
+        severity: isDeactivate ? 'danger' : 'success',
+      },
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
       accept: () => {
         this.referrersService.toggleActivation(
           referrerId,

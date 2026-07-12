@@ -1,9 +1,9 @@
+import { ValueCard } from '@/app/components/value-card/value-card';
+import { hoverLinePlugin } from '@/app/lib/ui';
+import { HomeService } from '@/app/services/home.service';
 import { Component, computed, inject } from '@angular/core';
-import { ValueCard } from '../../../components/value-card/value-card';
-import { HomeService } from '../../../services/home.service';
-import { UIChart } from 'primeng/chart';
 import { ChartOptions } from 'chart.js';
-import { hoverLinePlugin } from '../../../lib/ui';
+import { UIChart } from 'primeng/chart';
 
 @Component({
   selector: 'app-home-admin',

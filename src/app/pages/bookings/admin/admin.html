@@ -5,6 +5,13 @@
       <p>View and manage all Bookings</p>
     </div>
   </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Bookings"
+      [isLoading]="isSlotBookingsLoading()"
+      [value]="slotBookingsData()?.totalDocs"
+    ></app-info-tile>
+  </div>
   <p-table
     [size]="'large'"
     [stripedRows]="true"
@@ -13,8 +20,8 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     [lazy]="true"
     (onLazyLoad)="loadBookings($event)"
-    [totalRecords]="this.slotBookingService.slotBookings().data?.totalDocs || 0"
-    [value]="this.slotBookingService.slotBookings().data?.data || []"
+    [totalRecords]="slotBookingsData()?.totalDocs || 0"
+    [value]="slotBookingsData()?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template #header>
@@ -28,7 +35,7 @@
         <th>Actions</th>
       </tr>
     </ng-template>
-    @if (this.slotBookingService.slotBookings().isLoading) {
+    @if (isSlotBookingsLoading()) {
       <ng-template #body let-rowData>
         <tr>
           <td><p-skeleton height="1.5rem" /></td>
@@ -55,10 +62,10 @@
           <td>
             {{ rowData.message }}
           </td>
-          <td>
+          <td [noWrap]="true">
             {{ rowData.attendedBy?.name || 'Not Attended' }}
           </td>
-          <td>
+          <td [noWrap]="true">
             {{ rowData.createdAt | formatDate: true }}
           </td>
           <td>
@@ -67,6 +74,7 @@
                 <p-button
                   [label]="'Mark as attended'"
                   icon="pi pi-check"
+                  class="whitespace-nowrap"
                   size="small"
                   [severity]="'success'"
                   [outlined]="true"
@@ -79,6 +87,7 @@
                   <p-button
                     disabled
                     label="Already attended"
+                    class="whitespace-nowrap"
                     icon="pi pi-check"
                     size="small"
                     [severity]="'success'"

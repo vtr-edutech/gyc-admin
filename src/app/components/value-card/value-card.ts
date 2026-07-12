@@ -49,6 +49,16 @@ export class ValueCard {
       fg: 'text-purple-500',
       border: 'border-purple-500',
     },
+    amber: {
+      bg: 'bg-amber-50',
+      fg: 'text-amber-500',
+      border: 'border-amber-500',
+    },
+    sky: {
+      bg: 'bg-sky-50',
+      fg: 'text-sky-500',
+      border: 'border-sky-500',
+    },
   };
 
   @Input({ required: true }) title!: string;

@@ -12,6 +12,24 @@
       (onClick)="download()"
     />
   </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Suggestion Usages"
+      [isLoading]="isTneaSuggestionsLoading()"
+      [value]="tneaSuggestionsData()?.totalDocs"
+    ></app-info-tile>
+    @if (
+      !isObjectEmpty({ viewDateRange, search }) &&
+      tneaSuggestionsData()?.totalDocsForFilter !== tneaSuggestionsData()?.totalDocs
+    ) {
+      <app-info-tile
+        title="Search Suggestion Usages"
+        [isLoading]="isTneaSuggestionsLoading()"
+        [value]="tneaSuggestionsData()?.totalDocsForFilter"
+        icon="search"
+      ></app-info-tile>
+    }
+  </div>
   <div class="flex gap-2 items-center p-1">
     <p-datepicker
       placeholder="Select start and end dates"
@@ -34,7 +52,7 @@
     [lazy]="true"
     (onLazyLoad)="loadTneaSuggestions($event)"
     [totalRecords]="totalRecords"
-    [value]="this.tneaSuggestionService.tneaSuggestions().data?.data || []"
+    [value]="tneaSuggestionsData()?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template #header>
@@ -51,7 +69,7 @@
         <th [noWrap]="true">Created At</th>
       </tr>
     </ng-template>
-    @if (this.tneaSuggestionService.tneaSuggestions().isLoading) {
+    @if (isTneaSuggestionsLoading()) {
       <ng-template #body let-rowData>
         <tr>
           <td><p-skeleton height="1.5rem" /></td>
@@ -72,7 +90,10 @@
           <td>
             {{ rowData.index }}
           </td>
-          <td>{{ rowData.name }} ({{ rowData.mobile }}) <br /></td>
+          <td class="whitespace-nowrap">
+            {{ rowData.name }} <br />
+            ({{ rowData.mobile }}) <br />
+          </td>
           <td>
             {{ rowData.applicationNo }}
           </td>

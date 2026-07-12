@@ -20,6 +20,13 @@
       />
     </div>
   </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Telecallers"
+      [isLoading]="isTelecallersLoading()"
+      [value]="telecallersData()?.totalDocs"
+    ></app-info-tile>
+  </div>
   <p-table
     [size]="'large'"
     [stripedRows]="true"
@@ -28,8 +35,8 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     [lazy]="true"
     (onLazyLoad)="loadTelecallers($event)"
-    [totalRecords]="this.telecallerService.telecallers().data?.totalDocs || 0"
-    [value]="this.telecallerService.telecallers().data?.data || []"
+    [totalRecords]="telecallersData()?.totalDocs || 0"
+    [value]="telecallersData()?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template #header>
@@ -43,7 +50,7 @@
         <th>Actions</th>
       </tr>
     </ng-template>
-    @if (this.telecallerService.telecallers().isLoading) {
+    @if (isTelecallersLoading()) {
       <ng-template #body let-rowData>
         <tr>
           <td><p-skeleton height="1.5rem" /></td>

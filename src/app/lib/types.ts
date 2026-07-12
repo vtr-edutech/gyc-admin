@@ -145,6 +145,8 @@ export interface HomeData extends Timestamps {
   };
   totalReferrers: number;
   totalSlotBookings: number;
+  totalChoiceListUsages: number;
+  totalTneaSuggestionUsages: number;
 }
 
 export interface SlotBooking extends Timestamps {

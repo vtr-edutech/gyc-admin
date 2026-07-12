@@ -22,6 +22,24 @@
       />
     </div>
   </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Admission Queries"
+      [isLoading]="isAdmissionQueriesLoading()"
+      [value]="admissionQueriesData()?.totalDocs"
+    ></app-info-tile>
+    @if (
+      !isObjectEmpty({ viewDateRange, search }) &&
+      admissionQueriesData()?.totalDocsForFilter !== admissionQueriesData()?.totalDocs
+    ) {
+      <app-info-tile
+        title="Search Admission Queries"
+        [isLoading]="isAdmissionQueriesLoading()"
+        [value]="admissionQueriesData()?.totalDocsForFilter"
+        icon="search"
+      ></app-info-tile>
+    }
+  </div>
   <div class="flex gap-2 items-center p-1">
     <p-datepicker
       placeholder="Select start and end dates"
@@ -49,7 +67,7 @@
       (onClick)="loadAdmissionQueries()"
       size="small"
       icon="pi pi-search"
-      [loading]="this.admissionQueryService.admissionQueries().isLoading"
+      [loading]="isAdmissionQueriesLoading()"
     />
   </div>
   <p-table
@@ -61,7 +79,7 @@
     [lazy]="true"
     (onLazyLoad)="loadAdmissionQueries($event)"
     [totalRecords]="totalRecords"
-    [value]="this.admissionQueryService.admissionQueries().data?.data || []"
+    [value]="admissionQueriesData()?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template #header>
@@ -78,7 +96,7 @@
         <th [noWrap]="true">Registered At</th>
       </tr>
     </ng-template>
-    @if (this.admissionQueryService.admissionQueries().isLoading) {
+    @if (isAdmissionQueriesLoading()) {
       <ng-template #body let-rowData>
         <tr>
           <td><p-skeleton height="1.5rem" /></td>
@@ -161,7 +179,7 @@
               }
             </div>
           </td>
-          <td class="shrink-0 flex">
+          <td [noWrap]="true">
             {{ rowData.createdAt | formatDate }}
           </td>
         </tr>

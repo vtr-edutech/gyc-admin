@@ -12,4 +12,5 @@ export class InfoTile {
   @Input() value: string | number | undefined = undefined;
   @Input() noDataMessage: string = 'No Data';
   @Input() isLoading: boolean = false;
+  @Input() icon: string | undefined;
 }

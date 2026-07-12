@@ -1,16 +1,25 @@
+import { InfoTile } from '@/app/components/info-tile/info-tile';
 import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
-import { Component, inject, ViewChild } from '@angular/core';
+import { BlogService } from '@/app/services/blog.service';
+import { Component, computed, inject, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { Skeleton } from 'primeng/skeleton';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { BlogService } from '../../services/blog.service';
 
 @Component({
   selector: 'app-blogs',
-  imports: [Button, RouterLink, TableModule, Skeleton, ConfirmPopupModule, FormatDatePipe],
+  imports: [
+    Button,
+    RouterLink,
+    TableModule,
+    Skeleton,
+    ConfirmPopupModule,
+    FormatDatePipe,
+    InfoTile,
+  ],
   templateUrl: './blogs.html',
   styleUrl: './blogs.css',
   providers: [ConfirmationService],
@@ -19,6 +28,9 @@ export class Blogs {
   blogService = inject(BlogService);
   messageService = inject(MessageService);
   confirmationService = inject(ConfirmationService);
+
+  blogsData = computed(() => this.blogService.blogs().data);
+  isBlogsLoading = computed(() => this.blogService.blogs().isLoading);
 
   @ViewChild('dt') dt!: Table;
 

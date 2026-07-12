@@ -12,6 +12,13 @@
       (onClick)="isCreateAnnouncementModalOpen = true"
     />
   </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Announcements"
+      [isLoading]="isAnnouncementsLoading()"
+      [value]="announcementsData()?.totalDocs"
+    ></app-info-tile>
+  </div>
   <p-table
     [size]="'large'"
     [stripedRows]="true"
@@ -20,8 +27,8 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     [lazy]="true"
     (onLazyLoad)="loadAnnouncements($event)"
-    [totalRecords]="this.announcementsService.announcements().data?.totalDocs || 0"
-    [value]="this.announcementsService.announcements().data?.data || []"
+    [totalRecords]="announcementsData()?.totalDocs || 0"
+    [value]="announcementsData()?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template #header>
@@ -35,7 +42,7 @@
         <th>Actions</th>
       </tr>
     </ng-template>
-    @if (this.announcementsService.announcements().isLoading) {
+    @if (isAnnouncementsLoading()) {
       <ng-template #body let-rowData>
         <tr>
           <td><p-skeleton height="1.5rem" /></td>
@@ -82,18 +89,18 @@
           <td>
             <div class="flex gap-2">
               <p-button
-                [label]="'Edit'"
-                icon="pi pi-pencil"
-                size="small"
-                [outlined]="true"
+                icon="pi pi-eye"
+                [size]="'small'"
+                [variant]="'outlined'"
+                rounded="true"
                 (onClick)="openEditAnnouncement(rowData._id, createAnnouncementForm)"
               />
               <p-button
-                [label]="'Delete'"
                 icon="pi pi-trash"
                 size="small"
                 [severity]="'danger'"
-                [outlined]="true"
+                [variant]="'outlined'"
+                rounded="true"
                 [disabled]="announcementsService.createAnnouncementMeta().isLoading"
                 (onClick)="confirmDelete($event, rowData._id)"
               />

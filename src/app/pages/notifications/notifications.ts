@@ -1,7 +1,8 @@
+import { InfoTile } from '@/app/components/info-tile/info-tile';
 import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { AnnouncementsService } from '@/app/services/announcements.service';
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -33,6 +34,7 @@ import { Tooltip } from 'primeng/tooltip';
     ConfirmPopup,
     Tooltip,
     FormatDatePipe,
+    InfoTile,
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',
@@ -42,6 +44,9 @@ export class Notifications {
   announcementsService = inject(AnnouncementsService);
   messageService = inject(MessageService);
   confirmationService = inject(ConfirmationService);
+
+  announcementsData = computed(() => this.announcementsService.announcements().data);
+  isAnnouncementsLoading = computed(() => this.announcementsService.announcements().isLoading);
 
   loadAnnouncements(event: TableLazyLoadEvent): void {
     const page = (event.first || 0) / (event.rows || 10) + 1;

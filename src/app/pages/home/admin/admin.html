@@ -1,4 +1,4 @@
-<div class="grid grid-cols-4 mt-4 gap-4">
+<div class="grid grid-cols-5 mt-4 gap-4">
   <app-value-card
     title="Users"
     [isLoading]="isLoading()"
@@ -46,6 +46,18 @@
     [isLoading]="isLoading()"
     [value]="homeService.homeData().data?.data?.totalColleges"
     color="purple"
+  ></app-value-card>
+  <app-value-card
+    title="Choice List usages"
+    [isLoading]="isLoading()"
+    [value]="homeService.homeData().data?.data?.totalChoiceListUsages"
+    color="amber"
+  ></app-value-card>
+  <app-value-card
+    title="TNEA suggestion usages"
+    [isLoading]="isLoading()"
+    [value]="homeService.homeData().data?.data?.totalTneaSuggestionUsages"
+    color="sky"
   ></app-value-card>
 </div>
 <div class="flex flex-col gap-4 mt-8">

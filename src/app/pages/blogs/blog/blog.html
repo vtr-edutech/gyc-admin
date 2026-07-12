@@ -22,17 +22,17 @@
       </div>
       <p class="text-gray-500">on {{ blog()?.createdAt | formatDate }}</p>
     </div>
-    <div class="flex items-start gap-1">
-      <div class="flex items-center gap-1">
-        <i class="pi pi-eye text-sm"></i>
+    <div class="flex items-start gap-3 text-sm *:gap-1">
+      <div class="flex items-center">
+        <i class="pi pi-eye"></i>
         <span>{{ blog()?.views || 0 }}</span>
       </div>
-      <div class="flex items-center gap-1">
-        <i class="pi pi-heart text-sm"></i>
+      <div class="flex items-center">
+        <i class="pi pi-heart"></i>
         <span>{{ blog()?.likes || 0 }}</span>
       </div>
-      <div class="flex items-center gap-1">
-        <i class="pi pi-share-alt text-sm"></i>
+      <div class="flex items-center">
+        <i class="pi pi-share-alt"></i>
         <span>{{ blog()?.shares || 0 }}</span>
       </div>
     </div>

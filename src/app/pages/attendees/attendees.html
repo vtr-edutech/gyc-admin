@@ -12,6 +12,24 @@
       (click)="download()"
     />
   </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Attendees"
+      [isLoading]="isAttendeesLoading()"
+      [value]="attendeesData()?.totalDocs"
+    ></app-info-tile>
+    @if (
+      !isObjectEmpty({ viewDateRange, search }) &&
+      attendeesData()?.totalDocsForFilter !== attendeesData()?.totalDocs
+    ) {
+      <app-info-tile
+        title="Search Attendees"
+        [isLoading]="isAttendeesLoading()"
+        [value]="attendeesData()?.totalDocsForFilter"
+        icon="search"
+      ></app-info-tile>
+    }
+  </div>
   <div class="flex gap-2 items-center p-1">
     <p-datepicker
       placeholder="Select start and end dates"
@@ -39,7 +57,7 @@
       (onClick)="loadAttendees()"
       size="small"
       icon="pi pi-search"
-      [loading]="this.attendeeService.attendees().isLoading"
+      [loading]="isAttendeesLoading()"
     />
   </div>
   <p-table
@@ -51,7 +69,7 @@
     [lazy]="true"
     (onLazyLoad)="loadAttendees($event)"
     [totalRecords]="totalRecords"
-    [value]="this.attendeeService.attendees().data?.data || []"
+    [value]="attendeesData()?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template #header>
@@ -71,7 +89,7 @@
         <th [noWrap]="true">Registered At</th>
       </tr>
     </ng-template>
-    @if (this.attendeeService.attendees().isLoading) {
+    @if (isAttendeesLoading()) {
       <ng-template #body let-rowData>
         <tr>
           <td><p-skeleton height="1.5rem" /></td>
@@ -108,10 +126,11 @@
           <td>
             {{ rowData.preferredCollege }}
           </td>
-          <td [noWrap]="true">
-            <div class="w-100 h-full flex flex-wrap gap-1 overflow-x-auto">
+          <td>
+            <p class="text-xs">{{ rowData.preferredCourses.length }} courses</p>
+            <div class="w-100 max-h-50 flex flex-wrap gap-1 overflow-x-auto">
               @for (course of rowData.preferredCourses | courseCodeName; track $index) {
-                <p class="text-xs bg-gray-100 rounded-full px-2 py-1 w-fit">
+                <p class="text-xs whitespace-nowrap bg-gray-100 rounded-full px-2 py-1 w-fit">
                   {{ course }}
                 </p>
               }

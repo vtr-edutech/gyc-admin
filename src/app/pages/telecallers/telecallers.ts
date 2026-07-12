@@ -1,6 +1,10 @@
+import { InfoTile } from '@/app/components/info-tile/info-tile';
+import { AdminUser } from '@/app/lib/types';
+import { formatDates } from '@/app/lib/utils';
 import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
+import { TelecallerService } from '@/app/services/telecaller.service';
 import { NgClass } from '@angular/common';
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, computed, inject, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -11,9 +15,6 @@ import { PasswordModule } from 'primeng/password';
 import { Skeleton } from 'primeng/skeleton';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
-import { AdminUser } from '../../lib/types';
-import { formatDates } from '../../lib/utils';
-import { TelecallerService } from '../../services/telecaller.service';
 
 type TModalControls = {
   isTelecallerModalOpen: boolean;
@@ -35,6 +36,7 @@ type TModalControls = {
     InputText,
     RouterLink,
     FormatDatePipe,
+    InfoTile,
   ],
   templateUrl: './telecallers.html',
   styleUrl: './telecallers.css',
@@ -42,11 +44,16 @@ type TModalControls = {
 export class Telecallers {
   messageService = inject(MessageService);
   telecallerService = inject(TelecallerService);
+
+  telecallersData = computed(() => this.telecallerService.telecallers().data);
+  isTelecallersLoading = computed(() => this.telecallerService.telecallers().isLoading);
+
   modalControls: TModalControls = {
     isTelecallerModalOpen: false,
     isEdit: false,
     selectedTelecaller: null,
   };
+
   @ViewChild('telecallerForm') telecallerForm!: NgForm;
 
   loadTelecallers(event: TableLazyLoadEvent): void {

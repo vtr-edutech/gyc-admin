@@ -1,6 +1,7 @@
+import { InfoTile } from '@/app/components/info-tile/info-tile';
 import { FormatDatePipe } from '@/app/pipes/format-date.pipe';
 import { SlotBookingService } from '@/app/services/slot-booking.service';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
@@ -9,7 +10,7 @@ import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-bookings-admin',
-  imports: [Button, TableModule, Skeleton, ConfirmPopup, FormatDatePipe],
+  imports: [Button, TableModule, Skeleton, ConfirmPopup, FormatDatePipe, InfoTile],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
@@ -17,6 +18,9 @@ export class AdminBookings {
   messageService = inject(MessageService);
   confirmationService = inject(ConfirmationService);
   slotBookingService = inject(SlotBookingService);
+
+  slotBookingsData = computed(() => this.slotBookingService.slotBookings().data);
+  isSlotBookingsLoading = computed(() => this.slotBookingService.slotBookings().isLoading);
 
   loadBookings(event: TableLazyLoadEvent): void {
     const page = (event.first || 0) / (event.rows || 10) + 1;

@@ -6,6 +6,13 @@
     </div>
     <p-button label="Add Blog" icon="pi pi-plus" size="small" routerLink="/blogs/new" />
   </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Blogs"
+      [isLoading]="isBlogsLoading()"
+      [value]="blogsData()?.totalDocs"
+    ></app-info-tile>
+  </div>
   <p-table
     #dt
     [size]="'large'"
@@ -16,16 +23,15 @@
     [lazy]="true"
     (onLazyLoad)="loadBlogs($event)"
     [totalRecords]="
-      this.isSearchActive()
-        ? this.blogService.blogs().data?.totalDocsForFilter || 0
-        : this.blogService.blogs().data?.totalDocs || 0
+      this.isSearchActive() ? blogsData()?.totalDocsForFilter || 0 : blogsData()?.totalDocs || 0
     "
-    [value]="this.blogService.blogs().data?.data || []"
+    [value]="blogsData()?.data || []"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template pTemplate="header">
       <tr>
         <th>S.No.</th>
+        <th>Thumbnail</th>
         <th>Title</th>
         <th>Content Preview</th>
         <th>Author</th>
@@ -34,9 +40,10 @@
         <th>Actions</th>
       </tr>
     </ng-template>
-    @if (this.blogService.blogs().isLoading) {
+    @if (isBlogsLoading()) {
       <ng-template #body let-rowData>
         <tr>
+          <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
           <td><p-skeleton height="1.5rem" /></td>
@@ -50,50 +57,66 @@
       <ng-template #body let-blog>
         <tr>
           <td>{{ blog.index }}</td>
+          <td [noWrap]="true">
+            @if (blog.thumbnailUrl) {
+              <a [href]="blog.thumbnailUrl" target="_blank">
+                <img [src]="blog.thumbnailUrl" [alt]="blog.title" />
+              </a>
+            } @else {
+              <div
+                className="bg-gray-300 object-cover h-62.5 flex w-full items-center justify-center"
+              >
+                <p className="text-gray-600">No thumbnail</p>
+              </div>
+            }
+          </td>
           <td>
-            <a [routerLink]="['/blogs', blog._id]" class="text-blue-500 hover:underline">
+            <a
+              [routerLink]="['/blogs', blog._id]"
+              class="text-blue-500 w-30 truncate hover:underline"
+            >
               {{ blog.title }}
             </a>
           </td>
           <td class="w-32">
             <div
               class="text-sm truncate"
-              [innerHTML]="blog.content?.trim()?.substring(0, 80) + '...'"
+              [innerHTML]="blog.content?.trim()?.substring(0, 100) + '...'"
             ></div>
           </td>
-          <td>{{ blog.createdBy?.name }}</td>
+          <td class="text-nowrap">{{ blog.createdBy?.name }}</td>
           <td>
-            <div class="flex flex-col items-start gap-1">
-              <div class="flex items-center gap-1">
-                <i class="pi pi-eye text-sm"></i>
+            <div class="flex items-start gap-3 text-sm *:gap-1">
+              <div class="flex items-center">
+                <i class="pi pi-eye"></i>
                 <span>{{ blog.views || 0 }}</span>
               </div>
-              <div class="flex items-center gap-1">
-                <i class="pi pi-heart text-sm"></i>
+              <div class="flex items-center">
+                <i class="pi pi-heart"></i>
                 <span>{{ blog.likes || 0 }}</span>
               </div>
-              <div class="flex items-center gap-1">
-                <i class="pi pi-share-alt text-sm"></i>
+              <div class="flex items-center">
+                <i class="pi pi-share-alt"></i>
                 <span>{{ blog.shares || 0 }}</span>
               </div>
             </div>
           </td>
-          <td>{{ blog.createdAt | formatDate }}</td>
+          <td [noWrap]="true">{{ blog.createdAt | formatDate }}</td>
           <td>
             <div class="flex gap-2">
               <p-button
                 size="small"
-                outlined="true"
-                label="Edit"
+                rounded="true"
+                [variant]="'outlined'"
                 icon="pi pi-pencil"
                 [routerLink]="['/blogs', blog._id, 'edit']"
               />
               <p-button
                 [disabled]="this.blogService.mutateBlogsState().isLoading"
                 size="small"
-                outlined="true"
+                rounded="true"
+                [variant]="'outlined'"
                 [severity]="'danger'"
-                label="Delete"
                 icon="pi pi-trash"
                 (click)="confirmDelete($event, blog._id)"
               />
