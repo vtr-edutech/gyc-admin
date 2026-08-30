@@ -12,6 +12,15 @@
         [disabled]="hotMeta.selectedRows().length === 0"
         (onClick)="toggleCreateFollowUpModal(true)"
       />
+      <p-button
+        label="Save Changes"
+        (onClick)="updateChanges()"
+        [disabled]="
+          telecallerBookingsService.telecallerBookingsMutationMeta().isLoading ||
+          rowUpdates().length === 0
+        "
+        size="small"
+      />
     </div>
   </div>
   <div class="h-[80vh] overflow-hidden relative">

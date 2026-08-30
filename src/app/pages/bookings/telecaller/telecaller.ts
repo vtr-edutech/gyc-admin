@@ -14,6 +14,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 import { Toast } from 'primeng/toast';
 import { FollowUpForm } from './components/follow-up-form/follow-up-form';
 import { FollowUpTable } from '@/app/components/follow-up-table/follow-up-table';
+import { TelecallerAssignmentUpdate, TelecallerBookingsPayload } from '@/app/lib/types';
 
 @Component({
   selector: 'app-bookings-telecaller',
@@ -56,6 +57,8 @@ export class TelecallerBooking implements OnInit {
   isViewFollowUpModalOpen = signal<boolean>(false);
 
   activeFollowUpBookingId = signal<string | null>(null);
+
+  rowUpdates = signal<TelecallerAssignmentUpdate[]>([]);
 
   pagination = {
     first: 0,
@@ -144,6 +147,45 @@ export class TelecallerBooking implements OnInit {
       this.handleSelectRows(changes);
       return;
     }
+
+    changes.forEach((change) => {
+      const [rowIndex, fieldName, , newValue] = change;
+      const currentRow = this.bookingsData()?.[rowIndex];
+      if (!currentRow) {
+        return;
+      }
+
+      if (typeof fieldName !== 'string' || !(fieldName in currentRow)) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `Something went wrong in capturing update for Row ${rowIndex + 1}, Column ${fieldName}`,
+        });
+        return;
+      }
+
+      // Update existing update object if same id is edited
+      const existingUpdate = this.rowUpdates().find((update) => update._id === currentRow._id);
+      if (existingUpdate) {
+        existingUpdate[fieldName as keyof TelecallerAssignmentUpdate] = newValue;
+        const updatedUpdates = this.rowUpdates().map((update) => {
+          if (update._id === currentRow._id) {
+            return existingUpdate;
+          }
+          return update;
+        });
+        this.rowUpdates.set(updatedUpdates);
+        return;
+      }
+
+      this.rowUpdates.update((updates) => [
+        ...updates,
+        {
+          _id: currentRow._id,
+          [fieldName]: newValue,
+        },
+      ]);
+    });
   };
 
   hotModifierWatch = effect(() => {
@@ -153,6 +195,15 @@ export class TelecallerBooking implements OnInit {
     const hotInstance = this.hotTable?.hotInstance;
     if (!hotInstance) return;
 
+    this.rowUpdates().forEach((update) => {
+      const rowIndex = bookingsData.findIndex((booking) => booking._id === update._id);
+      if (rowIndex !== -1) {
+        bookingsData[rowIndex] = {
+          ...bookingsData[rowIndex],
+          ...update,
+        } as TelecallerBookingsPayload;
+      }
+    });
     hotInstance.updateData(bookingsData.length > 0 ? bookingsData : this.data);
 
     hotInstance.removeHook('afterChange', this.afterChangeCallback);
@@ -179,6 +230,33 @@ export class TelecallerBooking implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'There was an error while fetching telecaller bookings',
+        });
+      },
+    );
+  }
+
+  updateChanges() {
+    this.telecallerBookingsService.updateTelecallerBooking(
+      this.rowUpdates(),
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+        });
+        this.rowUpdates.set([]);
+        this.hotMeta.selectedRows.set([]);
+        this.telecallerBookingsService.fetchTelecallerBookings(
+          1,
+          this.pagination.limit,
+          this.searchKey,
+        );
+      },
+      (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error,
         });
       },
     );

@@ -10,6 +10,11 @@ import { getErrorMessage } from '@/app/lib/utils';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 
+type TelecallerBookingMutationResponse =
+  | { inserted: number; total: number }
+  | Partial<TelecallerBookingsPayload>[]
+  | string;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,11 +26,12 @@ export class TelecallerBookingService {
     error: null,
     data: null,
   });
-  telecallerBookingsMutationMeta: WritableSignal<FetchState<string>> = signal<FetchState<string>>({
-    isLoading: false,
-    error: null,
-    data: null,
-  });
+  telecallerBookingsMutationMeta: WritableSignal<FetchState<TelecallerBookingMutationResponse>> =
+    signal<FetchState<TelecallerBookingMutationResponse>>({
+      isLoading: false,
+      error: null,
+      data: null,
+    });
 
   private http = inject(HttpClient);
 
@@ -42,17 +48,16 @@ export class TelecallerBookingService {
       data: null,
     });
 
-    const params: HttpParams = new HttpParams({
-      fromObject: {
-        page: page.toString(),
-        limit: limit.toString(),
-        search: searchKey,
-      },
-    });
+    const paramsObject = {
+      page: page.toString(),
+      limit: limit.toString(),
+      search: searchKey,
+      ...(telecallerIds ? { telecallerIds: telecallerIds.join(',') } : {}),
+    };
 
-    if (telecallerIds) {
-      params.set('telecallerIds', telecallerIds.join(','));
-    }
+    const params: HttpParams = new HttpParams({
+      fromObject: paramsObject,
+    });
 
     this.http
       .get<GenericResponse<TelecallerBookingsPayload[]>>(API.GET_TELECALLER_BOOKINGS, {
@@ -80,7 +85,12 @@ export class TelecallerBookingService {
       });
   }
 
-  uploadTelecallerBookings(file: File, onSuccess?: Function, onError?: ErrorFnCallback): void {
+  uploadTelecallerBookings(
+    file: File,
+    preview?: boolean,
+    onSuccess?: Function,
+    onError?: ErrorFnCallback,
+  ): void {
     this.telecallerBookingsMutationMeta.set({
       isLoading: true,
       error: null,
@@ -90,24 +100,30 @@ export class TelecallerBookingService {
     const formData = new FormData();
     formData.append('file', file);
 
-    this.http.post<GenericResponse<string>>(API.UPLOAD_TELECALLER_BOOKINGS, formData).subscribe({
-      next: (response) => {
-        this.telecallerBookingsMutationMeta.set({
-          isLoading: false,
-          error: null,
-          data: response,
-        });
-        onSuccess?.();
-      },
-      error: (error) => {
-        this.telecallerBookingsMutationMeta.set({
-          isLoading: false,
-          error: getErrorMessage(error),
-          data: null,
-        });
-        onError?.(getErrorMessage(error));
-      },
-    });
+    const params = preview ? { preview: true } : undefined;
+
+    this.http
+      .post<
+        GenericResponse<TelecallerBookingMutationResponse>
+      >(API.UPLOAD_TELECALLER_BOOKINGS, formData, { params })
+      .subscribe({
+        next: (response) => {
+          this.telecallerBookingsMutationMeta.set({
+            isLoading: false,
+            error: null,
+            data: response,
+          });
+          onSuccess?.();
+        },
+        error: (error) => {
+          this.telecallerBookingsMutationMeta.set({
+            isLoading: false,
+            error: getErrorMessage(error),
+            data: null,
+          });
+          onError?.(getErrorMessage(error));
+        },
+      });
   }
 
   updateTelecallerBooking(

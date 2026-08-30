@@ -187,6 +187,8 @@ export interface TelecallerAssignment extends Timestamps {
   dataStatus: string;
   board: string;
   schoolType: string;
+  cutoff: number[];
+  languageMedium: 'tamil' | 'english';
   firstGraduate: boolean;
   community: string;
   area: string;

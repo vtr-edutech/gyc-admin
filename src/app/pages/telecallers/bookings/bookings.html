@@ -11,14 +11,15 @@
         name="file"
         id="file"
         class="hidden"
-        (change)="handleFileUpload($event)"
+        (change)="handleFileUpload($event, true)"
       />
       <p-button
         icon="pi pi-plus"
         [size]="'small'"
         label="Create new booking"
-        (onClick)="fileInput.click()"
-        [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
+        (onClick)="toggleUploadPreviewModal(true)"
+        [disabled]="isTelecallerMutationsLoading()"
+        [loading]="isTelecallerMutationsLoading()"
       />
     </div>
   </div>
@@ -45,14 +46,50 @@
     </div>
 
     <div class="flex items-center gap-2">
-      @if (hotMeta.selectedRows().length > 0) {
+      @if (selectedHotTableRows() < 1) {
+        <p-floatlabel variant="on" class="min-w-68">
+          <p-select
+            id="telecallerFilter"
+            [options]="telecallerService.telecallers().data?.data"
+            [loading]="telecallerService.telecallers().isLoading"
+            fluid="true"
+            filter="true"
+            filterBy="name,username"
+            showClear="true"
+            class="max-w-108"
+            optionLabel="name"
+            (onClear)="this.selectedTelecallerId.set(null)"
+            optionValue="_id"
+            [(ngModel)]="selectedTelecallerId"
+          >
+            <ng-template let-telecaller #item>
+              <span class="text-sm">{{ telecaller.name }} ({{ telecaller.username }})</span>
+            </ng-template>
+            <!-- The template for customizing selected callers chips -->
+            <ng-template #selecteditems let-selectedTelecallers let-placeholder="placeholder">
+              @if (selectedTelecallers && selectedTelecallers.length > 0) {
+                <div class="flex gap-1 flex-wrap max-h-14 overflow-y-auto">
+                  @for (t of selectedTelecallers; track t._id) {
+                    <span class="bg-blue-100 text-sm text-blue-800 px-2 rounded">{{ t.name }}</span>
+                  }
+                </div>
+              } @else {
+                <span class="text-gray-400">{{ placeholder }}</span>
+              }
+            </ng-template>
+          </p-select>
+          <label for="telecallerFilter" class="text-sm">Filter by telecallers</label>
+        </p-floatlabel>
+      }
+      @if (selectedHotTableRows() > 0) {
         @if (isAllSelectedActivated()) {
           <p-button
             [label]="'Deactivate'"
             [icon]="'pi pi-user-minus'"
             [severity]="'danger'"
             size="small"
-            [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
+            [disabled]="isTelecallerMutationsLoading()"
+            [loading]="isTelecallerMutationsLoading()"
             (onClick)="confirmDeactivateUsers($event)"
           />
         }
@@ -62,7 +99,8 @@
             [icon]="'pi pi-user-plus'"
             [severity]="'success'"
             size="small"
-            [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
+            [disabled]="isTelecallerMutationsLoading()"
+            [loading]="isTelecallerMutationsLoading()"
             (onClick)="confirmActivateUsers($event)"
           />
         }
@@ -103,15 +141,16 @@
           <label for="telecallerAssign" class="text-sm">{{
             hasAnyDeactivatedSelected()
               ? 'Cannot assign deactivated users'
-              : `Assign ${hotMeta.selectedRows().length} students to Telecaller`
+              : `Assign ${selectedHotTableRows()} students to Telecaller`
           }}</label>
         </p-floatlabel>
       }
-      @if (selectedTelecallerIds().length > 0 && hotMeta.selectedRows().length > 0) {
+      @if (selectedTelecallerIds().length > 0 && selectedHotTableRows() > 0) {
         <p-button
           label="Assign"
           (onClick)="assignTelecallerBookings()"
-          [disabled]="telecallerBookingsService.telecallerBookingsMutationMeta().isLoading"
+          [disabled]="isTelecallerMutationsLoading()"
+          [loading]="isTelecallerMutationsLoading()"
           [icon]="'pi pi-user-plus'"
           [severity]="'success'"
           size="small"
@@ -120,10 +159,8 @@
       <p-button
         label="Save Changes"
         (onClick)="updateChanges()"
-        [disabled]="
-          telecallerBookingsService.telecallerBookingsMutationMeta().isLoading ||
-          rowUpdates().length === 0
-        "
+        [loading]="isTelecallerMutationsLoading()"
+        [disabled]="isTelecallerMutationsLoading() || rowUpdates().length === 0"
         size="small"
       />
     </div>
@@ -137,14 +174,14 @@
         <p-progress-spinner />
       </div>
     }
-    <hot-table #hotTable [data]="data" [settings]="gridSettings"> </hot-table>
+    <hot-table #hotTable [data]="placeholderData" [settings]="gridSettings"> </hot-table>
   </div>
   <p-paginator
     (onPageChange)="onPageChange($event)"
     [first]="pagination.first"
     [rows]="pagination.limit"
     [totalRecords]="
-      (this.searchKey !== ''
+      (isFitlerOrSearchActive()
         ? telecallerBookingsService.telecallerBookings().data?.totalDocsForFilter
         : telecallerBookingsService.telecallerBookings().data?.totalDocs) ?? 0
     "
@@ -167,4 +204,55 @@
   [style]="{ minWidth: '50%' }"
 >
   <app-follow-up-table [bookingId]="activeFollowUpBookingId()" />
+</p-dialog>
+
+<p-dialog
+  [visible]="isUploadPreviewModalOpen()"
+  (onHide)="toggleUploadPreviewModal(false)"
+  [modal]="true"
+  [draggable]="false"
+  header="Upload preview"
+  [resizable]="false"
+  [style]="{ minWidth: '50%', maxWidth: '90%', overflowX: 'hidden' }"
+  contentStyleClass="overflow-x-hidden"
+>
+  <div class="flex flex-col gap-3">
+    @if (telecallerBookingsService.telecallerBookingsMutationMeta().data?.data) {
+      <p>This is a sample of the data collected from the uploaded Excel sheet</p>
+      <hot-table [data]="placeholderPreviewData" [settings]="previewGridSettings" #preview />
+      <p>If everything is good, click proceed to finalize</p>
+      <div class="flex justify-end gap-2">
+        <p-button
+          icon="pi pi-replay"
+          [size]="'small'"
+          [variant]="'outlined'"
+          label="Upload another"
+          (onClick)="fileInput.click()"
+          [disabled]="isTelecallerMutationsLoading()"
+          [loading]="isTelecallerMutationsLoading()"
+        />
+        <p-button
+          icon="pi pi-check"
+          [size]="'small'"
+          label="Finalize"
+          (onClick)="handleFileUpload(undefined, false)"
+          [disabled]="isTelecallerMutationsLoading()"
+          [loading]="isTelecallerMutationsLoading()"
+        />
+      </div>
+    } @else {
+      <div
+        class="w-full rounded border-2 border-green-600 border-dashed p-6 flex justify-center items-center"
+      >
+        <p-button
+          icon="pi pi-plus"
+          [size]="'small'"
+          label="Upload .xlsx"
+          (onClick)="fileInput.click()"
+          [disabled]="isTelecallerMutationsLoading()"
+          [loading]="isTelecallerMutationsLoading()"
+        />
+      </div>
+    }
+  </div>
 </p-dialog>

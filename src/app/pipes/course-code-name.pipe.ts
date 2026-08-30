@@ -1,5 +1,5 @@
+import { COLLEGE_COURSE_GROUPS } from '@/app/lib/data';
 import { Pipe, PipeTransform } from '@angular/core';
-import { COLLEGE_COURSE_GROUPS } from '../lib/constants';
 
 @Pipe({
   name: 'courseCodeName',

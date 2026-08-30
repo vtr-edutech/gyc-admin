@@ -54,3 +54,11 @@ export function isObjectEntriesEmpty(
 export async function copyTextToClipboard(text: string) {
   await navigator.clipboard.writeText(text);
 }
+
+export function arrayValueFormatter(value: string[]) {
+  return value && Array.isArray(value) ? value.join(', ') : '';
+}
+
+export function generatePlaceholderCells(rows: number, cols: number) {
+  return Array.from({ length: rows }, () => Array.from({ length: cols }, () => ''));
+}
