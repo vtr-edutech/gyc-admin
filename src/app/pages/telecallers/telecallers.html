@@ -84,13 +84,23 @@
             {{ rowData.createdAt | formatDate }}
           </td>
           <td>
-            <p-button
-              icon="pi pi-pencil"
-              variant="outlined"
-              label="Edit"
-              [size]="'small'"
-              (onClick)="toggleTelecallerForm(true, 'edit', rowData)"
-            />
+            <div class="flex gap-2">
+              <p-button
+                icon="pi pi-pencil"
+                variant="outlined"
+                label="Edit"
+                [size]="'small'"
+                (onClick)="toggleTelecallerForm(true, 'edit', rowData)"
+              />
+              <p-button
+                icon="pi pi-eye"
+                variant="outlined"
+                label="View"
+                [size]="'small'"
+                [routerLink]="['bookings']"
+                [queryParams]="{ telecallerId: rowData._id }"
+              />
+            </div>
           </td>
         </tr>
       </ng-template>

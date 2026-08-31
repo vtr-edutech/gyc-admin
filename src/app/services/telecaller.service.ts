@@ -41,16 +41,12 @@ export class TelecallerService {
     });
 
     this.http
-      .post<GenericResponse<AdminUser<'telecaller'>[]>>(
-        API.GET_TELECALLERS,
-        {},
-        {
-          params: {
-            page: page.toString(),
-            limit: limit.toString(),
-          },
+      .get<GenericResponse<AdminUser<'telecaller'>[]>>(API.GET_TELECALLERS, {
+        params: {
+          page: page.toString(),
+          limit: limit.toString(),
         },
-      )
+      })
       .subscribe({
         next: (response) => {
           this.telecallers.set({

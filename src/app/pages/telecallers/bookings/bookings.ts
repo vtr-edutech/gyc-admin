@@ -10,6 +10,7 @@ import { TelecallerBookingService } from '@/app/services/telecaller-booking.serv
 import { TelecallerService } from '@/app/services/telecaller.service';
 import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
 import Handsontable from 'handsontable';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -57,6 +58,7 @@ export class TelecallerBookings implements OnInit {
   telecallerService = inject(TelecallerService);
   messageService = inject(MessageService);
   confirmationService = inject(ConfirmationService);
+  router = inject(Router);
 
   isViewFollowUpModalOpen = signal<boolean>(false);
   isUploadPreviewModalOpen = signal<boolean>(false);
@@ -125,7 +127,9 @@ export class TelecallerBookings implements OnInit {
     return this.selectedBookings().some((booking) => booking.isDeactivated);
   });
 
-  isTelecallerMutationsLoading = computed(() => this.telecallerBookingsService.telecallerBookingsMutationMeta().isLoading)
+  isTelecallerMutationsLoading = computed(
+    () => this.telecallerBookingsService.telecallerBookingsMutationMeta().isLoading,
+  );
 
   /**
    * Signal used to check whether any search or fitlering is active
@@ -164,6 +168,7 @@ export class TelecallerBookings implements OnInit {
     manualColumnMove: false,
     manualColumnResize: true,
     autoColumnSize: false,
+    viewportRowRenderingOffset: 15,
     headerClassName: 'font-semibold text-lg',
     columns: this.COLUMN_CONFIG,
     hiddenColumns: {
@@ -270,14 +275,39 @@ export class TelecallerBookings implements OnInit {
   constructor() {
     // Automatically run effect when selected telecaller ID changes
     effect(() => {
+      const removeSearchParams = () => {
+        this.router.navigate([], {
+          relativeTo: this.router.routerState.root,
+          replaceUrl: true,
+          queryParams: {},
+        });
+      };
       const selectedTelecallerId = this.selectedTelecallerId();
+      if (!selectedTelecallerId) {
+        removeSearchParams();
+        return;
+      }
       this.telecallerBookingsService.fetchTelecallerBookings(
         1,
         this.pagination.limit,
         this.searchKey,
         selectedTelecallerId ? [selectedTelecallerId] : undefined,
+        (err) => {
+          console.error('Error thrown by fetch telecaller bookings by ID', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `${err} - Telecaller ID is probably wrong`,
+          });
+          removeSearchParams();
+        },
       );
     });
+
+    const selectedTelecallerIdFromUrl =
+      this.router.routerState.snapshot.root.queryParams['telecallerId'];
+    if (selectedTelecallerIdFromUrl)
+      this.selectedTelecallerId.set(String(selectedTelecallerIdFromUrl));
   }
 
   searchKeyChange() {
@@ -414,7 +444,9 @@ export class TelecallerBookings implements OnInit {
   }
 
   ngOnInit(): void {
-    this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+    if (!this.selectedTelecallerId()) {
+      this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
+    }
     this.telecallerService.fetchTelecallers(1, 100);
   }
 
@@ -437,11 +469,10 @@ export class TelecallerBookings implements OnInit {
             summary: 'Success',
             detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
           });
-          const sampleBookingsData =
-            this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.data;
-          if (!sampleBookingsData || !Array.isArray(sampleBookingsData)) return;
-
           if (isPreview) {
+            const sampleBookingsData =
+              this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.data;
+            if (!sampleBookingsData || !Array.isArray(sampleBookingsData)) return;
             /**
              * Set timeout here to make sure the instance object exists and method is run,
              * ONLY after angular CD runs and initializes the preview hot component
@@ -610,7 +641,15 @@ export class TelecallerBookings implements OnInit {
         this.hotMeta.selectedRows.set([]);
         this.selectedTelecallerIds.set([]);
         this.searchKey = '';
-        this.selectedTelecallerId.set(null); // This signal change calls fetchTelecallerBookings as a side effect
+        if (this.selectedTelecallerId()) {
+          this.selectedTelecallerId.set(null); // This signal change calls fetchTelecallerBookings as a side effect
+          return;
+        }
+        this.telecallerBookingsService.fetchTelecallerBookings(
+          1,
+          this.pagination.limit,
+          this.searchKey,
+        );
       },
       (error) => {
         this.messageService.add({

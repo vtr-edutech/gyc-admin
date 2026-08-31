@@ -67,6 +67,7 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
   { data: 'school', title: 'School', width: 253 },
   { data: 'board', title: 'Board', width: 85 },
+  { data: 'languageMedium', title: 'Language', width: 125 },
   { data: 'schoolType', title: 'School Type', width: 125 },
   {
     data: 'subjects',
@@ -138,6 +139,7 @@ export const TELECALLER_BOOKINGS_ADMIN_PREVIEW_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
   { data: 'school', title: 'School', width: 253 },
   { data: 'board', title: 'Board', width: 85 },
+  { data: 'languageMedium', title: 'Language', width: 125 },
   { data: 'schoolType', title: 'School Type', width: 125 },
   {
     data: 'subjects',
@@ -192,6 +194,7 @@ export const TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
   { data: 'school', title: 'School', width: 253 },
   { data: 'board', title: 'Board', width: 85 },
+  { data: 'languageMedium', title: 'Language', width: 125 },
   { data: 'schoolType', title: 'School Type', width: 125 },
   {
     data: 'subjects',
