@@ -59,6 +59,12 @@ export class Navbar {
       accessRoles: ['admin', 'superadmin'],
     },
     {
+      label: 'Reviews',
+      path: '/reviews',
+      icon: 'pi pi-comments',
+      accessRoles: ['admin', 'superadmin'],
+    },
+    {
       label: 'Announcements',
       path: '/announcements',
       icon: 'pi pi-bell',

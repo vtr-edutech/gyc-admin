@@ -44,6 +44,8 @@ export const API = {
   CREATE_FOLLOW_UP: API_URL + '/admin/telecallers/bookings/follow-up',
   TNEA_SUGGESTIONS: API_URL + '/admin/tnea-suggestions',
   TNEA_SUGGESTIONS_DOWNLOAD: API_URL + '/admin/tnea-suggestions/download',
+  GET_REVIEWS: API_URL + '/reviews',
+  PUBLISH_REVIEW: (id: string) => API_URL + '/admin/reviews/' + id + '/toggle-publish',
 };
 
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [

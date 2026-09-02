@@ -1,0 +1,177 @@
+<div class="flex flex-col gap-3">
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-semibold">Reviews</h1>
+      <p>View all Reviews</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-6">
+    <app-info-tile
+      title="Total Reviews"
+      [isLoading]="isReviewsLoading()"
+      [value]="reviewsData()?.totalDocs"
+    ></app-info-tile>
+    @if (
+      !isObjectEmpty({ viewDateRange, search }) &&
+      reviewsData()?.totalDocsForFilter !== reviewsData()?.totalDocs
+    ) {
+      <app-info-tile
+        title="Search Reviews"
+        [isLoading]="isReviewsLoading()"
+        [value]="reviewsData()?.totalDocsForFilter"
+        icon="search"
+      ></app-info-tile>
+    }
+  </div>
+  <div class="flex gap-2 items-center p-1">
+    <p-datepicker
+      placeholder="Select start and end dates"
+      [(ngModel)]="viewDateRange"
+      [showIcon]="true"
+      selectionMode="range"
+      (onClear)="loadReviews()"
+      (onClose)="loadReviews()"
+      showClear="true"
+      [size]="'small'"
+    />
+    <input
+      type="search"
+      name="search"
+      pInputText
+      [(ngModel)]="search"
+      placeholder="Search reviews by name, college, district, etc."
+      pInputText
+      (search)="loadReviews()"
+      [pSize]="'small'"
+      class="w-[50%]"
+    />
+    <p-button
+      label="Search"
+      (onClick)="loadReviews()"
+      size="small"
+      icon="pi pi-search"
+      [loading]="isReviewsLoading()"
+    />
+  </div>
+  <p-table
+    [size]="'large'"
+    [stripedRows]="true"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [lazy]="true"
+    (onLazyLoad)="loadReviews($event)"
+    [totalRecords]="totalRecords"
+    [value]="reviewsData()?.data || []"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="w-20">S.No.</th>
+        <th [noWrap]="true">Name</th>
+        <th [noWrap]="true">User</th>
+        <th [noWrap]="true">Rating</th>
+        <th [noWrap]="true">Message</th>
+        <th [noWrap]="true">Can call back?</th>
+        <th [noWrap]="true">Is publishing allowed?</th>
+        <th [noWrap]="true">Publish</th>
+        <th [noWrap]="true">Submitted At</th>
+      </tr>
+    </ng-template>
+    @if (isReviewsLoading()) {
+      <ng-template #body let-rowData>
+        <tr>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+          <td><p-skeleton height="1.5rem" /></td>
+        </tr>
+      </ng-template>
+    } @else {
+      <ng-template #body let-rowData>
+        <tr>
+          <td>
+            {{ rowData.index }}
+          </td>
+          <td>
+            {{ rowData.name }}
+            ({{ rowData.email }})
+          </td>
+          <td>
+            {{
+              rowData.userId ? rowData.userId.firstName + ' ' + (rowData.userId.lastName ?? '') : ''
+            }}
+          </td>
+          <td>
+            <p-rating [stars]="5" [(ngModel)]="rowData.rating" readonly="true" />
+          </td>
+          <td
+            [pTooltip]="rowData.message?.length > 15 ? rowData.message : undefined"
+            class="max-w-50 truncate"
+          >
+            {{
+              rowData.message?.length > 25
+                ? rowData.message.substring(0, 25) + '...'
+                : rowData.message || 'Not Mentioned'
+            }}
+          </td>
+          <td>
+            {{ rowData.isCallbackAllowed ? 'Yes' : 'No' }}
+          </td>
+          <td>
+            {{ rowData.isPublishingAllowed ? 'Yes' : 'No' }}
+          </td>
+          <td [noWrap]="true">
+            <div class="flex gap-2">
+              @if (!rowData.publishApprovedBy) {
+                <p-button
+                  [label]="rowData.isPublishingAllowed ? 'Publish' : 'Not Allowed'"
+                  icon="pi pi-check"
+                  size="small"
+                  [severity]="'success'"
+                  [outlined]="true"
+                  [disabled]="
+                    !rowData.isPublishingAllowed || reviewService.reviewsMutation().isLoading
+                  "
+                  (onClick)="showPublishPopup($event, rowData._id, true)"
+                />
+              } @else {
+                <div class="flex flex-col gap-2">
+                  <p-button
+                    disabled
+                    label="Unpublish"
+                    icon="pi pi-check"
+                    size="small"
+                    [severity]="'success'"
+                    [outlined]="true"
+                    [disabled]="reviewService.reviewsMutation().isLoading"
+                    (onClick)="showPublishPopup($event, rowData._id, false)"
+                  />
+                  <span class="text-sm">Approved by {{ rowData.publishApprovedBy.name }}</span>
+                </div>
+              }
+            </div>
+          </td>
+          <td [noWrap]="true">
+            {{ rowData.createdAt | formatDate }}
+          </td>
+        </tr>
+      </ng-template>
+    }
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="8" class="text-center">
+          <div class="w-full grid content-center">
+            <p class="text-lg font-semibold">No Reviews Found</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <p-confirmpopup />
+</div>

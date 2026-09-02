@@ -44,6 +44,11 @@ export const routes: Routes = [
         title: 'Referrers - GYC Admin',
       },
       {
+        path: 'reviews',
+        loadComponent: () => import('./pages/reviews/reviews').then((m) => m.Reviews),
+        title: 'Reviews - GYC Admin',
+      },
+      {
         path: 'announcements',
         loadComponent: () =>
           import('./pages/notifications/notifications').then((m) => m.Notifications),

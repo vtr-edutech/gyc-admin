@@ -270,6 +270,18 @@ export interface AdmissionQuery extends Timestamps {
   attendedAt: string;
 }
 
+export interface Review extends Timestamps {
+  userId: Pick<User, 'name'>;
+  name: string;
+  email: string;
+  rating: number;
+  message: string;
+  isPublishingAllowed?: boolean;
+  isCallbackAllowed?: boolean;
+  publishApprovedBy?: string;
+  publishApprovedAt?: string;
+}
+
 export interface TneaSuggestion extends Timestamps {
   userId: Pick<User, 'name' | 'mobile'>;
   applicationNo: string;
