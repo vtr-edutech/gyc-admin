@@ -19,6 +19,9 @@
 </div>
 
 <div class="flex flex-col pt-4 pr-0 max-h-3/4 overflow-y-auto">
+  <p class="text-gray-500 text-sm font-semibold w-full text-center tracking-wide px-4 mb-4">
+    {{ userRole()?.toUpperCase() ?? ' ' }}
+  </p>
   @for (link of roleFilteredNavLinks(); track $index) {
     <a
       [routerLink]="link.path"

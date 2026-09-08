@@ -5,6 +5,7 @@ import { API } from '@/app/lib/constants';
 import { ErrorFnCallback, GenericResponse } from '../lib/types';
 import { FollowUpDateValidator } from '@/app/validators/followup-date-validator';
 import { getErrorMessage } from '../lib/utils';
+import { finalize } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,13 +16,14 @@ export class FollowUpFormService {
   followUpFormGroup = new FormGroup(
     {
       college: new FormControl<string>('', [Validators.required]),
+      course: new FormControl<string[]>([], [Validators.required, Validators.minLength(1)]),
       bookingIds: new FormArray(
         [new FormControl<string | null>(null, Validators.required)],
         [Validators.required, Validators.minLength(1)],
       ),
       remarks: new FormControl<string>('', [Validators.required]),
       calledDate: new FormControl<Date>(new Date(), [Validators.required]),
-      followUpDate: new FormControl<Date | null>(null),
+      followUpDate: new FormControl<Date | null>(null, [Validators.required]),
       extraFields: new FormArray<
         FormGroup<{ key: FormControl<string | null>; value: FormControl<string | null> }>
       >([this.getNewKeyValuePair()]),
@@ -64,6 +66,7 @@ export class FollowUpFormService {
   ) {
     this.http
       .post<GenericResponse<string>>(API.CREATE_FOLLOW_UP, this.followUpFormGroup.value)
+      .pipe(finalize(() => onComplete?.()))
       .subscribe({
         next(value) {
           onSuccess?.(value);
@@ -71,9 +74,10 @@ export class FollowUpFormService {
         error: (err: HttpErrorResponse) => {
           onError?.(getErrorMessage(err));
         },
-        complete() {
-          onComplete?.();
-        },
       });
+  }
+
+  reset() {
+    this.followUpFormGroup.reset();
   }
 }

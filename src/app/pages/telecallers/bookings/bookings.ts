@@ -1,11 +1,12 @@
 import { FollowUpTable } from '@/app/components/follow-up-table/follow-up-table';
 import { HotViewButton } from '@/app/components/hot-view-button/hot-view-button';
+import { InfoTile } from '@/app/components/info-tile/info-tile';
 import {
   TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS,
   TELECALLER_BOOKINGS_ADMIN_PREVIEW_HOT_COLUMNS,
 } from '@/app/lib/constants';
 import { TelecallerAssignmentUpdate, TelecallerBookingsPayload } from '@/app/lib/types';
-import { customValidationDropdownRenderer, generatePlaceholderCells } from '@/app/lib/utils';
+import { generatePlaceholderCells } from '@/app/lib/utils';
 import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
 import { TelecallerService } from '@/app/services/telecaller.service';
 import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
@@ -41,6 +42,7 @@ import { Toast } from 'primeng/toast';
     ConfirmPopup,
     Dialog,
     FollowUpTable,
+    InfoTile,
   ],
   templateUrl: './bookings.html',
   styleUrl: './bookings.css',
@@ -131,6 +133,23 @@ export class TelecallerBookings implements OnInit {
     () => this.telecallerBookingsService.telecallerBookingsMutationMeta().isLoading,
   );
 
+  telecallerBookingsMutationData = computed(
+    () => this.telecallerBookingsService.telecallerBookingsMutationMeta().data,
+  );
+
+  /**
+   * Signal that holds the sample bookings data for preview, extracted from the mutation response
+   */
+  telecallerSampleBookingsData = computed(() => {
+    const sampleBookingsData = this.telecallerBookingsMutationData()?.data;
+    return sampleBookingsData &&
+      typeof sampleBookingsData === 'object' &&
+      'rows' in sampleBookingsData &&
+      Array.isArray(sampleBookingsData.rows)
+      ? sampleBookingsData
+      : undefined;
+  });
+
   /**
    * Signal used to check whether any search or fitlering is active
    * Mainly used to swap between results count in pagination
@@ -158,6 +177,16 @@ export class TelecallerBookings implements OnInit {
   dataFile: File | undefined;
 
   /**
+   * Signal to control the disabled state of the toolbar actions
+   * Set to `true` for disabling control
+   */
+  toolbarActionsDisabledStatus = signal({
+    unhide_all_columns: true,
+    select_all_rows: false, // Not toggled
+    deselect_all_rows: false, // Not toggled
+  });
+
+  /**
    * Settings for the main HoT
    */
   gridSettings: GridSettings = {
@@ -166,6 +195,7 @@ export class TelecallerBookings implements OnInit {
     renderAllColumns: true,
     manualRowMove: false,
     manualColumnMove: false,
+    fixedColumnsLeft: 5, // Skip past _id, isDeactivated and into select, refNo, studentName = 2 + 3
     manualColumnResize: true,
     autoColumnSize: false,
     viewportRowRenderingOffset: 15,
@@ -173,12 +203,32 @@ export class TelecallerBookings implements OnInit {
     columns: this.COLUMN_CONFIG,
     hiddenColumns: {
       columns: [0, 1],
-      indicators: false,
+      indicators: true,
+    },
+    contextMenu: {
+      items: {
+        hidden_columns_hide: {
+          callback: (key, selection, clickEvent) => {
+            const selectedColumnsToHide = selection
+              .map((range) => range.start.col)
+              .filter((colIndex) => colIndex > 5); // Skip past the first 5 columns (_id, isDeactivated, select, refNo, studentName)
+            if (selectedColumnsToHide.length === 0) return;
+
+            const hotInstance = this.hotTable?.hotInstance;
+            if (!hotInstance) return;
+
+            hotInstance.getPlugin('hiddenColumns')?.hideColumns(selectedColumnsToHide);
+            hotInstance.render();
+
+            this.toolbarActionsDisabledStatus.update((status) => ({
+              ...status,
+              unhide_all_columns: false,
+            }));
+          },
+        },
+      },
     },
     filters: true,
-    dropdownMenu: {
-      items: ['filter_by_value', 'filter_action_bar'],
-    },
     columnSorting: {
       headerAction: true,
       indicator: false,
@@ -196,46 +246,16 @@ export class TelecallerBookings implements OnInit {
         Handsontable.dom.stopImmediatePropagation(event);
       }
     },
-    cells(this: Handsontable.CellProperties, row, column, prop) {
-      // NOTES:3 set custom renderer for dataValidationStatus column once again to avoid default renderer forced
-      if (prop === 'dataValidationStatus') {
-        this.renderer = customValidationDropdownRenderer;
-        return this;
-      }
+    afterRenderer(td, row, col, prop, value, cellProperties) {
+      const isDeactivated = cellProperties.instance.getDataAtRowProp(row, 'isDeactivated') as
+        | boolean
+        | undefined;
 
-      const actionsColumnsIndex = this.instance.countCols() - 1; // Reliable way to get last index
-      const assignedToColumnIndex = this.instance.propToCol('assignedTo');
-      const createdAtColumnIndex = this.instance.propToCol('createdAt');
-      const updatedAtColumnIndex = this.instance.propToCol('updatedAt');
-
-      if (column === actionsColumnsIndex) {
-        this.readOnly = true;
-        // Get the base configuration for this column to prevent it from resetting
-        const configs = this.instance.getSettings().columns;
-        const colConfig = Array.isArray(configs) ? configs[column] : null;
-        if (colConfig && colConfig.renderer) {
-          this.renderer = colConfig.renderer;
-        }
-        return this;
+      if (isDeactivated && td?.parentElement) {
+        cellProperties.readOnly = true;
+        if (col <= 2) cellProperties.readOnly = false;
+        td.parentElement.classList.add('*:!bg-red-200');
       }
-
-      if (column <= 2) {
-        this.readOnly = false;
-        return this;
-      }
-
-      const isDeactivatedRow = this.instance.getDataAtRowProp(row, 'isDeactivated') as boolean;
-      if (isDeactivatedRow) {
-        this.readOnly = true;
-        this.className = '!bg-red-200';
-      } else {
-        this.readOnly = false;
-        this.className = '';
-      }
-      if ([assignedToColumnIndex, createdAtColumnIndex, updatedAtColumnIndex].includes(column)) {
-        this.readOnly = true;
-      }
-      return this;
     },
   };
 
@@ -246,6 +266,7 @@ export class TelecallerBookings implements OnInit {
     stretchH: 'all',
     rowHeaders: ['1'],
     renderAllColumns: true,
+    renderAllRows: true,
     manualRowMove: false,
     manualColumnMove: false,
     manualColumnResize: true,
@@ -274,40 +295,14 @@ export class TelecallerBookings implements OnInit {
 
   constructor() {
     // Automatically run effect when selected telecaller ID changes
-    effect(() => {
-      const removeSearchParams = () => {
-        this.router.navigate([], {
-          relativeTo: this.router.routerState.root,
-          replaceUrl: true,
-          queryParams: {},
-        });
-      };
-      const selectedTelecallerId = this.selectedTelecallerId();
-      if (!selectedTelecallerId) {
-        removeSearchParams();
-        return;
-      }
-      this.telecallerBookingsService.fetchTelecallerBookings(
-        1,
-        this.pagination.limit,
-        this.searchKey,
-        selectedTelecallerId ? [selectedTelecallerId] : undefined,
-        (err) => {
-          console.error('Error thrown by fetch telecaller bookings by ID', err);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: `${err} - Telecaller ID is probably wrong`,
-          });
-          removeSearchParams();
-        },
-      );
-    });
-
     const selectedTelecallerIdFromUrl =
       this.router.routerState.snapshot.root.queryParams['telecallerId'];
-    if (selectedTelecallerIdFromUrl)
+    if (selectedTelecallerIdFromUrl) {
       this.selectedTelecallerId.set(String(selectedTelecallerIdFromUrl));
+      this.onTelecallerSelectChange();
+    } else {
+      this.removeSearchParams();
+    }
   }
 
   searchKeyChange() {
@@ -319,6 +314,14 @@ export class TelecallerBookings implements OnInit {
         this.selectedTelecallerId() ? [this.selectedTelecallerId()!] : undefined,
       );
     else this.searchRecords();
+  }
+
+  removeSearchParams() {
+    this.router.navigate([], {
+      relativeTo: this.router.routerState.root,
+      replaceUrl: true,
+      queryParams: {},
+    });
   }
 
   // NOTES:1 Handle select column changes
@@ -432,6 +435,49 @@ export class TelecallerBookings implements OnInit {
     hotInstance.addHook('afterChange', this.afterChangeCallback);
   });
 
+  unhideAllColumns() {
+    const hotInstance = this.hotTable?.hotInstance;
+    if (!hotInstance) return;
+    const hiddenColumnsPlugin = hotInstance.getPlugin('hiddenColumns');
+    if (!hiddenColumnsPlugin) return;
+    hiddenColumnsPlugin.showColumns(hiddenColumnsPlugin.getHiddenColumns());
+    hiddenColumnsPlugin.hideColumns([0, 1]); // Keep _id and isDeactivated hidden
+    hotInstance.render();
+    this.toolbarActionsDisabledStatus.update((status) => ({
+      ...status,
+      unhide_all_columns: true,
+    }));
+  }
+
+  /**
+   * One-off function to check/uncheck all select column checkboxes in the HoT
+   */
+  private toggleSelectAllRows(shouldSelect: boolean) {
+    const hotInstance = this.hotTable?.hotInstance;
+    if (!hotInstance) return;
+    const totalRows = hotInstance.countRows();
+    hotInstance.batch(() => {
+      for (let rowIndex = 0; rowIndex < totalRows; rowIndex++) {
+        hotInstance.setDataAtCell(rowIndex, 2, shouldSelect); // Column index 2 is the select column
+      }
+    });
+  }
+
+  selectAllRows() {
+    const hotInstance = this.hotTable?.hotInstance;
+    if (!hotInstance) return;
+    const totalRows = hotInstance.countRows();
+    const allRowIndices = Array.from({ length: totalRows }, (_, i) => i);
+    this.hotMeta.selectedRows.set(allRowIndices);
+
+    this.toggleSelectAllRows(true);
+  }
+
+  deselectAllRows() {
+    this.hotMeta.selectedRows.set([]);
+    this.toggleSelectAllRows(false);
+  }
+
   onPageChange(event: Paginator['paginatorState']) {
     this.pagination.first = event.first;
     this.pagination.limit = event.rows;
@@ -440,6 +486,28 @@ export class TelecallerBookings implements OnInit {
       this.pagination.limit,
       this.searchKey,
       this.selectedTelecallerId() ? [this.selectedTelecallerId()!] : undefined,
+    );
+  }
+
+  onTelecallerSelectChange() {
+    const selectedTelecallerId = this.selectedTelecallerId();
+    if (!selectedTelecallerId) {
+      this.removeSearchParams();
+    }
+    this.telecallerBookingsService.fetchTelecallerBookings(
+      1,
+      this.pagination.limit,
+      this.searchKey,
+      selectedTelecallerId ? [selectedTelecallerId] : undefined,
+      (err) => {
+        console.error('Error thrown by fetch telecaller bookings by ID', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `${err} - Telecaller ID is probably wrong`,
+        });
+        this.removeSearchParams();
+      },
     );
   }
 
@@ -467,12 +535,17 @@ export class TelecallerBookings implements OnInit {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+            detail: this.telecallerBookingsMutationData()?.message,
           });
           if (isPreview) {
-            const sampleBookingsData =
-              this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.data;
-            if (!sampleBookingsData || !Array.isArray(sampleBookingsData)) return;
+            const sampleBookingsData = this.telecallerBookingsMutationData()?.data;
+            if (
+              !sampleBookingsData ||
+              typeof sampleBookingsData !== 'object' ||
+              !('rows' in sampleBookingsData) ||
+              !Array.isArray(sampleBookingsData.rows)
+            )
+              return;
             /**
              * Set timeout here to make sure the instance object exists and method is run,
              * ONLY after angular CD runs and initializes the preview hot component
@@ -480,7 +553,7 @@ export class TelecallerBookings implements OnInit {
             setTimeout(() => {
               const hotInstance = this.previewHotTableReference?.hotInstance;
               if (!hotInstance) return;
-              hotInstance.updateData(sampleBookingsData);
+              hotInstance.updateData(sampleBookingsData.rows);
             }, 0);
           } else {
             this.telecallerBookingsService.fetchTelecallerBookings(1, this.pagination.limit);
@@ -503,6 +576,7 @@ export class TelecallerBookings implements OnInit {
       1,
       this.pagination.limit,
       this.searchKey,
+      this.selectedTelecallerId() ? [this.selectedTelecallerId()!] : undefined,
     );
   }
 
@@ -574,7 +648,7 @@ export class TelecallerBookings implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+          detail: this.telecallerBookingsMutationData()?.message,
         });
         this.rowUpdates.set([]);
         this.hotMeta.selectedRows.set([]);
@@ -582,6 +656,7 @@ export class TelecallerBookings implements OnInit {
           1,
           this.pagination.limit,
           this.searchKey,
+          this.selectedTelecallerId() ? [this.selectedTelecallerId()!] : undefined,
         );
       },
       (error) => {
@@ -601,7 +676,7 @@ export class TelecallerBookings implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+          detail: this.telecallerBookingsMutationData()?.message,
         });
         this.rowUpdates.set([]);
         this.hotMeta.selectedRows.set([]);
@@ -609,6 +684,7 @@ export class TelecallerBookings implements OnInit {
           1,
           this.pagination.limit,
           this.searchKey,
+          this.selectedTelecallerId() ? [this.selectedTelecallerId()!] : undefined,
         );
       },
       (error) => {
@@ -635,16 +711,13 @@ export class TelecallerBookings implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: this.telecallerBookingsService.telecallerBookingsMutationMeta().data?.message,
+          detail: this.telecallerBookingsMutationData()?.message,
         });
         this.rowUpdates.set([]);
         this.hotMeta.selectedRows.set([]);
         this.selectedTelecallerIds.set([]);
         this.searchKey = '';
-        if (this.selectedTelecallerId()) {
-          this.selectedTelecallerId.set(null); // This signal change calls fetchTelecallerBookings as a side effect
-          return;
-        }
+        this.selectedTelecallerId.set(null);
         this.telecallerBookingsService.fetchTelecallerBookings(
           1,
           this.pagination.limit,

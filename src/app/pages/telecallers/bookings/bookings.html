@@ -60,6 +60,7 @@
             optionLabel="name"
             (onClear)="this.selectedTelecallerId.set(null)"
             optionValue="_id"
+            (onChange)="onTelecallerSelectChange()"
             [(ngModel)]="selectedTelecallerId"
           >
             <ng-template let-telecaller #item>
@@ -166,6 +167,48 @@
     </div>
   </div>
 
+  <div class="p-2 flex flex-col gap-3 bg-gray-100 rounded-md">
+    <p class="text-sm text-gray-500">Tools</p>
+    <div class="flex gap-2">
+      <p-button
+        label="Unhide all columns"
+        icon="pi pi-eye"
+        variant="outlined"
+        (onClick)="unhideAllColumns()"
+        [disabled]="
+          toolbarActionsDisabledStatus().unhide_all_columns ||
+          isTelecallerMutationsLoading() ||
+          telecallerBookingsService.telecallerBookings().isLoading
+        "
+        size="small"
+      />
+      <p-button
+        label="Select all"
+        icon="pi pi-check"
+        variant="outlined"
+        (onClick)="selectAllRows()"
+        [disabled]="
+          toolbarActionsDisabledStatus().select_all_rows ||
+          isTelecallerMutationsLoading() ||
+          telecallerBookingsService.telecallerBookings().isLoading
+        "
+        size="small"
+      />
+      <p-button
+        label="Deselect all"
+        icon="pi pi-times"
+        variant="outlined"
+        (onClick)="deselectAllRows()"
+        [disabled]="
+          toolbarActionsDisabledStatus().deselect_all_rows ||
+          isTelecallerMutationsLoading() ||
+          telecallerBookingsService.telecallerBookings().isLoading
+        "
+        size="small"
+      />
+    </div>
+  </div>
+
   <div class="h-[80vh] overflow-x-auto relative">
     @if (telecallerBookingsService.telecallerBookings().isLoading) {
       <div
@@ -217,10 +260,29 @@
   contentStyleClass="overflow-x-hidden"
 >
   <div class="flex flex-col gap-3">
-    @if (telecallerBookingsService.telecallerBookingsMutationMeta().data?.data) {
+    @if (telecallerBookingsMutationData()?.data) {
       <p>This is a sample of the data collected from the uploaded Excel sheet</p>
       <hot-table [data]="placeholderPreviewData" [settings]="previewGridSettings" #preview />
-      <p>If everything is good, click proceed to finalize</p>
+      <div class="p-4 bg-gray-100 rounded-lg flex gap-8 flex-wrap">
+        <app-info-tile
+          [title]="'File size'"
+          [value]="dataFile?.size ? (dataFile!.size / 1024).toFixed(2) + ' KB' : 'N/A'"
+        />
+        <app-info-tile [title]="'File name'" [value]="dataFile?.name ?? 'N/A'" />
+        <app-info-tile
+          [title]="'Total Records'"
+          [value]="telecallerSampleBookingsData()?.rawTotal ?? 0"
+        />
+        <app-info-tile
+          [title]="'Valid Records'"
+          [value]="telecallerSampleBookingsData()?.total ?? 0"
+        />
+      </div>
+      <p>
+        If everything is good, click proceed to finalize — Only valid records ({{
+          telecallerSampleBookingsData()?.total ?? 0
+        }}) will be processed
+      </p>
       <div class="flex justify-end gap-2">
         <p-button
           icon="pi pi-replay"

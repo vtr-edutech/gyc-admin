@@ -15,6 +15,7 @@ import { Toast } from 'primeng/toast';
 import { FollowUpForm } from './components/follow-up-form/follow-up-form';
 import { FollowUpTable } from '@/app/components/follow-up-table/follow-up-table';
 import { TelecallerAssignmentUpdate, TelecallerBookingsPayload } from '@/app/lib/types';
+import { generatePlaceholderCells } from '@/app/lib/utils';
 
 @Component({
   selector: 'app-bookings-telecaller',
@@ -71,9 +72,7 @@ export class TelecallerBooking implements OnInit {
 
   searchKey = '';
 
-  data = Array.from({ length: 50 }, () =>
-    Array.from({ length: this.COLUMN_CONFIG.length }, () => ''),
-  );
+  data = generatePlaceholderCells(50, this.COLUMN_CONFIG.length);
 
   gridSettings: GridSettings = {
     stretchH: 'all',
@@ -82,6 +81,7 @@ export class TelecallerBooking implements OnInit {
     manualRowMove: false,
     manualColumnMove: false,
     manualColumnResize: true,
+    fixedColumnsLeft: 5,
     autoColumnSize: false,
     headerClassName: 'font-semibold text-lg',
     columns: this.COLUMN_CONFIG,
@@ -90,9 +90,6 @@ export class TelecallerBooking implements OnInit {
       indicators: false,
     },
     filters: true,
-    dropdownMenu: {
-      items: ['filter_by_value', 'filter_action_bar'],
-    },
     columnSorting: {
       headerAction: true,
       indicator: false,

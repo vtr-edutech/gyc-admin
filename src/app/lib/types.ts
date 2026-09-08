@@ -205,6 +205,7 @@ export interface TelecallerAssignment extends Timestamps {
 
 export interface TelecallerServiceHistory extends Timestamps {
   college: string;
+  course?: string[];
   bookingId: Pick<TelecallerAssignment, '_id' | 'studentName' | 'mobile'>;
   remarks: string;
   calledDate: string;

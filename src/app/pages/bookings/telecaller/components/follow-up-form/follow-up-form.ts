@@ -1,4 +1,6 @@
 import { FieldError } from '@/app/components/field-error/field-error';
+import { RequiredAsterisk } from '@/app/components/required-asterisk/required-asterisk';
+import { COURSE_INTEREST_LIST } from '@/app/lib/data';
 import { TelecallerBookingsPayload } from '@/app/lib/types';
 import { FollowUpFormService } from '@/app/services/followup-form.service';
 import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
@@ -10,6 +12,7 @@ import { Button } from 'primeng/button';
 import { Chip } from 'primeng/chip';
 import { DatePicker } from 'primeng/datepicker';
 import { InputText } from 'primeng/inputtext';
+import { MultiSelect, MultiSelectChangeEvent } from 'primeng/multiselect';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 import { map } from 'rxjs';
@@ -25,6 +28,8 @@ import { map } from 'rxjs';
     FieldError,
     Tooltip,
     Chip,
+    MultiSelect,
+    RequiredAsterisk,
   ],
   templateUrl: './follow-up-form.html',
   styleUrl: './follow-up-form.css',
@@ -33,12 +38,14 @@ export class FollowUpForm {
   followUpFormService = inject(FollowUpFormService);
   messageService = inject(MessageService);
   telecallerBookingsService = inject(TelecallerBookingService);
+
+  closeModal = output<void>();
+
   followUpFormGroup = this.followUpFormService.followUpFormGroup;
+  readonly courseOptions = COURSE_INTEREST_LIST;
 
   isAddKeyValuePairDisabled = signal<boolean>(true);
   isSubmitting = signal<boolean>(false);
-
-  closeModal = output<void>();
 
   /**
    * Contains the details name (mobile) to display under modal title
@@ -55,9 +62,11 @@ export class FollowUpForm {
   );
 
   submitFollowUp() {
+    this.followUpFormGroup.markAllAsTouched();
     this.isSubmitting.set(true);
     try {
-      if (this.followUpFormGroup.invalid) throw new Error();
+      if (this.followUpFormGroup.invalid)
+        throw new Error('Not all fields have been filled, or filled fields have error');
       this.followUpFormGroup.controls.extraFields.controls.forEach((pair) => {
         const keyField = pair.controls.key;
         const valueField = pair.controls.value;
@@ -80,13 +89,15 @@ export class FollowUpForm {
       this.followUpFormService.submitFollowUp(
         (response) => {
           this.messageService.add({ severity: 'success', summary: response.message });
+          // Reset form and close modal ONLY when response is success
+          this.closeModal.emit();
+          this.followUpFormService.reset();
         },
         (err) => {
           this.messageService.add({ severity: 'error', summary: 'An error occurred', detail: err });
         },
         () => {
           this.isSubmitting.set(false);
-          this.closeModal.emit();
         },
       );
     } catch (err) {

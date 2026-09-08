@@ -3,10 +3,11 @@ import { TelecallerBookingService } from '@/app/services/telecaller-booking.serv
 import { Component, computed, inject, input } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
+import { Chip } from 'primeng/chip';
 
 @Component({
   selector: 'app-follow-up-table',
-  imports: [TableModule, Tooltip, FormatDatePipe],
+  imports: [TableModule, Tooltip, FormatDatePipe, Chip],
   templateUrl: './follow-up-table.html',
   styleUrl: './follow-up-table.css',
 })

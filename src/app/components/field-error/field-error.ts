@@ -1,6 +1,6 @@
+import { titleCase } from '@/app/lib/utils';
 import { Component, input } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import { titleCase } from '../../lib/utils';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-field-error',
@@ -9,7 +9,7 @@ import { titleCase } from '../../lib/utils';
   styleUrl: './field-error.css',
 })
 export class FieldError {
-  control = input.required<FormControl>();
+  control = input.required<FormControl | FormArray>();
   fieldName = input<string>();
 
   get errorMessage() {
@@ -19,20 +19,30 @@ export class FieldError {
     }
     const fieldName = this.fieldName() || titleCase(this.getControlName(control) || 'field');
 
-    if (control.hasError('required')) {
-      return `${fieldName} is required`;
+    if (control instanceof FormArray) {
+      const errors = control.controls.map((ctrl) => this.buildErrorMessage(ctrl, fieldName) ?? '');
+      return errors.join(', ');
     }
-    if (control.hasError('minlength')) {
-      return `${fieldName} is too short`;
-    }
-    if (control.hasError('maxlength')) {
-      return `${fieldName} is too long`;
-    }
-    if (control.hasError('pattern')) {
-      return `${fieldName} is invalid`;
-    }
+
+    const standardError = this.buildErrorMessage(control, fieldName);
+    if (standardError) return standardError;
+
     // Return first custom error or empty error
     return control.errors ? (control.errors[Object.keys(control.errors)[0]] ?? '') : '';
+  }
+
+  private buildErrorMessage(control: AbstractControl, fieldName: string) {
+    if (control.hasError('required')) {
+      return `${fieldName} is required`;
+    } else if (control.hasError('minlength')) {
+      return `${fieldName} is too short`;
+    } else if (control.hasError('maxlength')) {
+      return `${fieldName} is too long`;
+    } else if (control.hasError('pattern')) {
+      return `${fieldName} is invalid`;
+    } else {
+      return null;
+    }
   }
 
   getControlName(control: AbstractControl): string | null {

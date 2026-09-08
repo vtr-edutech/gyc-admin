@@ -524,4 +524,15 @@ export const COURSE_INTEREST_LIST = [
   'BDS',
 ];
 
-export const COMMUNITY_LIST = ['OC', 'BC', 'MBC', 'BCM', 'SC', 'ST', 'SCA'];
+export const COMMUNITY_LIST = ['OC', 'BC', 'MBC', 'BCM', 'SC', 'ST', 'SCA', 'MBC&DNC'];
+
+export const SCHOOL_TYPE_LIST = [
+  'Govt',
+  'Govt Aided',
+  'Private',
+  'Matriculation',
+  'CBSE',
+  'ICSE',
+  'International',
+  'Others',
+];

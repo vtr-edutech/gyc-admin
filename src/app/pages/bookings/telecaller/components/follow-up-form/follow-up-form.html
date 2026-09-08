@@ -6,7 +6,7 @@
     }
   </div>
   <div class="flex flex-col gap-1">
-    <label class="font-semibold" for="college">College</label>
+    <label class="font-semibold" for="college">College <app-required-asterisk /></label>
     <input
       type="text"
       id="college"
@@ -17,7 +17,21 @@
     <app-field-error [control]="followUpFormGroup.controls.college" />
   </div>
   <div class="flex flex-col gap-1">
-    <label class="font-semibold" for="remarks">Remarks</label>
+    <label class="font-semibold" for="course">Course <app-required-asterisk /></label>
+    <p-multiselect
+      id="college"
+      placeholder="Provide a college name..."
+      [options]="courseOptions"
+      filter="true"
+      display="chip"
+      [showToggleAll]="false"
+      showClear="false"
+      formControlName="course"
+    />
+    <app-field-error [control]="followUpFormGroup.controls.course" />
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="font-semibold" for="remarks">Remarks <app-required-asterisk /></label>
     <textarea
       id="remarks"
       placeholder="Provide remarks..."
@@ -27,7 +41,9 @@
     <app-field-error [control]="followUpFormGroup.controls.remarks" />
   </div>
   <div class="grid grid-cols-2 gap-1 gap-x-4">
-    <label class="font-semibold order-1" for="calledDate">Called Date</label>
+    <label class="font-semibold order-1" for="calledDate"
+      >Called Date <app-required-asterisk
+    /></label>
     <p-datepicker
       size="small"
       appendTo="body"
@@ -42,7 +58,9 @@
       fieldName="Called Date"
       [control]="followUpFormGroup.controls.calledDate"
     />
-    <label class="font-semibold order-2" for="followUpDate">Follow-up Date</label>
+    <label class="font-semibold order-2" for="followUpDate"
+      >Follow-up Date <app-required-asterisk
+    /></label>
     <p-datepicker
       size="small"
       appendTo="body"

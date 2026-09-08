@@ -12,7 +12,7 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 
 type TelecallerBookingMutationResponse =
   | { inserted: number; total: number }
-  | Partial<TelecallerBookingsPayload>[]
+  | { rows: Partial<TelecallerBookingsPayload>[]; total: number; rawTotal: number }
   | string;
 
 @Injectable({

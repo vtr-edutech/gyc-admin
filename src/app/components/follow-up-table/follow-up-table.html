@@ -9,6 +9,7 @@
       <th class="w-20">S.No.</th>
       <th>Attended By</th>
       <th>College</th>
+      <th>Course Interest</th>
       <th>Remarks</th>
       <th>Called Date</th>
       <th>Follow-up date</th>
@@ -27,6 +28,11 @@
         {{
           rowData.college?.length > 25 ? rowData.college.substring(0, 25) + '...' : rowData.college
         }}
+      </td>
+      <td class="max-h-50 overflow-auto">
+        @for (course of rowData.course; track $index) {
+          <p-chip class="text-xs m-0.5 text-gray-600">{{ course }}</p-chip>
+        }
       </td>
       <td [noWrap]="true" [pTooltip]="rowData.remarks?.length > 25 ? rowData.remarks : undefined">
         {{

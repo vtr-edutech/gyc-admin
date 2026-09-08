@@ -17,6 +17,8 @@ export class Navbar {
   isSidebarClosed = input<boolean>();
   onToggleSidebar = output<boolean>();
 
+  readonly userRole = computed(() => this.authService.authState().data?.data?.role);
+
   logout() {
     this.authService.logout();
   }
@@ -91,7 +93,7 @@ export class Navbar {
   ];
 
   roleFilteredNavLinks = computed(() => {
-    const role = this.authService.authState().data?.data?.role;
+    const role = this.userRole();
     if (!role) return [];
     return this.NAV_LINKS.filter((link) => link.accessRoles.includes(role));
   });

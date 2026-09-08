@@ -1,6 +1,12 @@
 import { environment } from '@/environments/environment';
 import { ColumnSettings } from '@handsontable/angular-wrapper';
-import { COMMUNITY_LIST, COURSE_INTEREST_LIST, DOMAIN_INTEREST_LIST, SUBJECT_LIST } from './data';
+import {
+  COMMUNITY_LIST,
+  COURSE_INTEREST_LIST,
+  DOMAIN_INTEREST_LIST,
+  SCHOOL_TYPE_LIST,
+  SUBJECT_LIST,
+} from './data';
 import { arrayValueFormatter, customValidationDropdownRenderer, formatDates } from './utils';
 
 const API_URL = environment.apiUrl;
@@ -48,9 +54,13 @@ export const API = {
   PUBLISH_REVIEW: (id: string) => API_URL + '/admin/reviews/' + id + '/toggle-publish',
 };
 
+function cutoffFormatter(value: any) {
+  return typeof value === 'string' ? value : Array.isArray(value) ? value.join(', ') : '';
+}
+
 export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
-  { data: '_id', title: '_Id', width: 0 },
-  { data: 'isDeactivated', title: 'Deactivated', width: 0 },
+  { data: '_id', title: '_Id', width: 0, readOnly: true },
+  { data: 'isDeactivated', title: 'Deactivated', width: 0, readOnly: true },
   { title: 'Select', type: 'checkbox', data: 'select', width: 85 },
   { data: 'refNo', title: 'Ref no', width: 95 },
   { data: 'studentName', title: 'Student name', width: 173 },
@@ -69,8 +79,25 @@ export const TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
   { data: 'school', title: 'School', width: 253 },
   { data: 'board', title: 'Board', width: 85 },
+  {
+    data: 'cutoffs',
+    title: 'Cutoff',
+    width: 100,
+    valueFormatter: cutoffFormatter,
+  },
+  { data: 'applicationNumber', title: 'Application Number', width: 175 },
+  { data: 'stateRank', title: 'State Rank', width: 100 },
+  { data: 'allIndiaRank', title: 'All India Rank', width: 130 },
+  { data: 'communityRank', title: 'Community Rank', width: 150 },
+  { data: 'neetMarks', title: 'NEET Marks', width: 100 },
   { data: 'languageMedium', title: 'Language', width: 125 },
-  { data: 'schoolType', title: 'School Type', width: 125 },
+  {
+    data: 'schoolType',
+    title: 'School Type',
+    width: 125,
+    type: 'dropdown',
+    source: SCHOOL_TYPE_LIST,
+  },
   {
     data: 'subjects',
     title: 'Subjects',
@@ -141,8 +168,25 @@ export const TELECALLER_BOOKINGS_ADMIN_PREVIEW_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
   { data: 'school', title: 'School', width: 253 },
   { data: 'board', title: 'Board', width: 85 },
+  {
+    data: 'cutoffs',
+    title: 'Cutoff',
+    width: 100,
+    valueFormatter: cutoffFormatter,
+  },
+  { data: 'applicationNumber', title: 'Application Number', width: 175 },
+  { data: 'stateRank', title: 'State Rank', width: 100 },
+  { data: 'allIndiaRank', title: 'All India Rank', width: 130 },
+  { data: 'communityRank', title: 'Community Rank', width: 150 },
+  { data: 'neetMarks', title: 'NEET Marks', width: 100 },
   { data: 'languageMedium', title: 'Language', width: 125 },
-  { data: 'schoolType', title: 'School Type', width: 125 },
+  {
+    data: 'schoolType',
+    title: 'School Type',
+    width: 125,
+    type: 'dropdown',
+    source: SCHOOL_TYPE_LIST,
+  },
   {
     data: 'subjects',
     title: 'Subjects',
@@ -186,7 +230,7 @@ export const TELECALLER_BOOKINGS_ADMIN_PREVIEW_HOT_COLUMNS: ColumnSettings[] = [
 
 export const TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS: ColumnSettings[] = [
   { data: '_id', title: '_Id', width: 0 },
-  { data: 'isDeactivated', title: 'Deactivated', width: 0 },
+  { data: 'isDeactivated', title: 'Deactivated', width: 0, readOnly: true },
   { title: 'Select', type: 'checkbox', data: 'select', width: 85 },
   { data: 'refNo', title: 'Ref no', width: 95 },
   { data: 'studentName', title: 'Student name', width: 173 },
@@ -196,8 +240,20 @@ export const TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS: ColumnSettings[] = [
   { data: 'alternateMobile', title: 'Alternate mobile', width: 145 },
   { data: 'school', title: 'School', width: 253 },
   { data: 'board', title: 'Board', width: 85 },
+  { data: 'cutoffs', title: 'Cutoff', width: 100, valueFormatter: cutoffFormatter },
+  { data: 'applicationNumber', title: 'Application Number', width: 175 },
+  { data: 'stateRank', title: 'State Rank', width: 100 },
+  { data: 'allIndiaRank', title: 'All India Rank', width: 130 },
+  { data: 'communityRank', title: 'Community Rank', width: 150 },
+  { data: 'neetMarks', title: 'NEET Marks', width: 100 },
   { data: 'languageMedium', title: 'Language', width: 125 },
-  { data: 'schoolType', title: 'School Type', width: 125 },
+  {
+    data: 'schoolType',
+    title: 'School Type',
+    width: 125,
+    type: 'dropdown',
+    source: SCHOOL_TYPE_LIST,
+  },
   {
     data: 'subjects',
     title: 'Subjects',

@@ -90,11 +90,17 @@ export class AuthService {
           data: null,
         });
         if (error.status === 401) {
-          localStorage.removeItem('token');
-          if (this.router.url !== '/') {
-            this.router.navigate(['']);
-          }
-          onError?.(error.error.error);
+          // logic to redirect to home does NOT work without setTimeout, because the router is still in the process of navigating
+          // to the current route when this code runs. The setTimeout allows the router to finish its current navigation before
+          // attempting to navigate to a new route.
+          setTimeout(() => {
+            localStorage.removeItem('token');
+            if (this.router.url !== '/') {
+              this.router.navigate(['/']);
+            }
+            onError?.(error.error.error);
+          });
+          return;
         }
         onError?.(getErrorMessage(error));
       },
