@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { API } from '../lib/constants';
 import { FetchState, GenericResponse, LoginPayload, LoginResponse } from '../lib/types';
-import { getErrorMessage } from '../lib/utils';
+import { generateInitials, getErrorMessage } from '../lib/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -28,11 +28,7 @@ export class AuthService {
   userNameLabel = computed(() => {
     const fullName = this.authState().data?.data?.name;
     if (!fullName) return '';
-    return (
-      fullName.split(' ')[0]?.[0]?.toUpperCase() +
-      '' +
-      (fullName.split(' ')[1]?.[0]?.toUpperCase() ?? '')
-    );
+    return generateInitials(fullName);
   });
 
   login(

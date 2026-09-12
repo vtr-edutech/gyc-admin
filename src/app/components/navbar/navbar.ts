@@ -4,10 +4,11 @@ import { Avatar } from 'primeng/avatar';
 import { Button } from 'primeng/button';
 import { Ripple } from 'primeng/ripple';
 import { AuthService } from '@/app/services/auth.service';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, Ripple, RouterLinkActive, Button, Avatar],
+  imports: [RouterLink, Ripple, RouterLinkActive, Button, Avatar, Tooltip],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })

@@ -23,6 +23,13 @@
       />
     </div>
   </div>
+  <p-button
+    label="Show all columns"
+    icon="pi pi-eye"
+    size="small"
+    variant="outlined"
+    (onClick)="showAllColumns()"
+  />
   <div class="h-[80vh] overflow-hidden relative">
     <hot-table #hotTable [data]="data" [settings]="gridSettings"> </hot-table>
   </div>
@@ -66,5 +73,17 @@
   [resizable]="false"
   [style]="{ minWidth: '50%' }"
 >
-  <app-follow-up-table [bookingId]="activeFollowUpBookingId()" />
+  <app-follow-up-table [bookingId]="activeBookingId()" />
+</p-dialog>
+
+<p-dialog
+  [visible]="isBookingUpdateHistoryModalOpen()"
+  (onHide)="toggleBookingUpdateHistoryModal(false)"
+  [modal]="true"
+  [draggable]="false"
+  [header]="viewBookingUpdateHisotryModalTitle"
+  [resizable]="false"
+  [style]="{ minWidth: '50%', maxWidth: '80%', maxHeight: '75%' }"
+>
+  <app-telecaller-booking-update-history-table [bookingId]="activeBookingId()" />
 </p-dialog>

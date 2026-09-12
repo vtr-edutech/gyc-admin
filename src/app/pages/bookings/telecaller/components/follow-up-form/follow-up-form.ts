@@ -1,7 +1,7 @@
 import { FieldError } from '@/app/components/field-error/field-error';
 import { RequiredAsterisk } from '@/app/components/required-asterisk/required-asterisk';
 import { COURSE_INTEREST_LIST } from '@/app/lib/data';
-import { TelecallerBookingsPayload } from '@/app/lib/types';
+import { TelecallerBookingsFetchResponse } from '@/app/lib/types';
 import { FollowUpFormService } from '@/app/services/followup-form.service';
 import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
 import { Component, inject, output, signal } from '@angular/core';
@@ -50,7 +50,7 @@ export class FollowUpForm {
   /**
    * Contains the details name (mobile) to display under modal title
    */
-  telecallerBookingDetails = toSignal<TelecallerBookingsPayload[]>(
+  telecallerBookingDetails = toSignal<TelecallerBookingsFetchResponse[]>(
     this.followUpFormGroup.controls.bookingIds.valueChanges.pipe(
       map(
         (bookingIds) =>

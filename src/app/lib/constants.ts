@@ -35,6 +35,7 @@ export const API = {
   GET_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings',
   UPLOAD_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/upload',
   UPDATE_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/update',
+  GET_TELECALLER_BOOKING_UPDATE_HISTORY: API_URL + '/admin/telecallers/bookings/update/history',
   UPDATE_TELECALLER_BOOKINGS_ACTIVATION_STATUS: API_URL + '/admin/telecallers/bookings/activation',
   ASSIGN_TELECALLER_BOOKINGS: API_URL + '/admin/telecallers/bookings/assign',
   GET_REFERRERS: API_URL + '/admin/referrers',
@@ -300,3 +301,12 @@ export const TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS: ColumnSettings[] = [
     },
   },
 ];
+
+export const TELECALLER_BOOKINGS_COLUMN_NAME_MAP = (() => {
+  const result = {};
+  TELECALLER_BOOKINGS_ADMIN_HOT_COLUMNS.forEach((column) => {
+    // @ts-expect-error meh
+    result[column.data] = column.title;
+  });
+  return result;
+})();

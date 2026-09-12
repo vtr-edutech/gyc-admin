@@ -37,6 +37,12 @@ export function titleCase(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+export function generateInitials(name: string) {
+  return (
+    name.split(' ')[0]?.[0]?.toUpperCase() + '' + (name.split(' ')[1]?.[0]?.toUpperCase() ?? '')
+  );
+}
+
 export function isObjectEntriesEmpty(
   object: Object,
   includeEmptyObject = true,

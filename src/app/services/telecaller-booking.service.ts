@@ -4,7 +4,8 @@ import {
   FetchState,
   GenericResponse,
   TelecallerAssignmentUpdate,
-  TelecallerBookingsPayload,
+  TelecallerBookingHistoryFetchResponse,
+  TelecallerBookingsFetchResponse,
 } from '@/app/lib/types';
 import { getErrorMessage } from '@/app/lib/utils';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -12,20 +13,34 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 
 type TelecallerBookingMutationResponse =
   | { inserted: number; total: number }
-  | { rows: Partial<TelecallerBookingsPayload>[]; total: number; rawTotal: number }
+  | { rows: Partial<TelecallerBookingsFetchResponse>[]; total: number; rawTotal: number }
   | string;
+
+type TelecallerBookingHistoryRecord = Record<string, TelecallerBookingHistoryFetchResponse[]>;
+
+type TelecallerBookingHistoryMeta = Omit<FetchState<void>, 'data'> & {
+  data: TelecallerBookingHistoryRecord | null;
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class TelecallerBookingService {
-  telecallerBookings: WritableSignal<FetchState<TelecallerBookingsPayload[]>> = signal<
-    FetchState<TelecallerBookingsPayload[]>
+  telecallerBookings: WritableSignal<FetchState<TelecallerBookingsFetchResponse[]>> = signal<
+    FetchState<TelecallerBookingsFetchResponse[]>
   >({
     isLoading: false,
     error: null,
     data: null,
   });
+
+  telecallerBookingHistory: WritableSignal<TelecallerBookingHistoryMeta> =
+    signal<TelecallerBookingHistoryMeta>({
+      isLoading: false,
+      error: null,
+      data: null,
+    });
+
   telecallerBookingsMutationMeta: WritableSignal<FetchState<TelecallerBookingMutationResponse>> =
     signal<FetchState<TelecallerBookingMutationResponse>>({
       isLoading: false,
@@ -60,7 +75,7 @@ export class TelecallerBookingService {
     });
 
     this.http
-      .get<GenericResponse<TelecallerBookingsPayload[]>>(API.GET_TELECALLER_BOOKINGS, {
+      .get<GenericResponse<TelecallerBookingsFetchResponse[]>>(API.GET_TELECALLER_BOOKINGS, {
         params,
       })
       .subscribe({
@@ -80,6 +95,54 @@ export class TelecallerBookingService {
             error: getErrorMessage(error),
             data: null,
           });
+          onError?.(getErrorMessage(error));
+        },
+      });
+  }
+
+  fetchTelecallerBookingsHistory(
+    bookingId: string,
+    onSuccess?: Function,
+    onError?: ErrorFnCallback,
+  ): void {
+    this.telecallerBookingHistory.update((prev) => ({
+      ...prev,
+      isLoading: true,
+      error: null,
+    }));
+
+    const params: HttpParams = new HttpParams({
+      fromObject: {
+        bookingId,
+      },
+    });
+
+    this.http
+      .get<GenericResponse<TelecallerBookingHistoryFetchResponse[]>>(
+        API.GET_TELECALLER_BOOKING_UPDATE_HISTORY,
+        {
+          params,
+        },
+      )
+      .subscribe({
+        next: (response) => {
+          this.telecallerBookingHistory.update((prev) => ({
+            ...prev,
+            isLoading: false,
+            error: null,
+            data: {
+              ...prev.data,
+              [bookingId]: response!.data?.map((d, i) => ({ ...d, index: i + 1 })) || [],
+            },
+          }));
+          onSuccess?.();
+        },
+        error: (error) => {
+          this.telecallerBookingHistory.update((prev) => ({
+            ...prev,
+            isLoading: false,
+            error: getErrorMessage(error),
+          }));
           onError?.(getErrorMessage(error));
         },
       });
@@ -144,6 +207,8 @@ export class TelecallerBookingService {
           error: null,
           data: response,
         });
+        // Additionally purge data in already fetched update history because it becomes stale
+        this.resetTelecallerBookingsMutation();
         onSuccess?.();
       },
       error: (error) => {
@@ -225,5 +290,13 @@ export class TelecallerBookingService {
           onError?.(getErrorMessage(error));
         },
       });
+  }
+
+  resetTelecallerBookingsMutation() {
+    this.telecallerBookingHistory.set({
+      data: null,
+      error: null,
+      isLoading: false,
+    });
   }
 }

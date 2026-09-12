@@ -1,0 +1,51 @@
+<div class="flex flex-col gap-2">
+  @if (telecallerBookingsService.telecallerBookingHistory().isLoading) {
+    <p-skeleton height="1.5rem" />
+    <p-skeleton height="1.5rem" />
+    <p-skeleton height="1.5rem" />
+    <p-skeleton height="1.5rem" />
+    <p-skeleton height="1.5rem" />
+  } @else if (currentBookingUpdateHistory()?.length) {
+    @for (updateHistory of currentBookingUpdateHistory(); track $index) {
+      <div
+        class="shadow p-2 rounded-sm border-l-4 outline outline-gray-100 border-gray-500 gap-2 flex flex-col"
+      >
+        <div class="flex gap-2 items-center">
+          <div class="flex items-center gap-1 font-medium">
+            <p-avatar
+              icon="pi pi-user"
+              size="normal"
+              shape="circle"
+              [label]="generateInitials(updateHistory.changedBy.name)"
+            />
+            {{ updateHistory.changedBy.name }}
+          </div>
+          @if (
+            !updateHistory.previousValue ||
+            ['undefined', 'null', ' '].includes(updateHistory.previousValue)
+          ) {
+            inserted &ldquo;{{ updateHistory.currentValue }}&rdquo; into
+            <code>{{ getReadableColumnName(updateHistory.fieldName) }}</code>
+          } @else {
+            changed
+            <code>{{ getReadableColumnName(updateHistory.fieldName) }}</code> from
+            @if (['true', 'false'].includes(updateHistory.currentValue)) {
+              {{ updateHistory.previousValue === 'true' ? '✅' : '❌' }}
+              <i class="pi pi-arrow-right"></i>
+              {{ updateHistory.currentValue === 'true' ? '✅' : '❌' }}
+            } @else {
+              <s>{{ updateHistory.previousValue }}</s>
+              <i class="pi pi-arrow-right"></i>
+              &ldquo;{{ updateHistory.currentValue }}&rdquo;
+            }
+          }
+        </div>
+        <span class="text-gray-500 text-xs">
+          {{ updateHistory.createdAt | formatDate: true }}
+        </span>
+      </div>
+    }
+  } @else {
+    <p>No updates yet!</p>
+  }
+</div>

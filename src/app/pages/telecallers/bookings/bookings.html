@@ -246,7 +246,19 @@
   [resizable]="false"
   [style]="{ minWidth: '50%' }"
 >
-  <app-follow-up-table [bookingId]="activeFollowUpBookingId()" />
+  <app-follow-up-table [bookingId]="activeBookingId()" />
+</p-dialog>
+
+<p-dialog
+  [visible]="isBookingUpdateHistoryModalOpen()"
+  (onHide)="toggleBookingUpdateHistoryModal(false)"
+  [modal]="true"
+  [draggable]="false"
+  [header]="viewBookingUpdateHisotryModalTitle"
+  [resizable]="false"
+  [style]="{ minWidth: '50%', maxWidth: '80%', maxHeight: '75%' }"
+>
+  <app-telecaller-booking-update-history-table [bookingId]="activeBookingId()" />
 </p-dialog>
 
 <p-dialog

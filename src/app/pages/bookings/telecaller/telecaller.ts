@@ -2,7 +2,17 @@ import { HotViewButton } from '@/app/components/hot-view-button/hot-view-button'
 import { TELECALLER_BOOKINGS_TELECALLER_HOT_COLUMNS } from '@/app/lib/constants';
 import { FollowUpFormService } from '@/app/services/followup-form.service';
 import { TelecallerBookingService } from '@/app/services/telecaller-booking.service';
-import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  untracked,
+  ViewChild,
+} from '@angular/core';
 import { GridSettings, HotTableComponent, HotTableModule } from '@handsontable/angular-wrapper';
 import Handsontable from 'handsontable';
 import { MessageService } from 'primeng/api';
@@ -14,8 +24,9 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 import { Toast } from 'primeng/toast';
 import { FollowUpForm } from './components/follow-up-form/follow-up-form';
 import { FollowUpTable } from '@/app/components/follow-up-table/follow-up-table';
-import { TelecallerAssignmentUpdate, TelecallerBookingsPayload } from '@/app/lib/types';
+import { TelecallerAssignmentUpdate, TelecallerBookingsFetchResponse } from '@/app/lib/types';
 import { generatePlaceholderCells } from '@/app/lib/utils';
+import { TelecallerBookingUpdateHistoryTable } from '@/app/components/telecaller-booking-update-history-table/telecaller-booking-update-history-table';
 
 @Component({
   selector: 'app-bookings-telecaller',
@@ -29,11 +40,12 @@ import { generatePlaceholderCells } from '@/app/lib/utils';
     DialogModule,
     FollowUpForm,
     FollowUpTable,
+    TelecallerBookingUpdateHistoryTable,
   ],
   templateUrl: './telecaller.html',
   styleUrl: './telecaller.css',
 })
-export class TelecallerBooking implements OnInit {
+export class TelecallerBooking implements OnInit, OnDestroy {
   @ViewChild('hotTable') hotTable!: HotTableComponent;
 
   COLUMN_CONFIG = [
@@ -45,7 +57,8 @@ export class TelecallerBooking implements OnInit {
       readOnly: true,
       renderer: HotViewButton,
       rendererProps: {
-        action: (bookingId: string) => this.afterBookingChoose(bookingId),
+        onFollowUpViewClick: (bookingId: string) => this.afterBookingChoose(bookingId),
+        onUpdateHistoryViewClick: (bookingId: string) => this.afterUpdateHistoryChoose(bookingId),
       },
     },
   ];
@@ -56,8 +69,9 @@ export class TelecallerBooking implements OnInit {
 
   isCreateFollowUpModalOpen = signal<boolean>(false);
   isViewFollowUpModalOpen = signal<boolean>(false);
+  isBookingUpdateHistoryModalOpen = signal<boolean>(false);
 
-  activeFollowUpBookingId = signal<string | null>(null);
+  activeBookingId = signal<string | null>(null);
 
   rowUpdates = signal<TelecallerAssignmentUpdate[]>([]);
 
@@ -88,6 +102,24 @@ export class TelecallerBooking implements OnInit {
     hiddenColumns: {
       columns: [0, 1],
       indicators: false,
+    },
+    contextMenu: {
+      items: {
+        hidden_columns_hide: {
+          callback: (key, selection, clickEvent) => {
+            const selectedColumnsToHide = selection
+              .map((range) => range.start.col)
+              .filter((colIndex) => colIndex > 5); // Skip past the first 5 columns (_id, isDeactivated, select, refNo, studentName)
+            if (selectedColumnsToHide.length === 0) return;
+
+            const hotInstance = this.hotTable?.hotInstance;
+            if (!hotInstance) return;
+
+            hotInstance.getPlugin('hiddenColumns')?.hideColumns(selectedColumnsToHide);
+            hotInstance.render();
+          },
+        },
+      },
     },
     filters: true,
     columnSorting: {
@@ -146,7 +178,9 @@ export class TelecallerBooking implements OnInit {
     }
 
     changes.forEach((change) => {
-      const [rowIndex, fieldName, , newValue] = change;
+      const [rowIndex, fieldName, oldValue, newValue] = change;
+      if (oldValue === newValue) return;
+
       const currentRow = this.bookingsData()?.[rowIndex];
       if (!currentRow) {
         return;
@@ -192,16 +226,21 @@ export class TelecallerBooking implements OnInit {
     const hotInstance = this.hotTable?.hotInstance;
     if (!hotInstance) return;
 
-    this.rowUpdates().forEach((update) => {
-      const rowIndex = bookingsData.findIndex((booking) => booking._id === update._id);
-      if (rowIndex !== -1) {
-        bookingsData[rowIndex] = {
-          ...bookingsData[rowIndex],
-          ...update,
-        } as TelecallerBookingsPayload;
-      }
+    untracked(() => {
+      this.rowUpdates().forEach((update) => {
+        const rowIndex = bookingsData.findIndex((booking) => booking._id === update._id);
+        if (rowIndex !== -1) {
+          bookingsData[rowIndex] = {
+            ...bookingsData[rowIndex],
+            ...update,
+          } as TelecallerBookingsFetchResponse;
+        }
+      });
     });
+
     hotInstance.updateData(bookingsData.length > 0 ? bookingsData : this.data);
+
+    // Since deactivated assignments are automatically unassigned to telecallers, there won't be a need to check and disable and red bg the cells
 
     hotInstance.removeHook('afterChange', this.afterChangeCallback);
     hotInstance.addHook('afterChange', this.afterChangeCallback);
@@ -278,8 +317,17 @@ export class TelecallerBooking implements OnInit {
     this.isViewFollowUpModalOpen.set(open);
   }
 
+  toggleBookingUpdateHistoryModal(open: boolean) {
+    this.isBookingUpdateHistoryModalOpen.set(open);
+  }
+
+  afterUpdateHistoryChoose(bookingId: string) {
+    this.activeBookingId.set(bookingId);
+    this.toggleBookingUpdateHistoryModal(true);
+  }
+
   afterBookingChoose(bookingId: string) {
-    this.activeFollowUpBookingId.set(bookingId);
+    this.activeBookingId.set(bookingId);
     this.toggleViewFollowUpModal(true);
   }
 
@@ -297,10 +345,24 @@ export class TelecallerBooking implements OnInit {
     this.fetchTelecallerBookings();
   }
 
+  showAllColumns() {
+    const plugin = this.hotTable.hotInstance?.getPlugin('hiddenColumns');
+    if (!plugin) return;
+    plugin.showColumns(plugin.getHiddenColumns().filter((col) => ![0, 1].includes(col)));
+    this.hotTable.hotInstance?.render();
+  }
+
   get viewFollowUpModalTitle() {
-    const currentBooking = this.bookingsData()?.find(
-      (d) => d._id === this.activeFollowUpBookingId(),
-    );
+    const currentBooking = this.bookingsData()?.find((d) => d._id === this.activeBookingId());
     return `View follow ups for ${currentBooking?.studentName} (${currentBooking?.mobile})`;
+  }
+
+  get viewBookingUpdateHisotryModalTitle() {
+    const currentBooking = this.bookingsData()?.find((d) => d._id === this.activeBookingId());
+    return `View update history for ${currentBooking?.studentName} (${currentBooking?.mobile})`;
+  }
+
+  ngOnDestroy(): void {
+    this.telecallerBookingsService.resetTelecallerBookingsMutation();
   }
 }

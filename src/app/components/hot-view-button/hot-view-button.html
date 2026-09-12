@@ -1,14 +1,26 @@
-<p-badge
-  class="absolute top-0 right-0 translate-x-1/2 z-10 -translate-y-1/2"
-  [value]="followUpCount() ?? '-'"
-  [badgeSize]="'small'"
-  size="small"
->
-</p-badge>
-<p-button
-  icon="pi pi-eye"
-  [size]="'small'"
-  [variant]="'outlined'"
-  (click)="onClick($event)"
-  rounded="true"
-/>
+<div class="relative flex">
+  <p-badge
+    class="absolute top-0 right-0 z-10 translate-x-1.5 -translate-y-1.5"
+    [value]="followUpCount() ?? '-'"
+    [badgeSize]="'small'"
+    size="small"
+  >
+  </p-badge>
+  <p-button
+    icon="pi pi-eye"
+    [size]="'small'"
+    [variant]="'outlined'"
+    (click)="onFollowUpClick($event)"
+    rounded="true"
+  />
+</div>
+<!-- Render update history view button only if the function is defined -->
+@if (!!updateHistoryCallback) {
+  <p-button
+    icon="pi pi-history"
+    [size]="'small'"
+    [variant]="'outlined'"
+    (click)="onUpdateHistoryClick($event)"
+    rounded="true"
+  />
+}

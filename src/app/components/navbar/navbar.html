@@ -41,6 +41,7 @@
     class="mr-2"
     size="normal"
     shape="circle"
+    [pTooltip]="this.authService.authState().data?.data?.name"
     [label]="this.authService.userNameLabel()"
   />
   <p-button

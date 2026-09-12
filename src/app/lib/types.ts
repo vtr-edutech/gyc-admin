@@ -37,7 +37,7 @@ export type TelecallerAssignmentUpdate = { _id: string } & Partial<
   Record<keyof TelecallerAssignment, string>
 >;
 
-export type TelecallerBookingsPayload = TelecallerAssignment & {
+export type TelecallerBookingsFetchResponse = TelecallerAssignment & {
   followUps: Omit<
     TelecallerServiceHistory & { attendedBy: Pick<AdminUser<'telecaller'>, '_id' | 'name'> },
     'bookingId' | 'attendedAt'
@@ -301,3 +301,15 @@ export interface TneaSuggestionUsage extends Timestamps {
   community: string;
   communityRank: number;
 }
+
+export interface TelecallerBookingHistory extends Timestamps {
+  previousValue: string;
+  currentValue: string;
+  fieldName: string;
+  telecallerAssignment: Partial<TelecallerAssignment>;
+  changedBy: Pick<AdminUser<'telecaller'>, 'name'>;
+}
+
+export type TelecallerBookingHistoryFetchResponse = Omit<TelecallerBookingHistory, 'updatedAt'> & {
+  telecallerAssignment: string;
+};
